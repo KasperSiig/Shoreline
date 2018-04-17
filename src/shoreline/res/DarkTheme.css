@@ -1,0 +1,348 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 20-Feb-2018, 10:08:55
+    Author     : madst
+*/
+
+/* backround */
+.background {
+    -fx-background-color: #1d1d1d;
+}
+
+/* anchorPane*/
+.anchorPane {
+    -fx-background-color: #1d1d1d;
+}
+
+/* BorderPane */
+#borderPane {
+    -fx-background-color: #1d1d1d; 
+}
+
+/* DatePicker */
+.jfx-date-picker:editable .date-picker-display-node{
+    -fx-text-fill: white;   
+}
+
+.jfx-date-picker .date-picker-display-node .input-line {
+    -fx-background-color: white;
+}
+
+.jfx-date-picker:editable .arrow-button .jfx-svg-glyph {
+    -fx-background-color: white;
+}
+
+.date-picker-popup .button {
+
+    -fx-background-color: #484848;
+
+}
+
+.date-picker-popup .label {
+
+    -fx-text-fill: #000000;
+
+}
+
+.date-picker .button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent, derive(lightgray, 20%);
+    -fx-pref-height: 35px;
+    -fx-pref-width: 35px;
+}
+
+/* Button */
+.button {
+    -fx-padding: 5 22 5 22;   
+    -fx-border-color: #e2e2e2;
+    -fx-border-width: 2;
+    -fx-background-radius: 0;
+    /*-fx-background-color: #1d1d1d;*/
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 11pt;
+    -fx-text-fill: #d8d8d8;
+    -fx-background-insets: 0 0 0 0, 0, 1, 2;
+}
+
+.button:hover {
+    -fx-background-color: #3a3a3a;
+}
+
+.button:pressed, .button:default:hover:pressed {
+    -fx-background-color: white;
+    -fx-text-fill: #1d1d1d;
+}
+
+.button:focused {
+    -fx-border-color: white, white;
+    -fx-border-width: 1, 1;
+    -fx-border-style: solid, segments(1, 1);
+    -fx-border-radius: 0, 0;
+    -fx-border-insets: 1 1 1 1, 0;
+}
+
+.button:disabled, .button:default:disabled {
+    -fx-opacity: 0.4;
+    -fx-background-color: #1d1d1d;
+    -fx-text-fill: white;
+}
+
+.button:default {
+    -fx-background-color: -fx-focus-color;
+    -fx-text-fill: #ffffff;
+}
+
+.button:default:hover {
+    -fx-background-color: derive(-fx-focus-color,30%);
+}
+
+/* Label */
+.label {
+    -fx-font-size: 11pt;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: white;
+    -fx-opacity: 0.6;
+}
+
+.label-bright {
+    -fx-font-size: 16pt;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: white;
+    -fx-opacity: 1;
+}
+
+.label-header {
+    -fx-font-size: 24pt;
+    -fx-font-family: "Segoe UI Light";
+    -fx-text-fill: white;
+    -fx-opacity: 1;
+}
+
+/* SplitPane */
+.split-pane:horizontal > .split-pane-divider {
+    -fx-border-color: transparent #1d1d1d transparent #1d1d1d;
+    -fx-background-color: transparent, derive(#1d1d1d,20%);
+}
+
+.split-pane {
+    -fx-padding: 0 0 0 0;
+    -fx-border-width: 4px 0px 0px 0px;
+    -fx-border-color: transparent, derive(#1d1d1d, 20%);
+}
+
+/* TabelView */
+.table-view {
+    -fx-base: #1d1d1d;
+    -fx-control-inner-background: #1d1d1d;
+    -fx-background-color: #1d1d1d;
+    -fx-table-cell-border-color: transparent;
+    -fx-table-header-border-color: transparent;
+    -fx-padding: 5;
+    -fx-text-fill: white;
+}
+
+.table-view .table-cell{
+    -fx-text-fill: white;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background .nested-column-header .table-column {
+    -fx-border-color: white;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-size: 35;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-color: transparent;
+    -fx-border-color: 
+        transparent
+        transparent
+        derive(-fx-base, 80%) 
+        transparent;
+    -fx-border-insets: 0 10 1 0;
+}
+
+.table-view .column-header .label {
+    -fx-font-size: 20pt;
+    -fx-font-family: "Segoe UI Light";
+    -fx-text-fill: white;
+    -fx-alignment: center-left;
+    -fx-opacity: 1;
+}
+
+.table-row-cell:odd{
+
+    -fx-background-color: #262626;
+
+}
+
+.table-row-cell:selected {
+
+    -fx-background-color: #494949;
+
+}
+
+/* Scroll bar */
+.scroll-bar:horizontal .track ,
+.scroll-bar:vertical .track{
+    -fx-background-color: transparent;
+    /*    -fx-border-color:derive(lightgray,20%);*/
+    -fx-border-color:transparent;
+    /*-fx-background-radius: 5em;*/
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color:white;
+    -fx-background-radius: 5em;
+}
+
+.scroll-bar:horizontal .increment-button ,
+.scroll-bar:horizontal .decrement-button {
+    -fx-background-color:transparent;
+    -fx-background-radius: 0em;
+    /*-fx-padding:0 0 10 0;*/
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow
+{
+    -fx-shape: " ";	
+    -fx-padding:0;
+}
+
+/* Text field */
+.text-field {
+    -fx-font-size: 12pt;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-prompt-text-fill: white;
+}
+
+/* Menus */
+.menu-bar {
+    -fx-background-color: derive(#1d1d1d,20%);
+}
+
+.context-menu {
+    -fx-background-color: derive(#1d1d1d,50%);
+}
+
+.menu-bar .label {
+    -fx-font-size: 14pt;
+    -fx-font-family: "Segoe UI Light";
+    -fx-text-fill: white;
+    -fx-opacity: 0.9;
+}
+
+.menu .left-container {
+    -fx-background-color: black;
+}
+
+.menu-bar > .container > .menu-button:hover,
+.menu-bar > .container > .menu-button:focused,
+.menu-bar > .container > .menu-button:showing {
+    -fx-background: -fx-selection-bar;
+    -fx-background-color: derive(#3a3a3a, 20%);
+}
+
+/* JFX toggle button */
+.jfx-toggle-button {
+    -fx-text-fill: white;
+}
+
+/* Chart */
+.chart .chart-content .chart-plot-background {
+    -fx-background-color: #1d1d1d;
+}
+
+.chart-legend {
+    -fx-background-color:  derive(#1d1d1d,20%);
+    -fx-stroke: #daa520;
+}
+
+/* TextField */
+.jfx-text-field {   
+    -fx-text-fill: white;  
+}
+
+/* ListView */
+
+.jfx-list-view {
+    -fx-background-color: derive(#1d1d1d, 20%);
+}
+
+.jfx-list-view .list-cell:filled:selected:focused, .jfx-list-view .list-cell:filled:selected {
+    -fx-background-color: linear-gradient(#4059a9 0%, #35498c 25%, #2d3e7a 75%, #253363 100%);
+    -fx-text-fill: white;
+}
+
+.jfx-list-view .list-cell:odd {
+    -fx-cell-hover-color: #636363;
+    -fx-background-color: #636363;
+    -fx-text-fill: white;
+}
+
+.jfx-list-view .list-cell:even {
+    -fx-cell-hover-color: #535353;
+    -fx-background-color: #535353;
+    -fx-text-fill: white;
+}
+
+.list-cell:filled:hover {
+    -fx-cell-hover-color: #1d1d1d;
+    -fx-text-fill: white;
+}
+
+
+/* ComboBox */
+
+.jfx-combo-box {
+    -fx-background-color: transparent;
+    -fx-prompt-text-fill: white;
+}
+
+.jfx-combo-box .list-view {
+    -fx-background-color: #424242;
+}
+
+.jfx-combo-box .list-cell:odd {
+    -fx-cell-hover-color: #636363;
+    -fx-background-color: #636363;
+    -fx-text-fill: white;
+}
+
+.jfx-combo-box .list-cell:even {
+    -fx-cell-hover-color: #535353;
+    -fx-background-color: #535353;
+    -fx-background-radius: 0;
+    -fx-text-fill: white;
+}
+
+/* Password textField */
+.jfx-password-field {
+    -fx-text-fill: white;
+}
+
+/* Vbox */
+#vBox {
+    -fx-background-color: #1d1d1d;
+}
+
+.jfx-drawer {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: #1d1d1d;
+}
+
+.scroll-pane {
+    -fx-background-color: #1d1d1d;
+}

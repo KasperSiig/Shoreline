@@ -1,0 +1,251 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 20-Feb-2018, 10:08:55
+    Author     : madst
+*/
+
+/* background */
+.background {
+    -fx-background-color: white;
+}
+
+/* AnchorPane */
+.anchorPane {
+    -fx-background-color: white;
+}
+
+/* BordeurPane */
+#borderPane {
+    -fx-background-color: white; 
+}
+
+/* DatePicker */
+.jfx-date-picker:editable .date-picker-display-node{
+    -fx-text-fill: gray;   
+}
+
+.jfx-date-picker .date-picker-display-node .input-line {
+    -fx-background-color: gray;
+}
+
+.jfx-date-picker:editable .arrow-button .jfx-svg-glyph {
+    -fx-background-color: gray;
+}
+
+.date-picker-popup .button {
+    -fx-background-color: white;
+}
+
+.date-picker .button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent, derive(lightgray, 20%);
+    -fx-pref-height: 35px;
+    -fx-pref-width: 35px;
+}
+
+/* Button */
+.button {
+    -fx-padding: 5 22 5 22;   
+    -fx-border-color: gray;
+    -fx-border-width: 2;
+    -fx-background-radius: 0;
+    -fx-background-color: transparent;
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 11pt;
+    -fx-text-fill: black;
+    -fx-background-insets: 0 0 0 0, 0, 1, 2;
+}
+
+.button:hover {
+    -fx-background-color: #bababa;
+}
+
+.button:pressed, .button:default:hover:pressed {
+    -fx-background-color: lightgray;
+    -fx-text-fill: black;
+}
+
+.button:focused {
+    -fx-border-color: black, black;
+    -fx-border-width: 1, 1;
+    -fx-border-style: solid, segments(1, 1);
+    -fx-border-radius: 0, 0;
+    -fx-border-insets: 1 1 1 1, 0;
+}
+
+.button:disabled, .button:default:disabled {
+    -fx-opacity: 0.4;
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
+
+.button:default {
+    -fx-background-color: -fx-focus-color;
+    -fx-text-fill: black;
+}
+
+.button:default:hover {
+    -fx-background-color: derive(-fx-focus-color,30%);
+}
+
+/* Label */
+.label {
+    -fx-font-size: 11pt;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: black;
+    -fx-opacity: 0.6;
+}
+
+.label-bright {
+    -fx-font-size: 16pt;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: gray;
+    -fx-opacity: 1;
+}
+
+.label-header {
+    -fx-font-size: 24pt;
+    -fx-font-family: "Segoe UI Light";
+    -fx-text-fill: black;
+    -fx-opacity: 1;
+}
+
+/* SplitPane */
+.split-pane:horizontal > .split-pane-divider {
+    -fx-border-color: transparent white transparent white;
+    -fx-background-color: transparent, derive(lightgray,20%);
+}
+
+.split-pane {
+    -fx-padding: 0 0 0 0;
+    -fx-border-width: 4px 0px 0px 0px;
+    -fx-border-color: transparent, derive(lightgray, 20%);
+}
+
+/* TabelView */
+.table-view {
+    -fx-base: white;
+    -fx-control-inner-background: white;
+    -fx-background-color: white;
+    -fx-table-cell-border-color: transparent;
+    -fx-table-header-border-color: transparent;
+    -fx-padding: 5;
+    -fx-text-fill: black;
+}
+
+.table-view .table-cell{
+    -fx-text-fill: black;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background .nested-column-header .table-column {
+    -fx-border-color: gray;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-size: 35;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-color: transparent;
+    -fx-border-color: 
+        transparent
+        transparent
+        derive(-fx-base, 80%) 
+        transparent;
+    -fx-border-insets: 0 10 1 0;
+}
+
+.table-view .column-header .label {
+    -fx-font-size: 20pt;
+    -fx-font-family: "Segoe UI Light";
+    -fx-text-fill: black;
+    -fx-alignment: center-left;
+    -fx-opacity: 1;
+}
+
+.table-row-cell:odd{
+    -fx-background-color: #d6d6d6;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #aaaaaa;
+    -fx-table-cell-border-color: transparent;
+}
+
+/* scrollbar */
+.scroll-bar:horizontal .track ,
+.scroll-bar:vertical .track{
+    -fx-background-color: transparent;
+    /*    -fx-border-color:derive(lightgray,20%);*/
+    -fx-border-color:transparent;
+    /*-fx-background-radius: 5em;*/
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color:derive(gray,20%);
+    -fx-background-radius: 5em;
+}
+
+.scroll-bar:horizontal .increment-button ,
+.scroll-bar:horizontal .decrement-button {
+    -fx-background-color:transparent;
+    -fx-background-radius: 0em;
+    /*-fx-padding:0 0 10 0;*/
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow
+{
+    -fx-shape: " ";	
+    -fx-padding:0;
+}
+
+/* Text field */
+.text-field {
+    -fx-font-size: 12pt;
+    -fx-font-family: "Segoe UI Semibold";
+}
+
+/* Menus */
+.menu-bar {
+    -fx-background-color: derive(white,20%);
+}
+
+.context-menu {
+    -fx-background-color: derive(white,50%);
+}
+
+.menu-bar .label {
+    -fx-font-size: 14pt;
+    -fx-font-family: "Segoe UI Light";
+    -fx-text-fill: black;
+    -fx-opacity: 0.9;
+}
+
+.menu .left-container {
+    -fx-background-color: white;
+}
+
+.menu-bar > .container > .menu-button:hover,
+.menu-bar > .container > .menu-button:focused,
+.menu-bar > .container > .menu-button:showing {
+    -fx-background: -fx-selection-bar;
+    -fx-background-color: derive(lightgray, 20%);
+}
+
+/* JFX toggle button */
+.jfx-toggle-button {
+    -fx-text-fill: black;
+}
+
+/* TextField */
+.jfx-text-field {
+    -fx-text-fill: black;
+}
