@@ -35,7 +35,7 @@ dist/
 nbdist/
 .nb-gradle/
 nbactions.xml
-!src/shoreline/lib/*
+!src/shoreline/libs/*
 
 
 # End of https://www.gitignore.io/api/java,netbeans
