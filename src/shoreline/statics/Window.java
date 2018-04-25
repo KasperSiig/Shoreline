@@ -21,7 +21,8 @@ import shoreline.gui.model.MainModel;
 public class Window {
     private static String dir = "/shoreline/gui/view/";
     public enum View {
-        Main("MainWindow.fxml");
+        Main("MainWindow.fxml"),
+        Login("LoginWindow.fxml");
         
         String view;
         View(String view) {

@@ -8,6 +8,9 @@ and open the template in the editor.
     Author     : madst
 */
 
+    /*-btn-bg-color: #337ab7;*/
+    
+
 /* background */
 .background {
     -fx-background-color: white;
@@ -50,27 +53,28 @@ and open the template in the editor.
 /* Button */
 .button {
     -fx-padding: 5 22 5 22;   
-    -fx-border-color: gray;
-    -fx-border-width: 2;
-    -fx-background-radius: 0;
-    -fx-background-color: transparent;
+    -fx-border-color: #2e6da4;
+    -fx-border-width: 1;
+    -fx-background-radius: 4px;
+    -fx-background-color: #337ab7;
     -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
     -fx-font-size: 11pt;
-    -fx-text-fill: black;
+    -fx-text-fill: white;
     -fx-background-insets: 0 0 0 0, 0, 1, 2;
+    -fx-border-radius: 4px;
 }
 
 .button:hover {
-    -fx-background-color: #bababa;
+    -fx-background-color: #2e6ea5;
 }
 
 .button:pressed, .button:default:hover:pressed {
-    -fx-background-color: lightgray;
-    -fx-text-fill: black;
+    /*-fx-background-color: lightgray;*/
+    -fx-text-fill: white;
 }
 
 .button:focused {
-    -fx-border-color: black, black;
+    /*-fx-border-color: black, black;*/
     -fx-border-width: 1, 1;
     -fx-border-style: solid, segments(1, 1);
     -fx-border-radius: 0, 0;
@@ -248,4 +252,5 @@ and open the template in the editor.
 /* TextField */
 .jfx-text-field {
     -fx-text-fill: black;
+    -fx-prompt-text-fill: #2e6da4;
 }
