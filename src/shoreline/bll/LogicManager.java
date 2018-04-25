@@ -42,5 +42,17 @@ public class LogicManager {
             throw new BLLException(ex);
         }
     }
+
+    public boolean validateLogin(String username, String pass) throws BLLException {
+        try {
+            String hashPass = dm.getPass(username);
+            if (hashPass == null) {
+                return false;
+            }
+            return hashPass.equals(pass);
+        } catch (DALException ex) {
+            throw new BLLException(ex);
+        }
+    }
     
 }
