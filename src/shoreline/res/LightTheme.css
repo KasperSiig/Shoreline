@@ -104,6 +104,10 @@ and open the template in the editor.
     -fx-opacity: 0.6;
 }
 
+.label-link {
+    -fx-text-fill: #2e6da4;
+}
+
 .label-bright {
     -fx-font-size: 16pt;
     -fx-font-family: "Segoe UI Semibold";

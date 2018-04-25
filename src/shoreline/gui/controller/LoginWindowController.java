@@ -7,7 +7,10 @@ package shoreline.gui.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import shoreline.gui.model.MainModel;
 
 /**
@@ -18,6 +21,8 @@ import shoreline.gui.model.MainModel;
 public class LoginWindowController implements Initializable, IController {
 
     MainModel model;
+    @FXML
+    private BorderPane bPane;
     
     /**
      * Initializes the controller class.
@@ -30,6 +35,15 @@ public class LoginWindowController implements Initializable, IController {
     @Override
     public void postInit(MainModel model) {
         this.model = model;
+    }
+
+    @FXML
+    private void forgotPassword(MouseEvent event) {
+        System.out.println("forgot you're password eh?");
+    }
+
+    @FXML
+    private void createNewUser(MouseEvent event) {
     }
     
 }
