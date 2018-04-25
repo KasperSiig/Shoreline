@@ -54,5 +54,13 @@ public class LogicManager {
             throw new BLLException(ex);
         }
     }
+
+    public boolean createUser(String username, String password, String firstname, String lastname) throws BLLException {
+        try {
+            return dm.createUser(username,password,firstname,lastname);
+        } catch (DALException ex) {
+            throw new BLLException(ex);
+        }
+    }
     
 }

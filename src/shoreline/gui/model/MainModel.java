@@ -52,6 +52,16 @@ public class MainModel {
         }
     }
     
+    public boolean createUser(String username, String password, String firstname, String lastname) throws GUIException{
+        StringBuffer hexString = hashString(password);
+        password = hexString.toString();
+        try {
+            return logic.createUser(username,password,firstname,lastname);
+        } catch (BLLException ex) {
+            throw new GUIException(ex);
+        }
+    }
+    
     public boolean validateLogin(String username, String pass) throws GUIException{
 
         try {

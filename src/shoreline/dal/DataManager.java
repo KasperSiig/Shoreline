@@ -9,10 +9,11 @@ import shoreline.exceptions.DALException;
 public class DataManager {
 
     private PropertiesDAO pDAO;
-    private LoginDAO loginDAO;
+    private UserDAO userDAO;
 
     public DataManager() throws DALException {
         this.pDAO = new PropertiesDAO();
+        this.userDAO = new UserDAO();
     }
     
     public String getProperty(String key) throws DALException {
@@ -24,7 +25,11 @@ public class DataManager {
     }
 
     public String getPass(String username) throws DALException {
-        return loginDAO.getPass(username);
+        return userDAO.getPass(username);
+    }
+
+    public boolean createUser(String username, String password, String firstname, String lastname) throws DALException {
+        return userDAO.createUser(username,password,firstname,lastname);
     }
     
 }

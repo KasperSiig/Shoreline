@@ -33,7 +33,7 @@ public class RootWindowController implements Initializable, IController {
         try {
             model = new MainModel();
             model.setBorderPane(borderPane);
-            Window.openView(model, borderPane, Window.View.Main, "center", MenuBarFactory.MenuType.Default);
+            Window.openView(model, borderPane, Window.View.CreateUser, "center", MenuBarFactory.MenuType.Default);
             
         } catch (GUIException ex) {
             Window.openExceptionWindow("Something went wrong...");
