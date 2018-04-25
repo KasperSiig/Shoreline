@@ -12,9 +12,10 @@
    <center>
       <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="20.0">
          <children>
-            <JFXTextField labelFloat="true" promptText="Username" />
-            <JFXPasswordField labelFloat="true" promptText="Password" />
-            <JFXButton maxWidth="1.7976931348623157E308" text="Sign in" />
+            <JFXTextField fx:id="txtUserName" labelFloat="true" onAction="#loginValidation" promptText="Username" />
+            <JFXPasswordField fx:id="txtPassword" labelFloat="true" onAction="#loginValidation" promptText="Password" />
+            <Label fx:id="lblError" styleClass="label-error" textFill="RED" />
+            <JFXButton maxWidth="1.7976931348623157E308" onAction="#loginValidation" text="Sign in" />
             <Label onMouseClicked="#forgotPassword" styleClass="label-link" text="Forgot password" underline="true">
                <cursor>
                   <Cursor fx:constant="HAND" />

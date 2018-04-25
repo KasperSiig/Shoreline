@@ -16,7 +16,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import shoreline.exceptions.GUIException;
-import shoreline.gui.controller.IController;
 import shoreline.gui.model.MainModel;
 import shoreline.statics.Window;
 
@@ -28,7 +27,7 @@ import shoreline.statics.Window;
 public class CreateUserWindowController implements Initializable, IController {
 
     MainModel model;
-    
+
     @FXML
     private JFXTextField txtFirstname;
     @FXML
@@ -46,38 +45,41 @@ public class CreateUserWindowController implements Initializable, IController {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
+    }
 
     @FXML
     private void onCreateAction(ActionEvent event) {
-        if(txtFirstname.getText().isEmpty()){
+        if (txtFirstname.getText().isEmpty()) {
             lblError.setText("Please enter a firstname!");
             txtFirstname.requestFocus();
-        }else if(txtLastname.getText().isEmpty()){
+        } else if (txtLastname.getText().isEmpty()) {
             lblError.setText("Please enter a lastname!");
             txtLastname.requestFocus();
-        }else if(txtUsername.getText().isEmpty()){
+        } else if (txtUsername.getText().isEmpty()) {
             lblError.setText("Please enter a username!");
             txtUsername.requestFocus();
-        }else if(txtPassword.getText().isEmpty()){
+        } else if (txtPassword.getText().isEmpty()) {
             lblError.setText("Please enter a password!");
             txtPassword.requestFocus();
-        }else{
+        } else {
             try {
-                if(model.createUser(txtUsername.getText(),txtPassword.getText(), txtFirstname.getText(), txtLastname.getText())){
-                    Window.openView(model, model.getBorderPane(), Window.View.Login, "center");
-                }
-                
+                model.createUser(txtUsername.getText(), txtPassword.getText(), txtFirstname.getText(), txtLastname.getText());
+                Window.openView(model, model.getBorderPane(), Window.View.Login, "center");
+
             } catch (GUIException ex) {
                 Window.openExceptionWindow("Error creating user", ex.getStackTrace());
             }
         }
-                
+
     }
 
     @FXML
     private void onCancelAction(ActionEvent event) {
-        Window.openView(model, model.getBorderPane(), Window.View.Login, "center");
+        try {
+            Window.openView(model, model.getBorderPane(), Window.View.Login, "center");
+        } catch (GUIException ex) {
+            Window.openExceptionWindow("Could not load Login screen", ex.getStackTrace());
+        }
     }
 
     @Override
@@ -85,5 +87,4 @@ public class CreateUserWindowController implements Initializable, IController {
         this.model = model;
     }
 
-    
 }

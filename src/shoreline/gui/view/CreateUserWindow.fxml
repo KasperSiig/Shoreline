@@ -16,7 +16,7 @@
             <JFXTextField fx:id="txtLastname" promptText="Lastname" />
             <JFXTextField fx:id="txtUsername" promptText="Username" />
             <JFXPasswordField fx:id="txtPassword" labelFloat="true" promptText="Password" />
-            <Label fx:id="lblError" textFill="RED" />
+            <Label fx:id="lblError" styleClass="label-error" textFill="RED" />
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">

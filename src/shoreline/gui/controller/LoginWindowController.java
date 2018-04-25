@@ -5,13 +5,22 @@
  */
 package shoreline.gui.controller;
 
+import com.jfoenix.controls.JFXPasswordField;
+import com.jfoenix.controls.JFXTextField;
+import com.sun.java.swing.plaf.windows.resources.windows;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import shoreline.exceptions.GUIException;
 import shoreline.gui.model.MainModel;
+import shoreline.statics.Window;
 
 /**
  * FXML Controller class
@@ -23,27 +32,69 @@ public class LoginWindowController implements Initializable, IController {
     MainModel model;
     @FXML
     private BorderPane bPane;
-    
+    @FXML
+    private JFXTextField txtUserName;
+    @FXML
+    private JFXPasswordField txtPassword;
+    @FXML
+    private Label lblError;
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
+    }
 
     @Override
     public void postInit(MainModel model) {
         this.model = model;
     }
 
+    /**
+     * sout's that the password was forgotten
+     * 
+     * @param event 
+     */
     @FXML
     private void forgotPassword(MouseEvent event) {
         System.out.println("forgot you're password eh?");
     }
 
+    /**
+     * Opens the create new user window
+     * 
+     * @param event 
+     */
     @FXML
     private void createNewUser(MouseEvent event) {
+        try {
+            Window.openView(model, model.getBorderPane(), Window.View.CreateUser, "center");
+        } catch (GUIException ex) {
+            Window.openExceptionWindow("Could not load the create user window", ex.getStackTrace());
+        }
     }
-    
+
+    /**
+     * Validates the information given in the textfields
+     * and if it OK it loads the main window
+     * otherwise it set the label to be a text
+     * 
+     * @param event 
+     */
+    @FXML
+    private void loginValidation(ActionEvent event) {
+        try {
+            if (model.validateLogin(txtUserName.getText(), txtPassword.getText())) {
+                Window.openView(model, model.getBorderPane(), Window.View.Main, "center");
+            } else {
+                lblError.setText("there was a problem with the log in");
+            }
+        } catch (GUIException ex) {
+            Window.openExceptionWindow("Something went wrong with the login window", ex.getStackTrace());
+        }
+
+    }
+
 }

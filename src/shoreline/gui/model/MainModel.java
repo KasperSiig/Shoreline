@@ -63,7 +63,6 @@ public class MainModel {
     }
     
     public boolean validateLogin(String username, String pass) throws GUIException{
-
         try {
             StringBuffer hexString = hashString(pass);
             return logic.validateLogin(username, hexString.toString());

@@ -122,6 +122,10 @@ and open the template in the editor.
     -fx-opacity: 1;
 }
 
+.label-error {
+    -fx-text-fill: red;
+}
+
 /* SplitPane */
 .split-pane:horizontal > .split-pane-divider {
     -fx-border-color: transparent white transparent white;
