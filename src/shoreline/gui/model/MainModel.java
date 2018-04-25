@@ -32,13 +32,6 @@ public class MainModel {
         this.borderPane = borderPane;
     }
 
-    public boolean isDarkTheme() throws GUIException {
-        try {
-            return logic.getProperty("darkTheme").equals("1");
-        } catch (BLLException ex) {
-            throw new GUIException(ex);
-        }
-    }
 
     public void setProperty(String key, String string) throws GUIException {
         try {
@@ -55,15 +48,4 @@ public class MainModel {
             throw new GUIException(ex);
         }
     }
-    
-
-    public void toggleDarkTheme() throws GUIException {
-        try {
-            String newValue = logic.getProperty("darkTheme").equals("1") ? "0" : "1";
-            logic.setProperty("darkTheme", newValue);
-        } catch (BLLException ex) {
-            throw new GUIException(ex);
-        }
-    }
-
 }

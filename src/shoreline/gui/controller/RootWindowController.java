@@ -26,18 +26,12 @@ public class RootWindowController implements Initializable, IController {
     private BorderPane borderPane;
     @FXML
     private AnchorPane anchMenu;
-    @FXML
-    private JFXToggleButton tglTheme;
     
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
             model = new MainModel();
-            if (model.getProperty("darkTheme").equals("1")) {
-                tglTheme.fire();
-                toggleTheme(new ActionEvent());
-            }
             model.setBorderPane(borderPane);
             Window.openView(model, borderPane, Window.View.Main, "center", MenuBarFactory.MenuType.Default);
             
@@ -50,31 +44,6 @@ public class RootWindowController implements Initializable, IController {
     public void postInit(MainModel model) {
         this.model = model;
         this.borderPane = model.getBorderPane();
-    }
-
-    @FXML
-    private void toggleTheme(ActionEvent event) {
-        try {
-            if (model.isDarkTheme()) {
-                borderPane.getStylesheets().clear();
-                borderPane.getStylesheets().add("/shoreline/res/LightTheme.css");
-                try {
-                    model.toggleDarkTheme();
-                } catch (GUIException ex) {
-                    Logger.getLogger(RootWindowController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                borderPane.getStylesheets().clear();
-                borderPane.getStylesheets().add("/shoreline/res/DarkTheme.css");
-                try {
-                    model.toggleDarkTheme();
-                } catch (GUIException ex) {
-                    Logger.getLogger(RootWindowController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        } catch (GUIException ex) {
-            Window.openExceptionWindow("Something went wrong...");
-        }
     }
     
 }
