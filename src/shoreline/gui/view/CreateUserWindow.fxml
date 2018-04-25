@@ -3,19 +3,32 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="shoreline.gui.controller.CreateUserWindowController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="shoreline.gui.controller.CreateUserWindowController">
    <center>
       <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="15.0" BorderPane.alignment="CENTER">
          <children>
-            <JFXTextField fx:id="txtFirstname" labelFloat="true" promptText="Firstname" />
-            <JFXTextField fx:id="txtLastname" promptText="Lastname" />
-            <JFXTextField fx:id="txtUsername" promptText="Username" />
-            <JFXPasswordField fx:id="txtPassword" labelFloat="true" promptText="Password" />
+            <JFXTextField fx:id="txtFirstname" labelFloat="true" promptText="Firstname">
+               <padding>
+                  <Insets top="15.0" />
+               </padding></JFXTextField>
+            <JFXTextField fx:id="txtLastname" labelFloat="true" promptText="Lastname">
+               <padding>
+                  <Insets top="15.0" />
+               </padding></JFXTextField>
+            <JFXTextField fx:id="txtUsername" labelFloat="true" promptText="Username">
+               <padding>
+                  <Insets top="15.0" />
+               </padding></JFXTextField>
+            <JFXPasswordField fx:id="txtPassword" labelFloat="true" promptText="Password">
+               <padding>
+                  <Insets top="15.0" />
+               </padding></JFXPasswordField>
             <Label fx:id="lblError" styleClass="label-error" textFill="RED" />
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
@@ -32,6 +45,9 @@
                </children>
             </HBox>
          </children>
+         <padding>
+            <Insets top="10.0" />
+         </padding>
       </VBox>
    </center>
 </BorderPane>
