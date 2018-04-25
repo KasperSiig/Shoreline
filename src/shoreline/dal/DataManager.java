@@ -8,18 +8,28 @@ import shoreline.exceptions.DALException;
  */
 public class DataManager {
 
-    private PropertiesDAO pDao;
+    private PropertiesDAO pDAO;
+    private UserDAO userDAO;
 
     public DataManager() throws DALException {
-        this.pDao = new PropertiesDAO();
+        this.pDAO = new PropertiesDAO();
+        this.userDAO = new UserDAO();
     }
     
     public String getProperty(String key) throws DALException {
-        return pDao.getProperty(key);
+        return pDAO.getProperty(key);
     }
     
     public void setProperty(String key, String input) throws DALException {
-        pDao.setProperty(key, input);
+        pDAO.setProperty(key, input);
+    }
+
+    public String getPass(String username) throws DALException {
+        return userDAO.getPass(username);
+    }
+
+    public boolean createUser(String username, String password, String firstname, String lastname) throws DALException {
+        return userDAO.createUser(username,password,firstname,lastname);
     }
     
 }

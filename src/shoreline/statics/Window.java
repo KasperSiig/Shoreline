@@ -22,7 +22,8 @@ public class Window {
     private static String dir = "/shoreline/gui/view/";
     public enum View {
         Main("MainWindow.fxml"),
-        Login("LoginWindow.fxml");
+        Login("LoginWindow.fxml"),
+        CreateUser("CreateUserWindow.fxml");
         
         String view;
         View(String view) {
