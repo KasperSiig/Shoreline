@@ -23,6 +23,7 @@ import javafx.scene.control.SelectionModel;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import shoreline.be.ConvTask;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.MainModel;
 import shoreline.statics.Window;
@@ -124,7 +125,14 @@ public class MappingWindowController implements Initializable, IController {
     private void handleDelMap(ActionEvent event) {
         List<String> tempList;
         tempList = lvMapOverview.getSelectionModel().getSelectedItems();
-
+        
+        
+        
+        for (String string : tempList) {           
+            System.out.println(string.split(" -> ")[1]);
+            JSONmap.remove(string.split(" -> ")[1]);
+        }
+        System.out.println(JSONmap);
         mappingList.removeAll(tempList);
     }
 
@@ -133,6 +141,15 @@ public class MappingWindowController implements Initializable, IController {
             inputList.add(key);
         });
         FXCollections.sort(inputList);
+    }
+
+    @FXML
+    private void handleCreateTask(ActionEvent event) {
+        
+        String name = inputFile.getName() + " -> JSON";
+        
+        ConvTask task = new ConvTask(cellIndexMap, JSONmap, name, "Does something", inputFile, new File("JSON.json"));
+        model.addToTaskList(task);
     }
 
 }

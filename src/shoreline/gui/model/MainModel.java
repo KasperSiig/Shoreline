@@ -5,12 +5,12 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.BorderPane;
+import shoreline.be.ConvTask;
 import shoreline.bll.LogicManager;
 import shoreline.exceptions.BLLException;
 import shoreline.exceptions.GUIException;
@@ -24,7 +24,8 @@ public class MainModel {
     private BorderPane borderPane;
     private LogicManager logic;
     private ObservableList<String> templateList;
-
+    private List<ConvTask> taskList = new ArrayList();
+    
     public MainModel() throws GUIException {
         this.templateList = FXCollections.observableArrayList("siteName", "assetSerialNumber", "type", "externalWorkOrderId", "systemStatus", "userStatus", "name", "priority", "latestFinishDate", "earliestStartDate", "latestStartDate", "estimatedTime");
         try {
@@ -121,5 +122,18 @@ public class MainModel {
     public ObservableList<String> getTemplateList() {
         return templateList;
     }
+    
+    public void addToTaskList(ConvTask task) {
+        taskList.add(task);
+    }
+    
+    private void removeTaskFromList(ConvTask task) {
+        taskList.remove(task);
+    }
+    
+    public List<ConvTask> getTaskList() {
+        return taskList;
+    }
+    
     
 }

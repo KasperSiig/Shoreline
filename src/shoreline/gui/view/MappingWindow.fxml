@@ -83,6 +83,7 @@
                <children>
                   <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleMap" text="Map" />
                   <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleDelMap" text="Delete Map" />
+                  <JFXButton onAction="#handleCreateTask" text="Create task" />
                </children>
             </HBox>
          </children>

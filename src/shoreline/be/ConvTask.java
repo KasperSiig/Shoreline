@@ -19,7 +19,7 @@ public class ConvTask {
     private String name, description, fileExt;
     private File source, target;
 
-    public ConvTask(HashMap<String, Integer> cellIndexMap, HashMap<String, String> mapper, String name, String description, String fileExt, File source, File target) {
+    public ConvTask(HashMap<String, Integer> cellIndexMap, HashMap<String, String> mapper, String name, String description, File source, File target) {
         this.cellIndexMap = cellIndexMap;
         this.mapper = mapper;
         this.name = name;
