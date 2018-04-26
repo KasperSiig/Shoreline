@@ -7,14 +7,20 @@ package shoreline.gui.controller;
 
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import shoreline.dal.TitleStrats.TitleImpl;
+import shoreline.dal.TitleStrats.XLSXTitleStrat;
+import shoreline.exceptions.DALException;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.MainModel;
 import shoreline.statics.Window;
@@ -41,7 +47,12 @@ public class LoginWindowController implements Initializable, IController {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        try {
+            TitleImpl impl = new TitleImpl(new XLSXTitleStrat());
+            System.out.println(impl.getTitles(new File("C:\\JavaProjects\\Shoreline\\test\\shoreline\\res\\XLSX\\Import_data.xlsx")));
+        } catch (DALException ex) {
+            Logger.getLogger(LoginWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -51,8 +62,8 @@ public class LoginWindowController implements Initializable, IController {
 
     /**
      * sout's that the password was forgotten
-     * 
-     * @param event 
+     *
+     * @param event
      */
     @FXML
     private void forgotPassword(MouseEvent event) {
@@ -61,8 +72,8 @@ public class LoginWindowController implements Initializable, IController {
 
     /**
      * Opens the create new user window
-     * 
-     * @param event 
+     *
+     * @param event
      */
     @FXML
     private void createNewUser(MouseEvent event) {
@@ -74,11 +85,10 @@ public class LoginWindowController implements Initializable, IController {
     }
 
     /**
-     * Validates the information given in the textfields
-     * and if it OK it loads the main window
-     * otherwise it set the label to be a text
-     * 
-     * @param event 
+     * Validates the information given in the textfields and if it OK it loads
+     * the main window otherwise it set the label to be a text
+     *
+     * @param event
      */
     @FXML
     private void loginValidation(ActionEvent event) {

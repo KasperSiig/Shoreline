@@ -3,17 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package shoreline.bll.TitleStrats;
+package shoreline.dal.TitleStrats;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.LinkedHashMap;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import shoreline.exceptions.DALException;
@@ -22,14 +19,14 @@ import shoreline.exceptions.DALException;
  *
  * @author Kasper Siig
  */
-public class XlsxStrat implements TitleStrategy {
+public class XLSXTitleStrat implements TitleStrategy {
 
-    HashMap<String, Integer> cellIndexMap = new HashMap();
+    LinkedHashMap<String, Integer> cellIndexMap = new LinkedHashMap();
     FileInputStream fin;
     XSSFSheet sheet1;
     
     @Override
-    public HashMap<String, Integer> getTitles(File file) throws DALException {
+    public LinkedHashMap<String, Integer> getTitles(File file) throws DALException {
         try {
             fin = new FileInputStream(file);
             XSSFWorkbook wb = new XSSFWorkbook(fin);
