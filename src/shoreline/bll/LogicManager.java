@@ -5,6 +5,8 @@
  */
 package shoreline.bll;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import shoreline.dal.DataManager;
@@ -60,6 +62,14 @@ public class LogicManager {
             return dm.createUser(username,password,firstname,lastname);
         } catch (DALException ex) {
             throw new BLLException(ex);
+        }
+    }
+
+    public HashMap<String, Integer> getTitles(File file) throws BLLException {
+        try {
+            return dm.getTitles(file);
+        } catch (DALException ex) {
+            throw new BLLException("File format not supported.", ex);
         }
     }
     

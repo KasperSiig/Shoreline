@@ -1,10 +1,15 @@
 package shoreline.gui.model;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.layout.BorderPane;
 import shoreline.bll.LogicManager;
 import shoreline.exceptions.BLLException;
@@ -18,8 +23,10 @@ public class MainModel {
 
     private BorderPane borderPane;
     private LogicManager logic;
+    private ObservableList<String> templateList;
 
     public MainModel() throws GUIException {
+        this.templateList = FXCollections.observableArrayList("siteName", "assetSerialNumber", "type", "externalWorkOrderId", "systemStatus", "userStatus", "name", "priority", "latestFinishDate", "earliestStartDate", "latestStartDate", "estimatedTime");
         try {
             this.logic = new LogicManager();
         } catch (BLLException ex) {
@@ -102,4 +109,17 @@ public class MainModel {
             throw new GUIException(ex);
         }
     }
+    
+    public HashMap<String, Integer> getTitles(File file) throws GUIException {
+        try {
+            return logic.getTitles(file);
+        } catch (BLLException ex) {
+            throw new GUIException(ex);
+        }
+    }
+
+    public ObservableList<String> getTemplateList() {
+        return templateList;
+    }
+    
 }

@@ -50,6 +50,7 @@ public class LoginWindowController implements Initializable, IController {
         try {
             TitleImpl impl = new TitleImpl(new XLSXTitleStrat());
             System.out.println(impl.getTitles(new File("C:\\JavaProjects\\Shoreline\\test\\shoreline\\res\\XLSX\\Import_data.xlsx")));
+        
         } catch (DALException ex) {
             Logger.getLogger(LoginWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }

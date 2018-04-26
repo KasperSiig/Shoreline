@@ -11,6 +11,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,7 +23,9 @@ import javafx.scene.control.SelectionModel;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import shoreline.exceptions.GUIException;
 import shoreline.gui.model.MainModel;
+import shoreline.statics.Window;
 
 /**
  * FXML Controller class
@@ -34,13 +38,12 @@ public class MappingWindowController implements Initializable, IController {
     ObservableList<String> inputList = FXCollections.observableArrayList();
     ObservableList<String> mappingList = FXCollections.observableArrayList();
     HashMap<String, String> JSONmap = new HashMap<>();
-    
+
     MainModel model;
     String targetPath;
     File inputFile;
 
     private HashMap<String, Integer> cellIndexMap;
-
 
     @FXML
     private JFXListView<String> lvInput;
@@ -60,7 +63,6 @@ public class MappingWindowController implements Initializable, IController {
 
         lvMapOverview.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-        lvTemplate.setItems(templateList);
         lvMapOverview.setItems(mappingList);
 
     }
@@ -69,7 +71,11 @@ public class MappingWindowController implements Initializable, IController {
     public void postInit(MainModel model) {
         this.model = model;
         lvInput.setItems(inputList);
-
+//        templateList = model.getTemplateList();
+        lvTemplate.setItems(model.getTemplateList());
+        System.out.println(model.getTemplateList());
+        System.out.println(templateList);
+        System.out.println(lvTemplate.getItems());
     }
 
     @FXML
@@ -103,9 +109,14 @@ public class MappingWindowController implements Initializable, IController {
         FileChooser fileChooser = new FileChooser();
         File tempFile = fileChooser.showOpenDialog(bPane.getScene().getWindow());
         if (tempFile != null) {
-            inputFile = tempFile;
-//            XLXSConvStratTest();
-            getCellData();
+            try {
+                inputFile = tempFile;
+                cellIndexMap = model.getTitles(inputFile);
+                getCellData();
+            } catch (GUIException ex) {
+                Window.openExceptionWindow("Whoops");
+            }
+
         }
     }
 
@@ -118,7 +129,7 @@ public class MappingWindowController implements Initializable, IController {
     }
 
     private void getCellData() {
-        cellIndexMap.forEach((key,value) -> {
+        cellIndexMap.forEach((key, value) -> {
             inputList.add(key);
         });
         FXCollections.sort(inputList);

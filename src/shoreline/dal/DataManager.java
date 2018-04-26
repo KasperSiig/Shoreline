@@ -1,5 +1,9 @@
 package shoreline.dal;
 
+import java.io.File;
+import java.util.HashMap;
+import shoreline.dal.TitleStrats.TitleImpl;
+import shoreline.dal.TitleStrats.XLSXTitleStrat;
 import shoreline.exceptions.DALException;
 
 /**
@@ -15,11 +19,11 @@ public class DataManager {
         this.pDAO = new PropertiesDAO();
         this.userDAO = new UserDAO();
     }
-    
+
     public String getProperty(String key) throws DALException {
         return pDAO.getProperty(key);
     }
-    
+
     public void setProperty(String key, String input) throws DALException {
         pDAO.setProperty(key, input);
     }
@@ -29,7 +33,26 @@ public class DataManager {
     }
 
     public boolean createUser(String username, String password, String firstname, String lastname) throws DALException {
-        return userDAO.createUser(username,password,firstname,lastname);
+        return userDAO.createUser(username, password, firstname, lastname);
     }
-    
+
+    public HashMap<String, Integer> getTitles(File file) throws DALException {
+        String extension = "";
+
+        int i = file.getAbsolutePath().lastIndexOf('.');
+        if (i > 0) {
+            extension = file.getAbsolutePath().substring(i + 1);
+        }
+        TitleImpl impl;
+        switch (extension) {
+            case "xlsx":
+                impl = new TitleImpl(new XLSXTitleStrat());
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+        
+        return impl.getTitles(file);
+    }
+
 }
