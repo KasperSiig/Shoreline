@@ -51,7 +51,15 @@ public class MainModel {
             throw new GUIException(ex);
         }
     }
-    
+    /**
+     * Hashes password and parse data through to BLL
+     * @param username
+     * @param password
+     * @param firstname
+     * @param lastname
+     * @return
+     * @throws GUIException 
+     */
     public boolean createUser(String username, String password, String firstname, String lastname) throws GUIException{
         StringBuffer hexString = hashString(password);
         password = hexString.toString();

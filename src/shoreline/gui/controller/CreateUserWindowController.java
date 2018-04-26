@@ -45,21 +45,13 @@ public class CreateUserWindowController implements Initializable, IController {
         // TODO
     }
 
+    /**
+     * Creates a new user login
+     * @param event 
+     */
     @FXML
     private void onCreateAction(ActionEvent event) {
-        if (txtFirstname.getText().isEmpty()) {
-            lblError.setText("Please enter a firstname!");
-            txtFirstname.requestFocus();
-        } else if (txtLastname.getText().isEmpty()) {
-            lblError.setText("Please enter a lastname!");
-            txtLastname.requestFocus();
-        } else if (txtUsername.getText().isEmpty()) {
-            lblError.setText("Please enter a username!");
-            txtUsername.requestFocus();
-        } else if (txtPassword.getText().isEmpty()) {
-            lblError.setText("Please enter a password!");
-            txtPassword.requestFocus();
-        } else {
+        if(checkEmptyFields()){
             try {
                 model.createUser(txtUsername.getText(), txtPassword.getText(), txtFirstname.getText(), txtLastname.getText());
                 Window.openView(model, model.getBorderPane(), Window.View.Login, "center");
@@ -70,7 +62,10 @@ public class CreateUserWindowController implements Initializable, IController {
         }
 
     }
-
+    /**
+     * Returns to the login screen.
+     * @param event 
+     */
     @FXML
     private void onCancelAction(ActionEvent event) {
         try {
@@ -79,10 +74,39 @@ public class CreateUserWindowController implements Initializable, IController {
             Window.openExceptionWindow("Could not load Login screen", ex.getStackTrace());
         }
     }
-
+    /**
+     * Loads data after initialization
+     * @param model 
+     */
     @Override
     public void postInit(MainModel model) {
         this.model = model;
     }
+    /**
+     * Checks if any fields are empty.
+     * If there is any it returns false, else, it returns true.
+     * @return 
+     */
+    private boolean checkEmptyFields() {
+        if (txtFirstname.getText().isEmpty()) {
+            lblError.setText("Please enter a firstname!");
+            txtFirstname.requestFocus();
+            return false;
+        } else if (txtLastname.getText().isEmpty()) {
+            lblError.setText("Please enter a lastname!");
+            txtLastname.requestFocus();
+            return false;
+        } else if (txtUsername.getText().isEmpty()) {
+            lblError.setText("Please enter a username!");
+            txtUsername.requestFocus();
+            return false;
+        } else if (txtPassword.getText().isEmpty()) {
+            lblError.setText("Please enter a password!");
+            txtPassword.requestFocus();
+            return false;
+        }else{
+            return true;
+        }
 
+    }
 }

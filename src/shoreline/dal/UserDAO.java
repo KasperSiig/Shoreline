@@ -52,6 +52,15 @@ public class UserDAO {
         return null;
     }
 
+    /** 
+     * Connects to the database and insert the user details into it.
+     * @param username
+     * @param password
+     * @param firstname
+     * @param lastname
+     * @return
+     * @throws DALException 
+     */
     public boolean createUser(String username, String password, String firstname, String lastname) throws DALException {
         try (Connection con = dbConnector.getConnection()) {
             String sql = "INSERT INTO UserTable VALUES(?,?,?,?)";
