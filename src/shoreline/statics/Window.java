@@ -23,7 +23,8 @@ public class Window {
     public enum View {
         Main("MainWindow.fxml"),
         Login("LoginWindow.fxml"),
-        CreateUser("CreateUserWindow.fxml");
+        CreateUser("CreateUserWindow.fxml"),
+        Mapping("MappingWindow.fxml");
         
         String view;
         View(String view) {

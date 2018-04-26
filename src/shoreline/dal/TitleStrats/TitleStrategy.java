@@ -1,4 +1,4 @@
-package shoreline.bll.TitleStrats;
+package shoreline.dal.TitleStrats;
 
 import java.io.File;
 import java.util.HashMap;

@@ -84,7 +84,7 @@ public class LoginWindowController implements Initializable, IController {
     private void loginValidation(ActionEvent event) {
         try {
             if (model.validateLogin(txtUserName.getText(), txtPassword.getText())) {
-                Window.openView(model, model.getBorderPane(), Window.View.Main, "center");
+                Window.openView(model, model.getBorderPane(), Window.View.Mapping, "center");
             } else {
                 lblError.setText("there was a problem with the log in");
             }
