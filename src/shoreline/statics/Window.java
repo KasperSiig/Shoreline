@@ -24,7 +24,8 @@ public class Window {
         Main("MainWindow.fxml"),
         Login("LoginWindow.fxml"),
         CreateUser("CreateUserWindow.fxml"),
-        Mapping("MappingWindow.fxml");
+        Mapping("MappingWindow.fxml"),
+        TaskView("TaskWindow.fxml");
         
         String view;
         View(String view) {
@@ -146,4 +147,25 @@ public class Window {
         alert.show();
     }
 
+    public static void closeWindow(String pos, BorderPane borderpane) {
+        switch (pos) {
+                case "top":
+                    borderpane.setTop(null);
+                    break;
+                case "center":
+                    borderpane.setCenter(null);
+                    break;
+                case "bottom":
+                    borderpane.setBottom(null);
+                    break;
+                case "left":
+                    borderpane.setLeft(null);
+                    break;
+                case "right":
+                    borderpane.setRight(null);
+                    break;
+            }
+    }
+    
+    
 }

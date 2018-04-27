@@ -16,17 +16,18 @@ import java.util.LinkedHashMap;
 public class ConvTask {
     private HashMap<String, Integer> cellIndexMap;
     private HashMap<String, String> mapper;
-    private String name, description, fileExt;
+    private String name, fileExt;
     private File source, target;
+    private boolean isRunning;
 
-    public ConvTask(HashMap<String, Integer> cellIndexMap, HashMap<String, String> mapper, String name, String description, File source, File target) {
+    public ConvTask(HashMap<String, Integer> cellIndexMap, HashMap<String, String> mapper, String name, File source, File target) {
         this.cellIndexMap = cellIndexMap;
         this.mapper = mapper;
         this.name = name;
-        this.description = description;
         this.fileExt = fileExt;
         this.source = source;
         this.target = target;
+        isRunning = false;
     }
 
     public HashMap<String, Integer> getCellIndexMap() {
@@ -41,10 +42,6 @@ public class ConvTask {
         return name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public String getFileExt() {
         return fileExt;
     }
@@ -55,5 +52,13 @@ public class ConvTask {
 
     public File getTarget() {
         return target;
+    }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public void setIsRunning() {
+        this.isRunning = !isRunning;
     }
 }

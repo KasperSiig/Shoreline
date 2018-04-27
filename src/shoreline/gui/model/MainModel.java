@@ -24,9 +24,10 @@ public class MainModel {
     private BorderPane borderPane;
     private LogicManager logic;
     private ObservableList<String> templateList;
-    private List<ConvTask> taskList = new ArrayList();
+    private List<ConvTask> taskList;
     
     public MainModel() throws GUIException {
+        taskList = new ArrayList();
         this.templateList = FXCollections.observableArrayList("siteName", "assetSerialNumber", "type", "externalWorkOrderId", "systemStatus", "userStatus", "name", "priority", "latestFinishDate", "earliestStartDate", "latestStartDate", "estimatedTime");
         try {
             this.logic = new LogicManager();

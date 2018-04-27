@@ -6,6 +6,7 @@
 package shoreline.gui.controller;
 
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXTextField;
 import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
@@ -54,6 +55,8 @@ public class MappingWindowController implements Initializable, IController {
     private JFXListView<String> lvTemplate;
     @FXML
     private BorderPane bPane;
+    @FXML
+    private JFXTextField txtFileName;
 
     /**
      * Initializes the controller class.
@@ -74,9 +77,6 @@ public class MappingWindowController implements Initializable, IController {
         lvInput.setItems(inputList);
 //        templateList = model.getTemplateList();
         lvTemplate.setItems(model.getTemplateList());
-        System.out.println(model.getTemplateList());
-        System.out.println(templateList);
-        System.out.println(lvTemplate.getItems());
     }
 
     @FXML
@@ -84,12 +84,10 @@ public class MappingWindowController implements Initializable, IController {
 
         SelectionModel<String> inputSelection = lvInput.getSelectionModel();
         SelectionModel<String> templateSelection = lvTemplate.getSelectionModel();
-        SelectionModel<String> mappignSelection = lvMapOverview.getSelectionModel();
 
         String temp = inputSelection.getSelectedItem() + " -> " + templateSelection.getSelectedItem();
 
         JSONmap.put(templateSelection.getSelectedItem(), inputSelection.getSelectedItem());
-        System.out.println(JSONmap);
         mappingList.add(temp);
     }
 
@@ -102,11 +100,11 @@ public class MappingWindowController implements Initializable, IController {
         } else {
             return;
         }
-        System.out.println(targetPath);
     }
 
     @FXML
     private void handelInputFile(ActionEvent event) {
+        JSONmap.clear();
         FileChooser fileChooser = new FileChooser();
         File tempFile = fileChooser.showOpenDialog(bPane.getScene().getWindow());
         if (tempFile != null) {
@@ -125,14 +123,11 @@ public class MappingWindowController implements Initializable, IController {
     private void handleDelMap(ActionEvent event) {
         List<String> tempList;
         tempList = lvMapOverview.getSelectionModel().getSelectedItems();
-        
-        
-        
-        for (String string : tempList) {           
-            System.out.println(string.split(" -> ")[1]);
+
+        //Show confirm box before deleting
+        for (String string : tempList) {
             JSONmap.remove(string.split(" -> ")[1]);
         }
-        System.out.println(JSONmap);
         mappingList.removeAll(tempList);
     }
 
@@ -145,10 +140,22 @@ public class MappingWindowController implements Initializable, IController {
 
     @FXML
     private void handleCreateTask(ActionEvent event) {
-        
-        String name = inputFile.getName() + " -> JSON";
-        
-        ConvTask task = new ConvTask(cellIndexMap, JSONmap, name, "Does something", inputFile, new File("JSON.json"));
+
+        if (txtFileName.getText().equals("")) {
+            Window.openExceptionWindow("Enter target filename");
+            return;
+        }
+
+        String targetName = txtFileName.getText();
+        String name = inputFile.getName() + " -> " + targetName + ".json";
+
+        if (targetPath == null) {
+            Window.openExceptionWindow("Choose a target path.");
+            return;
+
+        }
+
+        ConvTask task = new ConvTask(cellIndexMap, JSONmap, name, inputFile, new File(targetPath + "\\" + targetName + ".json"));
         model.addToTaskList(task);
     }
 
