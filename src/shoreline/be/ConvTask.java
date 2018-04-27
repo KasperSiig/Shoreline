@@ -7,7 +7,8 @@ package shoreline.be;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 /**
  *
@@ -19,6 +20,8 @@ public class ConvTask {
     private String name, fileExt;
     private File source, target;
     private boolean isRunning;
+    private Callable<ConvTask> task;
+    private Future future;
 
     public ConvTask(HashMap<String, Integer> cellIndexMap, HashMap<String, String> mapper, String name, File source, File target) {
         this.cellIndexMap = cellIndexMap;
@@ -61,4 +64,22 @@ public class ConvTask {
     public void setIsRunning() {
         this.isRunning = !isRunning;
     }
+
+    public Callable<ConvTask> getTask() {
+        return task;
+    }
+
+    public void setTask(Callable<ConvTask> task) {
+        this.task = task;
+    }
+
+    public Future getFuture() {
+        return future;
+    }
+
+    public void setFuture(Future future) {
+        this.future = future;
+    }
+    
+    
 }

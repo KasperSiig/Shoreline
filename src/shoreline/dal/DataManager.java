@@ -2,6 +2,9 @@ package shoreline.dal;
 
 import java.io.File;
 import java.util.HashMap;
+import shoreline.be.ConvTask;
+import shoreline.dal.ConvStrats.ConvImpl;
+import shoreline.dal.ConvStrats.XLXSConvStrat;
 import shoreline.dal.TitleStrats.TitleImpl;
 import shoreline.dal.TitleStrats.XLSXTitleStrat;
 import shoreline.exceptions.DALException;
@@ -53,6 +56,25 @@ public class DataManager {
         }
         
         return impl.getTitles(file);
+    }
+
+    public void addCallableToTask(ConvTask task) throws DALException {
+        String extension = "";
+
+        int i = task.getSource().getAbsolutePath().lastIndexOf('.');
+        if (i > 0) {
+            extension = task.getSource().getAbsolutePath().substring(i + 1);
+        }
+        ConvImpl impl;
+        switch (extension) {
+            case "xlsx":
+                impl = new ConvImpl(new XLXSConvStrat());
+                impl.convertAndWrite(task);
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+        
     }
 
 }
