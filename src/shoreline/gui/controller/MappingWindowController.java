@@ -17,11 +17,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SelectionModel;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
@@ -93,10 +91,15 @@ public class MappingWindowController implements Initializable, IController {
 
         String temp = inputSelection.getSelectedItem() + " -> " + templateSelection.getSelectedItem();
 
-        if (mappingList.contains(temp)) {
-            Window.openExceptionWindow("This task already exists");
+        if (JSONmap.containsKey(templateSelection.getSelectedItem())) {
+            Window.openExceptionWindow(templateSelection.getSelectedItem() + " is already mapped");
             return;
         }
+        if (JSONmap.containsValue(inputSelection.getSelectedItem())) {
+            Window.openExceptionWindow(inputSelection.getSelectedItem() + " is already mapped");
+            return;
+        }
+        
         JSONmap.put(templateSelection.getSelectedItem(), inputSelection.getSelectedItem());
         mappingList.add(temp);
     }

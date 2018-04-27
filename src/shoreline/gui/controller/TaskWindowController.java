@@ -42,7 +42,7 @@ public class TaskWindowController implements Initializable, IController {
     private void handleTaskPlay(ActionEvent event) {
         for (TaskView taskView : taskViewList) {
             taskView.getTask().setIsRunning();
-            System.out.println("din mor er grum!");
+            model.startTask(taskView.getTask());
         }
     }
 
