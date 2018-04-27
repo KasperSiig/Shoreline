@@ -12,9 +12,7 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SelectionModel;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 import shoreline.gui.model.MainModel;
 
@@ -43,6 +41,7 @@ public class TaskWindowController implements Initializable, IController {
     @FXML
     private void handleTaskPlay(ActionEvent event) {
         for (TaskView taskView : taskViewList) {
+            taskView.getTask().setIsRunning();
             System.out.println("din mor er grum!");
         }
     }
@@ -73,6 +72,8 @@ public class TaskWindowController implements Initializable, IController {
     private void genTasksForList(MainModel model) {
         model.getTaskList().forEach((convTask) -> {
             TaskView taskView = new TaskView(convTask);
+            Tooltip tt = new Tooltip(convTask.getTarget().toString());
+            Tooltip.install(taskView, tt);
             taskView.setOnMouseClicked((event) -> {
                 if (selectedTaskes.contains(taskView)) {
                     selectedTaskes.remove(taskView);
@@ -86,7 +87,5 @@ public class TaskWindowController implements Initializable, IController {
             taskViewList.add(taskView);
         });
     }
-
-    
 
 }

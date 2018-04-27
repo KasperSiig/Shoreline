@@ -48,7 +48,6 @@ public class TaskView extends BorderPane implements IController {
     }
 
     private void setInfo(ConvTask task) {
-
         lblStatus.setText(String.valueOf(task.isRunning()));
         
         String temp = task.getTarget().getAbsolutePath();
@@ -60,4 +59,8 @@ public class TaskView extends BorderPane implements IController {
 
     }
 
+    public ConvTask getTask() {
+        return task;
+    }
+    
 }
