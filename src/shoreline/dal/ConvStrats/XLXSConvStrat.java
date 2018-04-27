@@ -15,12 +15,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.Callable;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import shoreline.be.ConvTask;
+import shoreline.bll.ThreadPool;
 import shoreline.exceptions.DALException;
 
 /**
@@ -35,16 +37,28 @@ public class XLXSConvStrat implements ConvStrategy {
 
     @Override
     public JSONArray convertAndWrite(ConvTask task) throws DALException {
-        try {
-            fin = new FileInputStream(task.getSource());
-            wb = new XSSFWorkbook(fin);
-            sheet1 = wb.getSheetAt(0);
-            writeJson(task);
-        } catch (FileNotFoundException ex) {
-            throw new DALException("File was not found.", ex);
-        } catch (IOException ex) {
-            throw new DALException("Something went wrong.", ex);
-        }
+//        System.out.println("start convert");
+        ThreadPool threadPool = ThreadPool.getInstance();
+        threadPool.addToPending(task);
+        
+        Callable call = (Callable) () -> {
+            try {
+                threadPool.removeFromPending(task);
+                fin = new FileInputStream(task.getSource());
+                wb = new XSSFWorkbook(fin);
+                sheet1 = wb.getSheetAt(0);
+                writeJson(task);
+                threadPool.removeFromRunning(task);
+                threadPool.addToFinished(task);
+            } catch (FileNotFoundException ex) {
+                throw new DALException("File was not found.", ex);
+            } catch (IOException ex) {
+                throw new DALException("Something went wrong.", ex);
+            }
+            return null;
+        };
+        task.setTask(call);
+//        System.out.println(task.getTask());
         return null;
     }
 
@@ -59,14 +73,13 @@ public class XLXSConvStrat implements ConvStrategy {
 
     private void writeJson(ConvTask task) throws DALException {
 
-        
         JSONArray jAr = new JSONArray();
 
         int i = 1;
         while (sheet1.getRow(i) != null) {
             JSONObject jOb = new JSONObject();
             final int pos = i;
-            System.out.println(pos);
+//            System.out.println(pos);
             JSONObject planning = new JSONObject();
             task.getMapper().forEach((key, value) -> {
                 if (key.equals("name")) {
@@ -91,19 +104,19 @@ public class XLXSConvStrat implements ConvStrategy {
             i++;
         }
 
-        System.out.println(i);
-        System.out.println(jAr.toString(4));
+//        System.out.println(i);
+//        System.out.println(jAr.toString(4));
 
         try {
 
             // Writing to a file  
             File file = task.getTarget();
-            System.out.println(file.getAbsoluteFile());
+//            System.out.println(file.getAbsoluteFile());
             file.createNewFile();
             try (
-                FileWriter fileWriter = new FileWriter(file)) {
-                System.out.println("Writing JSON object to file");
-                System.out.println("-----------------------");
+                    FileWriter fileWriter = new FileWriter(file)) {
+//                System.out.println("Writing JSON object to file");
+//                System.out.println("-----------------------");
 
                 fileWriter.write(jAr.toString(4));
                 fileWriter.flush();
@@ -118,7 +131,7 @@ public class XLXSConvStrat implements ConvStrategy {
     private Date getDate(String sheetdata) throws DALException {
         try {
             DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-            System.out.println(sheetdata);
+//            System.out.println(sheetdata);
             Date date = format.parse(sheetdata);
             return date;
         } catch (ParseException ex) {

@@ -62,5 +62,5 @@ public class TaskView extends BorderPane implements IController {
     public ConvTask getTask() {
         return task;
     }
-    
+
 }

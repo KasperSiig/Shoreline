@@ -162,11 +162,15 @@ public class MappingWindowController implements Initializable, IController {
         if (targetPath == null) {
             Window.openExceptionWindow("Choose a target path.");
             return;
-
         }
 
         ConvTask task = new ConvTask(cellIndexMap, JSONmap, name, inputFile, new File(targetPath + "\\" + targetName + ".json"));
         model.addToTaskList(task);
+        try {
+            model.addCallableToTask(task);
+        } catch (GUIException ex) {
+            Window.openExceptionWindow(ex.getMessage());
+        }
     }
 
     @FXML

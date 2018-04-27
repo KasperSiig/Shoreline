@@ -20,6 +20,7 @@ public class ConvImpl {
     }
     
     public void convertAndWrite(ConvTask task) throws DALException {
+        System.out.println(strategy);
         strategy.convertAndWrite(task);
     }
     

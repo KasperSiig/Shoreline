@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import shoreline.be.ConvTask;
 import shoreline.dal.DataManager;
 import shoreline.exceptions.BLLException;
 import shoreline.exceptions.DALException;
@@ -68,6 +69,20 @@ public class LogicManager {
     public HashMap<String, Integer> getTitles(File file) throws BLLException {
         try {
             return dm.getTitles(file);
+        } catch (DALException ex) {
+            throw new BLLException("File format not supported.", ex);
+        }
+    }
+
+    public void startTask(ConvTask task) {
+        ThreadPool threadPool = ThreadPool.getInstance();
+        System.out.println(threadPool);
+        threadPool.startTask(task);
+    }
+
+    public void addCallableToTask(ConvTask task) throws BLLException {
+        try {
+            dm.addCallableToTask(task);
         } catch (DALException ex) {
             throw new BLLException("File format not supported.", ex);
         }

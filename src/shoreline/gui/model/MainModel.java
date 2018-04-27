@@ -7,6 +7,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.BorderPane;
@@ -134,6 +136,18 @@ public class MainModel {
     
     public List<ConvTask> getTaskList() {
         return taskList;
+    }
+    
+    public void startTask(ConvTask task) {
+        logic.startTask(task);
+    }
+    
+    public void addCallableToTask(ConvTask task) throws GUIException {
+        try {
+            logic.addCallableToTask(task);
+        } catch (BLLException ex) {
+            throw new GUIException(ex);
+        }
     }
     
     
