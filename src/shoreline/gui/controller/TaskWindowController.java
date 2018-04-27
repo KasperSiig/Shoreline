@@ -12,6 +12,9 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SelectionModel;
 import javafx.scene.layout.VBox;
 import shoreline.gui.model.MainModel;
 
@@ -39,6 +42,9 @@ public class TaskWindowController implements Initializable, IController {
 
     @FXML
     private void handleTaskPlay(ActionEvent event) {
+        for (TaskView taskView : taskViewList) {
+            System.out.println("din mor er grum!");
+        }
     }
 
     @FXML
@@ -52,14 +58,22 @@ public class TaskWindowController implements Initializable, IController {
     @Override
     public void postInit(MainModel model) {
         this.model = model;
+
         if (model.getTaskList().isEmpty()) {
             return;
         }
 
+        genTasksForList(model);
+
+        taskViewList.forEach((taskView) -> {
+            vBox.getChildren().add(taskView);
+        });
+    }
+
+    private void genTasksForList(MainModel model) {
         model.getTaskList().forEach((convTask) -> {
             TaskView taskView = new TaskView(convTask);
             taskView.setOnMouseClicked((event) -> {
-
                 if (selectedTaskes.contains(taskView)) {
                     selectedTaskes.remove(taskView);
                     taskView.setStyle("-fx-border-color: transparent");
@@ -68,15 +82,11 @@ public class TaskWindowController implements Initializable, IController {
                     taskView.setStyle("-fx-border-color: #2e6da4; -fx-border-radius: 4px; -fx-background-color: derive(#337ab7, 80%); "
                             + "-fx-background-radius: 4px; -fx-text-fill: white");
                 }
-                System.out.println(selectedTaskes);
-
             });
             taskViewList.add(taskView);
         });
-
-        taskViewList.forEach((taskView) -> {
-            vBox.getChildren().add(taskView);
-        });
     }
+
+    
 
 }

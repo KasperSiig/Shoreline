@@ -7,7 +7,6 @@ package shoreline.be;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 /**
  *
@@ -16,7 +15,7 @@ import java.util.LinkedHashMap;
 public class ConvTask {
     private HashMap<String, Integer> cellIndexMap;
     private HashMap<String, String> mapper;
-    private String name, fileExt;
+    private String name;
     private File source, target;
     private boolean isRunning;
 
@@ -24,7 +23,6 @@ public class ConvTask {
         this.cellIndexMap = cellIndexMap;
         this.mapper = mapper;
         this.name = name;
-        this.fileExt = fileExt;
         this.source = source;
         this.target = target;
         isRunning = false;
@@ -40,10 +38,6 @@ public class ConvTask {
 
     public String getName() {
         return name;
-    }
-
-    public String getFileExt() {
-        return fileExt;
     }
 
     public File getSource() {

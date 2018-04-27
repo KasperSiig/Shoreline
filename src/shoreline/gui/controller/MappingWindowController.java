@@ -12,15 +12,17 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SelectionModel;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -57,26 +59,30 @@ public class MappingWindowController implements Initializable, IController {
     private BorderPane bPane;
     @FXML
     private JFXTextField txtFileName;
+    @FXML
+    private MenuItem Delete;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-
-        lvMapOverview.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-
-        lvMapOverview.setItems(mappingList);
-
     }
 
     @Override
     public void postInit(MainModel model) {
         this.model = model;
         lvInput.setItems(inputList);
-//        templateList = model.getTemplateList();
         lvTemplate.setItems(model.getTemplateList());
+        lvMapOverview.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        lvMapOverview.setItems(mappingList);
+        lvMapOverview.setOnMouseClicked((event) -> {
+            if (lvMapOverview.getSelectionModel().getSelectedItems().size() == 1) {
+                Delete.setText("Delete");
+            } else if (lvMapOverview.getSelectionModel().getSelectedItems().size() > 1) {
+                Delete.setText("Delete all");
+            }
+        });
     }
 
     @FXML
@@ -87,6 +93,10 @@ public class MappingWindowController implements Initializable, IController {
 
         String temp = inputSelection.getSelectedItem() + " -> " + templateSelection.getSelectedItem();
 
+        if (mappingList.contains(temp)) {
+            Window.openExceptionWindow("This task already exists");
+            return;
+        }
         JSONmap.put(templateSelection.getSelectedItem(), inputSelection.getSelectedItem());
         mappingList.add(temp);
     }
@@ -157,6 +167,22 @@ public class MappingWindowController implements Initializable, IController {
 
         ConvTask task = new ConvTask(cellIndexMap, JSONmap, name, inputFile, new File(targetPath + "\\" + targetName + ".json"));
         model.addToTaskList(task);
+    }
+
+    @FXML
+    private void handleInputFile(MouseEvent event) {
+        if (lvInput.getItems().isEmpty()) {
+            handelInputFile(new ActionEvent());
+        }
+    }
+
+    @FXML
+    private void delMap(ActionEvent event) {
+        if (lvMapOverview.getSelectionModel().getSelectedItems().size() == 1) {
+            mappingList.remove(lvMapOverview.getSelectionModel().getSelectedItem());
+        } else if (lvMapOverview.getSelectionModel().getSelectedItems().size() > 1) {
+            mappingList.removeAll(lvMapOverview.getSelectionModel().getSelectedItems());
+        }
     }
 
 }
