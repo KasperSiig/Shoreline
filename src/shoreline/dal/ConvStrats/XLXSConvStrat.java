@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.dal.ConvStrats;
 
 import java.io.File;
@@ -31,21 +26,28 @@ import shoreline.exceptions.DALException;
  */
 public class XLXSConvStrat implements ConvStrategy {
 
-    private XSSFSheet sheet1;
-    private FileInputStream fin;
+    // The Workbook containing all sheets in XLSX file
     private XSSFWorkbook wb;
 
+    // The Sheet holding the data from the XLSX file
+    private XSSFSheet sheet1;
+
+    private FileInputStream fin;
+
     @Override
-    public JSONArray convertAndWrite(ConvTask task) throws DALException {
-//        System.out.println("start convert");
+    public JSONArray addCallableToTask(ConvTask task) throws DALException {
+        // Gets the instance of the ThreadPool object
         ThreadPool threadPool = ThreadPool.getInstance();
         threadPool.addToPending(task);
-        
+
+        // Creates the Callable, that's going to be added to the ConvTask
         Callable call = (Callable) () -> {
             try {
                 threadPool.removeFromPending(task);
                 fin = new FileInputStream(task.getSource());
                 wb = new XSSFWorkbook(fin);
+
+                // XLSX files can contain more sheets, this gets the one at index 0
                 sheet1 = wb.getSheetAt(0);
                 writeJson(task);
                 threadPool.removeFromRunning(task);
@@ -57,29 +59,45 @@ public class XLXSConvStrat implements ConvStrategy {
             }
             return null;
         };
-        task.setTask(call);
-//        System.out.println(task.getTask());
+
+        // Sets the Callable in the ConvTask, so it can be used in the ThreadPool later.
+        task.setCallable(call);
         return null;
     }
 
+    /**
+     * Gets data from the XLSX file
+     *
+     * @param indexString Name of the column to get data from
+     * @param rowNumber The row to get data from
+     * @param task Needed to get a cellIndexMap
+     * @return Data from XLSX file
+     */
     private String getSheetdata(String indexString, int rowNumber, ConvTask task) {
         if (indexString.equals("")) {
             return "";
         }
-//        System.out.println(indexString);
-//        System.out.println(sheet1.getRow(rowNumber).getCell(task.getCellIndexMap().get(indexString), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK));
         return sheet1.getRow(rowNumber).getCell(task.getCellIndexMap().get(indexString), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).toString();
     }
 
+    /**
+     * Puts all the data into a JSONArray containing JSONObjects, and then
+     * writes it to a .json file.
+     *
+     * @param task The task containing what needs to be converted
+     * @throws DALException
+     */
     private void writeJson(ConvTask task) throws DALException {
 
         JSONArray jAr = new JSONArray();
 
+        // Is being used to keep track of what row to pull data from
         int i = 1;
         while (sheet1.getRow(i) != null) {
             JSONObject jOb = new JSONObject();
+
+            // Needs to be final, to be used inside lambda expression
             final int pos = i;
-//            System.out.println(pos);
             JSONObject planning = new JSONObject();
             task.getMapper().forEach((key, value) -> {
                 if (key.equals("name")) {
@@ -103,26 +121,15 @@ public class XLXSConvStrat implements ConvStrategy {
             jAr.put(jOb);
             i++;
         }
-
-//        System.out.println(i);
-//        System.out.println(jAr.toString(4));
-
         try {
-
-            // Writing to a file  
+            // Gets the destination to write to 
             File file = task.getTarget();
-//            System.out.println(file.getAbsoluteFile());
             file.createNewFile();
-            try (
-                    FileWriter fileWriter = new FileWriter(file)) {
-//                System.out.println("Writing JSON object to file");
-//                System.out.println("-----------------------");
-
+            try (FileWriter fileWriter = new FileWriter(file)) {
                 fileWriter.write(jAr.toString(4));
                 fileWriter.flush();
                 fileWriter.close();
             }
-
         } catch (IOException ex) {
             throw new DALException("Error writing JSON File", ex);
         }
@@ -131,7 +138,6 @@ public class XLXSConvStrat implements ConvStrategy {
     private Date getDate(String sheetdata) throws DALException {
         try {
             DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-//            System.out.println(sheetdata);
             Date date = format.parse(sheetdata);
             return date;
         } catch (ParseException ex) {

@@ -15,13 +15,23 @@ import shoreline.exceptions.DALException;
 public class ConvImpl {
     private ConvStrategy strategy;
 
+    /**
+     * Initiates the Conversion Implementation, and sets the strategy to use
+     * 
+     * @param strategy The strategy to be used
+     */
     public ConvImpl(ConvStrategy strategy) {
         this.strategy = strategy;
     }
     
-    public void convertAndWrite(ConvTask task) throws DALException {
-        System.out.println(strategy);
-        strategy.convertAndWrite(task);
+    /**
+     * Runs the addCallableToTask method, with the strategy chosen in constructor
+     * 
+     * @param task The ConvTask to be converted
+     * @throws DALException 
+     */
+    public void addCallableToTask(ConvTask task) throws DALException {
+        strategy.addCallableToTask(task);
     }
     
 }

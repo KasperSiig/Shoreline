@@ -14,5 +14,12 @@ import shoreline.exceptions.DALException;
  * @author Kasper Siig
  */
 public interface ConvStrategy {
-    public JSONArray convertAndWrite(ConvTask task) throws DALException;
+    /**
+     * 
+     * 
+     * @param task
+     * @return
+     * @throws DALException 
+     */
+    public JSONArray addCallableToTask(ConvTask task) throws DALException;
 }

@@ -57,11 +57,11 @@ public class XLXSConvStratTest {
     }
 
     /**
-     * Test of convertAndWrite method, of class XLXSConvStrat.
+     * Test of addCallableToTask method, of class XLXSConvStrat.
      */
     @Test
     public void testConvertAndWrite() throws Exception {
-//        System.out.println("convertAndWrite");
+//        System.out.println("addCallableToTask");
         HashMap mapper = new HashMap<String, String>();
         mapper.put("siteName", "");
         mapper.put("assetSerialNumber", "");
@@ -78,7 +78,7 @@ public class XLXSConvStratTest {
         
         ConvTask task = new ConvTask(cellIndexMap, mapper, "", "", "", new File(testFile), new File("C:\\JavaProjects\\Shoreline\\test\\shoreline\\res\\XLSX\\Json.json"));
         XLXSConvStrat instance = new XLXSConvStrat();
-        instance.convertAndWrite(task);
+        instance.addCallableToTask(task);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
         

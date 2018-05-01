@@ -21,7 +21,7 @@ public class ConvTask {
     private String name;
     private File source, target;
     private boolean isRunning;
-    private Callable<ConvTask> task;
+    private Callable<ConvTask> Callable;
     private Future future;
 
     public ConvTask(HashMap<String, Integer> cellIndexMap, HashMap<String, String> mapper, String name, File source, File target) {
@@ -61,12 +61,12 @@ public class ConvTask {
         this.isRunning = !isRunning;
     }
 
-    public Callable<ConvTask> getTask() {
-        return task;
+    public Callable<ConvTask> getCallable() {
+        return Callable;
     }
 
-    public void setTask(Callable<ConvTask> task) {
-        this.task = task;
+    public void setCallable(Callable<ConvTask> task) {
+        this.Callable = task;
     }
 
     public Future getFuture() {

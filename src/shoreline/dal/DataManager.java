@@ -69,7 +69,7 @@ public class DataManager {
         switch (extension) {
             case "xlsx":
                 impl = new ConvImpl(new XLXSConvStrat());
-                impl.convertAndWrite(task);
+                impl.addCallableToTask(task);
                 break;
             default:
                 throw new IllegalArgumentException();
