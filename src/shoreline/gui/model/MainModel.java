@@ -30,11 +30,11 @@ public class MainModel {
     private ObservableList<String> templateList;
     private ObservableList<logItem> logList;
     private List<ConvTask> taskList;
-    private List<Config> configList;
+    private ObservableList<Config> configList;
     
     public MainModel() throws GUIException {
         taskList = new ArrayList();
-        configList = new ArrayList();
+        configList = FXCollections.observableArrayList();
         this.logList = FXCollections.observableArrayList();
         this.templateList = FXCollections.observableArrayList("siteName", "assetSerialNumber", "type", "externalWorkOrderId", "systemStatus", "userStatus", "name", "priority", "latestFinishDate", "earliestStartDate", "latestStartDate", "estimatedTime");
         try {
@@ -43,7 +43,6 @@ public class MainModel {
             throw new GUIException(ex);
         }
         temp();
-//        temp2();
     }
 
     /**
@@ -251,7 +250,7 @@ public class MainModel {
      * 
      * @return 
      */
-    public List<Config> getConfigList() {
+    public ObservableList<Config> getConfigList() {
         return configList;
     }
 
@@ -285,15 +284,5 @@ public class MainModel {
         addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
         addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
         addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
-    }
-    
-    private void temp2() {
-        configList.add(new Config("name", "xlsx", new HashMap<>()));
-        configList.add(new Config("name1", "xlsx", new HashMap<>()));
-        configList.add(new Config("name2", "xlsx", new HashMap<>()));
-        configList.add(new Config("name3", "xlsx", new HashMap<>()));
-        configList.add(new Config("name4", "xlsx", new HashMap<>()));
-        configList.add(new Config("name5", "xlsx", new HashMap<>()));
-        configList.add(new Config("name6", "xlsx", new HashMap<>()));
     }
 }

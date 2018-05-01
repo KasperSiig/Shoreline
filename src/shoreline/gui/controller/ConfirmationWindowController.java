@@ -56,7 +56,14 @@ public class ConfirmationWindowController implements Initializable, IController 
         if (txtInput.getText().isEmpty()) {
             Window.openExceptionWindow("Please enter config name");
         } else {
-            Config config = new Config(txtInput.getText(), "xlsx", map);
+            String name = txtInput.getText();
+            for (Config config : model.getConfigList()) {
+                if (config.getName().equals(name)) {
+                    Window.openExceptionWindow("The name aleardy exists");
+                    return;
+                }
+            }
+            Config config = new Config(name, "xlsx", map);
             model.addToConfigList(config);
             stage = (Stage) lblInfo.getScene().getWindow();
             stage.close();
