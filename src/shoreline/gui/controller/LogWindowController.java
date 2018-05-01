@@ -16,7 +16,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import static javax.management.Query.value;
-import shoreline.be.logItem;
+import shoreline.be.LogItem;
 import shoreline.gui.model.MainModel;
 
 /**
@@ -29,7 +29,7 @@ public class LogWindowController implements Initializable, IController {
     MainModel model;
 
     @FXML
-    private TableView<logItem> tv;
+    private TableView<LogItem> tv;
 
     /**
      * Initializes the controller class.
@@ -48,20 +48,16 @@ public class LogWindowController implements Initializable, IController {
     private void setTable() {
 
         TableColumn typeCol = new TableColumn("Type");
-        typeCol.setCellValueFactory(
-                new PropertyValueFactory<logItem, Alert.AlertType>("Type"));
+        typeCol.setCellValueFactory(new PropertyValueFactory<LogItem, Alert.AlertType>("Type"));
 
         TableColumn messageCol = new TableColumn("Message");
-        messageCol.setCellValueFactory(
-                new PropertyValueFactory<logItem, String>("Message"));
+        messageCol.setCellValueFactory(new PropertyValueFactory<LogItem, String>("Message"));
 
         TableColumn dateCol = new TableColumn("Date");
-        dateCol.setCellValueFactory(
-                new PropertyValueFactory<logItem, Date>("Date"));
+        dateCol.setCellValueFactory(new PropertyValueFactory<LogItem, Date>("Date"));
 
         TableColumn userCol = new TableColumn("User");
-        userCol.setCellValueFactory(
-                new PropertyValueFactory<logItem, String>("User"));
+        userCol.setCellValueFactory(new PropertyValueFactory<LogItem, String>("User"));
 
         tv.setItems(model.getLogList());
         tv.getColumns().addAll(typeCol, messageCol, dateCol, userCol);

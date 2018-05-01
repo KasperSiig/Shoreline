@@ -14,7 +14,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
 import shoreline.be.Config;
 import shoreline.be.ConvTask;
-import shoreline.be.logItem;
+import shoreline.be.LogItem;
 import shoreline.bll.LogicManager;
 import shoreline.exceptions.BLLException;
 import shoreline.exceptions.GUIException;
@@ -28,7 +28,7 @@ public class MainModel {
     private BorderPane borderPane;
     private LogicManager logic;
     private ObservableList<String> templateList;
-    private ObservableList<logItem> logList;
+    private ObservableList<LogItem> logList;
     private List<ConvTask> taskList;
     private ObservableList<Config> configList;
     
@@ -42,7 +42,6 @@ public class MainModel {
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
-        temp();
     }
 
     /**
@@ -231,17 +230,11 @@ public class MainModel {
      * 
      * @return 
      */
-    public ObservableList<logItem> getLogList() {
+    public ObservableList<LogItem> getLogList() {
         return logList;
     }
 
-    /**
-     * Adds a logitem to the list of logitems
-     * 
-     * @param item 
-     */
-    public void addToLogList(logItem item) {
-   
+    public void addToLogList(LogItem item) {
         logList.add(item);
     }
 
@@ -261,28 +254,5 @@ public class MainModel {
      */
     public void addToConfigList(Config config) {
         this.configList.add(config);
-    }
-    
-    
-    /**
-     * 
-     * To be removed
-     * 
-     */
-    private void temp() {
-        addToLogList(new logItem(Alert.AlertType.ERROR, "some error happend", "bo", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.WARNING, "some warning happend", "ib", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.CONFIRMATION, "Some confirmation happend", "dorte", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.INFORMATION, "Some information happend", "Elisabeth", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
     }
 }

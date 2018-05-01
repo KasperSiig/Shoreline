@@ -12,13 +12,13 @@ import javafx.scene.control.Alert;
  *
  * @author madst
  */
-public class logItem {
+public class LogItem {
     
     Alert.AlertType type;
     String message, user;
     Date date;
 
-    public logItem(Alert.AlertType type, String message, String user, Date date) {
+    public LogItem(Alert.AlertType type, String message, String user, Date date) {
         this.type = type;
         this.message = message;
         this.user = user;
