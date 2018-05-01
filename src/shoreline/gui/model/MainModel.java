@@ -12,6 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
+import shoreline.be.Config;
 import shoreline.be.ConvTask;
 import shoreline.be.logItem;
 import shoreline.bll.LogicManager;
@@ -29,9 +30,11 @@ public class MainModel {
     private ObservableList<String> templateList;
     private ObservableList<logItem> logList;
     private List<ConvTask> taskList;
+    private List<Config> configList;
     
     public MainModel() throws GUIException {
         taskList = new ArrayList();
+        configList = new ArrayList();
         this.logList = FXCollections.observableArrayList();
         this.templateList = FXCollections.observableArrayList("siteName", "assetSerialNumber", "type", "externalWorkOrderId", "systemStatus", "userStatus", "name", "priority", "latestFinishDate", "earliestStartDate", "latestStartDate", "estimatedTime");
         try {
@@ -40,6 +43,7 @@ public class MainModel {
             throw new GUIException(ex);
         }
         temp();
+//        temp2();
     }
 
     /**
@@ -173,22 +177,48 @@ public class MainModel {
         return templateList;
     }
     
+    /**
+     * Adds a task to the list of tasks
+     * 
+     * @param task 
+     */
     public void addToTaskList(ConvTask task) {
         taskList.add(task);
     }
     
+    /**
+     * Removes a task from the list of tasks
+     * 
+     * @param task 
+     */
     private void removeTaskFromList(ConvTask task) {
         taskList.remove(task);
     }
     
+    /**
+     * returns the list of tasks
+     * 
+     * @return 
+     */
     public List<ConvTask> getTaskList() {
         return taskList;
     }
     
+    /**
+     * Starts a task
+     * 
+     * @param task 
+     */
     public void startTask(ConvTask task) {
         logic.startTask(task);
     }
     
+    /**
+     * Adds a callable to a task
+     * 
+     * @param task
+     * @throws GUIException 
+     */
     public void addCallableToTask(ConvTask task) throws GUIException {
         try {
             logic.addCallableToTask(task);
@@ -197,15 +227,49 @@ public class MainModel {
         }
     }
 
+    /**
+     * Returns the observable list of logitems
+     * 
+     * @return 
+     */
     public ObservableList<logItem> getLogList() {
         return logList;
     }
 
+    /**
+     * Adds a logitem to the list of logitems
+     * 
+     * @param item 
+     */
     public void addToLogList(logItem item) {
    
         logList.add(item);
     }
+
+    /**
+     * Returns the config list
+     * 
+     * @return 
+     */
+    public List<Config> getConfigList() {
+        return configList;
+    }
+
+    /**
+     * adds a hashmap to the config list
+     * 
+     * @param config 
+     */
+    public void addToConfigList(Config config) {
+        this.configList.add(config);
+    }
     
+    
+    /**
+     * 
+     * To be removed
+     * 
+     */
     private void temp() {
         addToLogList(new logItem(Alert.AlertType.ERROR, "some error happend", "bo", new Date(2018, 4, 30)));
         addToLogList(new logItem(Alert.AlertType.WARNING, "some warning happend", "ib", new Date(2018, 4, 30)));
@@ -223,5 +287,13 @@ public class MainModel {
         addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
     }
     
-    
+    private void temp2() {
+        configList.add(new Config("name", "xlsx", new HashMap<>()));
+        configList.add(new Config("name1", "xlsx", new HashMap<>()));
+        configList.add(new Config("name2", "xlsx", new HashMap<>()));
+        configList.add(new Config("name3", "xlsx", new HashMap<>()));
+        configList.add(new Config("name4", "xlsx", new HashMap<>()));
+        configList.add(new Config("name5", "xlsx", new HashMap<>()));
+        configList.add(new Config("name6", "xlsx", new HashMap<>()));
+    }
 }

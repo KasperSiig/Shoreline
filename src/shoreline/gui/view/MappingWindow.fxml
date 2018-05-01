@@ -6,6 +6,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -73,6 +74,7 @@
                               <ContextMenu>
                                 <items>
                                   <MenuItem fx:id="Delete" mnemonicParsing="false" onAction="#delMap" text="Delete" />
+                                    <Menu fx:id="configMenu" mnemonicParsing="false" text="Load config" />
                                 </items>
                               </ContextMenu>
                            </contextMenu>

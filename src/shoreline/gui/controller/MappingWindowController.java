@@ -8,15 +8,22 @@ package shoreline.gui.controller;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SelectionModel;
@@ -24,6 +31,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import shoreline.be.ConvTask;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.MainModel;
@@ -59,6 +67,8 @@ public class MappingWindowController implements Initializable, IController {
     private JFXTextField txtFileName;
     @FXML
     private MenuItem Delete;
+    @FXML
+    private Menu configMenu;
 
     /**
      * Initializes the controller class.
@@ -81,6 +91,11 @@ public class MappingWindowController implements Initializable, IController {
                 Delete.setText("Delete all");
             }
         });
+        if (!model.getConfigList().isEmpty()) {
+            generateRightclickMenu();
+        } else {
+            configMenu.setDisable(true);
+        }
     }
 
     @FXML
@@ -169,6 +184,10 @@ public class MappingWindowController implements Initializable, IController {
 
         ConvTask task = new ConvTask(cellIndexMap, JSONmap, name, inputFile, new File(targetPath + "\\" + targetName + ".json"));
         model.addToTaskList(task);
+        
+        if (!model.getConfigList().contains(JSONmap)) {
+            openConfirmWindow("Do you want to save this map? if yes enter the name below", JSONmap);
+        }
         try {
             model.addCallableToTask(task);
         } catch (GUIException ex) {
@@ -189,6 +208,38 @@ public class MappingWindowController implements Initializable, IController {
             mappingList.remove(lvMapOverview.getSelectionModel().getSelectedItem());
         } else if (lvMapOverview.getSelectionModel().getSelectedItems().size() > 1) {
             mappingList.removeAll(lvMapOverview.getSelectionModel().getSelectedItems());
+        }
+    }
+
+    private void generateRightclickMenu() {
+        configMenu.getItems().clear();
+        model.getConfigList().forEach((config) -> {
+            MenuItem item = new MenuItem(config.getName());
+            item.setOnAction((event) -> {
+                JSONmap.clear();
+                JSONmap.putAll(config.getMap());
+            });
+            configMenu.getItems().add(item);
+        });
+    }
+
+    private void openConfirmWindow(String msg, HashMap map) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource(Window.View.Confirm.getView()));
+            Parent root = fxmlLoader.load();
+
+            ConfirmationWindowController cwc = fxmlLoader.getController();
+            cwc.postInit(model);
+            cwc.setInfo(msg, map);
+
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.setTitle("Conforimation");
+            stage.setScene(scene);
+            stage.showAndWait();
+        } catch (IOException ex) {
+            Logger.getLogger(MappingWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
