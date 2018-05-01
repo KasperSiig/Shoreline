@@ -99,7 +99,7 @@ public class MappingWindowController implements Initializable, IController {
             Window.openExceptionWindow(inputSelection.getSelectedItem() + " is already mapped");
             return;
         }
-        
+
         JSONmap.put(templateSelection.getSelectedItem(), inputSelection.getSelectedItem());
         mappingList.add(temp);
     }
@@ -117,11 +117,11 @@ public class MappingWindowController implements Initializable, IController {
 
     @FXML
     private void handelInputFile(ActionEvent event) {
-        JSONmap.clear();
         FileChooser fileChooser = new FileChooser();
         File tempFile = fileChooser.showOpenDialog(bPane.getScene().getWindow());
         if (tempFile != null) {
             try {
+                JSONmap.clear();
                 inputFile = tempFile;
                 cellIndexMap = model.getTitles(inputFile);
                 getCellData();

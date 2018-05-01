@@ -25,7 +25,8 @@ public class Window {
         Login("LoginWindow.fxml"),
         CreateUser("CreateUserWindow.fxml"),
         Mapping("MappingWindow.fxml"),
-        TaskView("TaskWindow.fxml");
+        TaskView("TaskWindow.fxml"),
+        logView("LogWindow.fxml");
         
         String view;
         View(String view) {

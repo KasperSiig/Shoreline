@@ -4,15 +4,16 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
 import shoreline.be.ConvTask;
+import shoreline.be.logItem;
 import shoreline.bll.LogicManager;
 import shoreline.exceptions.BLLException;
 import shoreline.exceptions.GUIException;
@@ -26,27 +27,46 @@ public class MainModel {
     private BorderPane borderPane;
     private LogicManager logic;
     private ObservableList<String> templateList;
+    private ObservableList<logItem> logList;
     private List<ConvTask> taskList;
     
     public MainModel() throws GUIException {
         taskList = new ArrayList();
+        this.logList = FXCollections.observableArrayList();
         this.templateList = FXCollections.observableArrayList("siteName", "assetSerialNumber", "type", "externalWorkOrderId", "systemStatus", "userStatus", "name", "priority", "latestFinishDate", "earliestStartDate", "latestStartDate", "estimatedTime");
         try {
             this.logic = new LogicManager();
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
+        temp();
     }
 
+    /**
+     * Returns the borderpane saved in the model
+     * 
+     * @return 
+     */
     public BorderPane getBorderPane() {
         return borderPane;
     }
 
+    /**
+     * Sets the borderpane in model
+     * 
+     * @param borderPane 
+     */
     public void setBorderPane(BorderPane borderPane) {
         this.borderPane = borderPane;
     }
 
-
+    /**
+     * Writes a property to the config.property file
+     * 
+     * @param key
+     * @param string
+     * @throws GUIException 
+     */
     public void setProperty(String key, String string) throws GUIException {
         try {
             logic.setProperty(key, string);
@@ -55,6 +75,13 @@ public class MainModel {
         }
     }
     
+    /**
+     * Gets a property from the config.property
+     * 
+     * @param key
+     * @return
+     * @throws GUIException 
+     */
     public String getProperty(String key) throws GUIException {
         try {
             return logic.getProperty(key);
@@ -64,6 +91,7 @@ public class MainModel {
     }
     /**
      * Hashes password and parse data through to BLL
+     * 
      * @param username
      * @param password
      * @param firstname
@@ -90,6 +118,13 @@ public class MainModel {
         }
     }
     
+    /**
+     * Hashes a given string and returns the hashed string
+     * 
+     * @param pass
+     * @return
+     * @throws GUIException 
+     */
     private StringBuffer hashString(String pass) throws GUIException {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -114,6 +149,13 @@ public class MainModel {
         }
     }
     
+    /**
+     * Return a hashmap of the titles from a file
+     * 
+     * @param file
+     * @return
+     * @throws GUIException 
+     */
     public HashMap<String, Integer> getTitles(File file) throws GUIException {
         try {
             return logic.getTitles(file);
@@ -122,6 +164,11 @@ public class MainModel {
         }
     }
 
+    /**
+     * Return the observablelist of the template
+     * 
+     * @return 
+     */
     public ObservableList<String> getTemplateList() {
         return templateList;
     }
@@ -148,6 +195,32 @@ public class MainModel {
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
+    }
+
+    public ObservableList<logItem> getLogList() {
+        return logList;
+    }
+
+    public void addToLogList(logItem item) {
+   
+        logList.add(item);
+    }
+    
+    private void temp() {
+        addToLogList(new logItem(Alert.AlertType.ERROR, "some error happend", "bo", new Date(2018, 4, 30)));
+        addToLogList(new logItem(Alert.AlertType.WARNING, "some warning happend", "ib", new Date(2018, 4, 30)));
+        addToLogList(new logItem(Alert.AlertType.CONFIRMATION, "Some confirmation happend", "dorte", new Date(2018, 4, 30)));
+        addToLogList(new logItem(Alert.AlertType.INFORMATION, "Some information happend", "Elisabeth", new Date(2018, 4, 30)));
+        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
+        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
+        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
+        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
+        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
+        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
+        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
+        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
+        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
+        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
     }
     
     

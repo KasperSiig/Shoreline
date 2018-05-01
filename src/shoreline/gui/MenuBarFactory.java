@@ -14,7 +14,8 @@ import shoreline.statics.Window;
 public class MenuBarFactory {
 
     MainModel model;
-    boolean isOpen = false;
+    boolean taskIsOpen = false;
+    boolean logIsOpen = false;
 
     public enum MenuType {
         Default
@@ -33,6 +34,7 @@ public class MenuBarFactory {
     private MenuBar defaultMenuBar() {
         Menu options = new Menu("Options");
         options.getItems().add(openTaskView());
+        options.getItems().add(openLogView());
         MenuBar menuBar = new MenuBar(options);
         return menuBar;
     }
@@ -41,12 +43,12 @@ public class MenuBarFactory {
         MenuItem openTaskView = new MenuItem("Open Task view");
         openTaskView.setOnAction((event) -> {
             try {
-                if (!isOpen) {
+                if (!taskIsOpen) {
                     Window.openView(model, model.getBorderPane(), Window.View.TaskView, "right");
                 } else {
                     Window.closeWindow("right", model.getBorderPane());
                 }
-                isOpen = !isOpen;
+                taskIsOpen = !taskIsOpen;
             } catch (GUIException ex) {
                 Window.openExceptionWindow("There was a problem generating your menu bar");
             }
@@ -54,4 +56,22 @@ public class MenuBarFactory {
         return openTaskView;
     }
 
+    private MenuItem openLogView() {
+        MenuItem openLogView = new MenuItem("Open Log view");
+        openLogView.setOnAction((event) -> {
+            try {
+                if (!logIsOpen) {
+                    Window.openView(model, model.getBorderPane(), Window.View.logView, "bottom");
+                } else {
+                    Window.closeWindow("bottom", model.getBorderPane());
+                }
+                logIsOpen = !logIsOpen;
+            } catch (GUIException ex) {
+                Window.openExceptionWindow("There was a problem generating your menu bar");
+            }
+        });
+        return openLogView;
+    }
+    
+    
 }
