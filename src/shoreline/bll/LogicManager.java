@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import shoreline.be.Config;
 import shoreline.be.ConvTask;
 import shoreline.be.LogItem;
 import shoreline.dal.DataManager;
@@ -110,6 +111,22 @@ public class LogicManager {
     public List<LogItem> getNewLogs() throws BLLException{
         try {
             return dm.getNewLogs();
+        } catch (DALException ex) {
+            throw new BLLException(ex);
+        }
+    }
+    
+    public List<Config> getAllConfigs() throws BLLException{
+        try {
+            return dm.getAllConfigs();
+        } catch (DALException ex) {
+            throw new BLLException(ex);
+        }
+    }
+    
+    public void saveConfig(String name, String extension, HashMap map) throws BLLException{
+        try {
+            dm.saveConfig(name, extension, map);
         } catch (DALException ex) {
             throw new BLLException(ex);
         }
