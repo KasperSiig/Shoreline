@@ -13,7 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
 import shoreline.be.ConvTask;
-import shoreline.be.logItem;
+import shoreline.be.LogItem;
 import shoreline.bll.LogicManager;
 import shoreline.exceptions.BLLException;
 import shoreline.exceptions.GUIException;
@@ -27,7 +27,7 @@ public class MainModel {
     private BorderPane borderPane;
     private LogicManager logic;
     private ObservableList<String> templateList;
-    private ObservableList<logItem> logList;
+    private ObservableList<LogItem> logList;
     private List<ConvTask> taskList;
     
     public MainModel() throws GUIException {
@@ -197,30 +197,30 @@ public class MainModel {
         }
     }
 
-    public ObservableList<logItem> getLogList() {
+    public ObservableList<LogItem> getLogList() {
         return logList;
     }
 
-    public void addToLogList(logItem item) {
+    public void addToLogList(LogItem item) {
    
         logList.add(item);
     }
     
     private void temp() {
-        addToLogList(new logItem(Alert.AlertType.ERROR, "some error happend", "bo", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.WARNING, "some warning happend", "ib", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.CONFIRMATION, "Some confirmation happend", "dorte", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.INFORMATION, "Some information happend", "Elisabeth", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
-        addToLogList(new logItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
+        addToLogList(new LogItem(Alert.AlertType.ERROR, "some error happend", "bo", new Date(2018, 4, 30)));
+        addToLogList(new LogItem(Alert.AlertType.WARNING, "some warning happend", "ib", new Date(2018, 4, 30)));
+        addToLogList(new LogItem(Alert.AlertType.CONFIRMATION, "Some confirmation happend", "dorte", new Date(2018, 4, 30)));
+        addToLogList(new LogItem(Alert.AlertType.INFORMATION, "Some information happend", "Elisabeth", new Date(2018, 4, 30)));
+        addToLogList(new LogItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
+        addToLogList(new LogItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
+        addToLogList(new LogItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
+        addToLogList(new LogItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
+        addToLogList(new LogItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
+        addToLogList(new LogItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
+        addToLogList(new LogItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
+        addToLogList(new LogItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
+        addToLogList(new LogItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
+        addToLogList(new LogItem(Alert.AlertType.NONE, "nothing happend", "Carl", new Date(2018, 4, 30)));
     }
     
     
