@@ -96,7 +96,7 @@
                               <ContextMenu>
                                 <items>
                                   <MenuItem fx:id="Delete" mnemonicParsing="false" onAction="#delMap" text="Delete" />
-                                    <MenuItem fx:id="Delete1" mnemonicParsing="false" onAction="#HandleCreateConfig" text="Create task" />
+                                    <MenuItem fx:id="Delete1" mnemonicParsing="false" onAction="#HandleCreateConfig" text="Create config" />
                                     <Menu fx:id="configMenu" mnemonicParsing="false" text="Load config" />
                                 </items>
                               </ContextMenu>

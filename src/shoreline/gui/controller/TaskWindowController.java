@@ -91,7 +91,7 @@ public class TaskWindowController implements Initializable, IController {
         addListener();
 
         genRightClickStart();
-
+        genRightClickDel();
     }
 
     private void genTasksForList(MainModel model) {
@@ -101,7 +101,6 @@ public class TaskWindowController implements Initializable, IController {
             TaskView taskView = new TaskView(convTask);
             Tooltip tt = new Tooltip(convTask.getTarget().toString());
             Tooltip.install(taskView, tt);
-            genRightClickDel(taskView);
             taskView.setOnMouseClicked((event) -> {
                 if (event.getButton().equals(MouseButton.PRIMARY)) {
                     cMenu.hide();
@@ -116,10 +115,7 @@ public class TaskWindowController implements Initializable, IController {
                 }
                 if (event.getButton().equals(MouseButton.SECONDARY)) {
                     cMenu.show(vBox, event.getScreenX(), event.getScreenY());
-                    if (selectedTasks.contains(taskView)) {
-                        selectedTasks.remove(taskView);
-                        taskView.setStyle("-fx-border-color: transparent");
-                    } else {
+                    if (!selectedTasks.contains(taskView)) {
                         selectedTasks.add(taskView);
                         taskView.setStyle("-fx-border-color: #2e6da4; -fx-border-radius: 4px; -fx-background-color: derive(#337ab7, 80%); "
                                 + "-fx-background-radius: 4px; -fx-text-fill: white");
@@ -148,24 +144,27 @@ public class TaskWindowController implements Initializable, IController {
         cMenu.getItems().addAll(startItem);
     }
 
-    private void genRightClickDel(TaskView task) {
+    private void genRightClickDel() {
 //        cMenu.getItems().remove(0);
         MenuItem delItem = new MenuItem("Delete task");
         delItem.setOnAction((event) -> {
             if (selectedTasks.size() > 1) {
                 if (openConfirmWindow("Are you sure you want to delete " + selectedTasks.size() + " tasks?", null)) {
-                    selectedTasks.forEach((selectedTask) -> {
-                        model.getTaskList().remove(selectedTask.getTask());
+                    selectedTasks.forEach((Task) -> {
+                        model.getTaskList().remove(Task.getTask());
                     });
+                    selectedTasks.clear();
+                } else {
+                    return;
                 }
             } else {
                 selectedTasks.forEach((selectedTask) -> {
                     model.getTaskList().remove(selectedTask.getTask());
                 });
+                selectedTasks.clear();
             }
-
         });
-        cMenu.getItems().add(0, delItem);
+        cMenu.getItems().add(delItem);
     }
 
     private void addListener() {
@@ -195,7 +194,7 @@ public class TaskWindowController implements Initializable, IController {
 
             Scene scene = new Scene(root);
             Stage stage = new Stage();
-            stage.setTitle("Conforimation");
+            stage.setTitle("Confirmation");
             stage.setScene(scene);
             stage.showAndWait();
             return cwc.getConfirmation();
