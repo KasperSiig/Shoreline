@@ -81,7 +81,7 @@ public class TaskWindowController implements Initializable, IController {
         taskViewList.forEach((taskView) -> {
             vBox.getChildren().add(taskView);
         });
-        genRightClick();
+        genRightClickStart();
     }
 
     private void genTasksForList(MainModel model) {
@@ -102,6 +102,7 @@ public class TaskWindowController implements Initializable, IController {
                     }
                 }
                 if (event.getButton().equals(MouseButton.SECONDARY)) {
+                    genRightClickDel(taskView);
                     cMenu.show(vBox, event.getScreenX(), event.getScreenY());
                 }
             });
@@ -117,19 +118,23 @@ public class TaskWindowController implements Initializable, IController {
 
     }
 
-    private void genRightClick() {
+    private void genRightClickStart() {
         MenuItem startItem = new MenuItem("Start selected tasks");
         startItem.setOnAction((event) -> {
             for (TaskView selectedTask : selectedTasks) {
                 model.startTask(selectedTask.getTask());
             }
         });
-
-        MenuItem delItem = new MenuItem("Delete task");
-        delItem.setOnAction((event) -> {
-            
-        });
         cMenu.getItems().addAll(startItem);
     }
 
+    private void genRightClickDel(TaskView task) {
+        MenuItem delItem = new MenuItem("Delete task");
+        delItem.setOnAction((event) -> {
+            model.getTaskList().remove(task.getTask());
+        });
+        cMenu.getItems().addAll(delItem);
+    }
+    
+    
 }
