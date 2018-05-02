@@ -186,6 +186,9 @@ public class MainModel {
      */
     public void addToTaskList(ConvTask task) {
         taskList.add(task);
+        for (ConvTask convTask : taskList) {
+            System.out.println(convTask.getMapper());
+        }
     }
 
     /**

@@ -71,6 +71,8 @@ public class MappingWindowController implements Initializable, IController {
     private MenuItem Delete;
     @FXML
     private Menu configMenu;
+    @FXML
+    private MenuItem Delete1;
 
     /**
      * Initializes the controller class.
@@ -161,13 +163,13 @@ public class MappingWindowController implements Initializable, IController {
     @FXML
     private void handleDelMap(ActionEvent event) {
         List<String> tempList;
-        tempList = lvMapOverview.getSelectionModel().getSelectedItems();
+        tempList = lvMapOverview.getItems();
 
         //Show confirm box before deleting
         tempList.forEach((string) -> {
             JSONmap.remove(string.split(" -> ")[1]);
         });
-        
+
         System.out.println(JSONmap);
         mappingList.removeAll(tempList);
     }
@@ -200,25 +202,12 @@ public class MappingWindowController implements Initializable, IController {
             return;
         }
 
-        ConvTask task = new ConvTask(cellIndexMap, JSONmap, name, inputFile, new File(targetPath + "\\" + targetName + ".json"));
+        HashMap temp = new HashMap(JSONmap);
+        HashMap cellTemp = new HashMap(cellIndexMap);
+        ConvTask task = new ConvTask(cellTemp ,temp, name, inputFile, new File(targetPath + "\\" + targetName + ".json"));
+//        System.out.println(task.getMapper());
         model.addToTaskList(task);
 
-        HashMap<String, String> temp = new HashMap<>(JSONmap);
-
-        if (!model.getConfigList().isEmpty()) {
-            for (Config config : model.getConfigList()) {
-                if (config.getMap().keySet().equals(JSONmap.keySet())) {
-                    return;
-                } else {
-                    System.out.println(JSONmap);
-                    System.out.println(temp);
-                    openConfirmWindow("Do you want to save this map, if yes please enter name blow", temp);
-                    break;
-                }
-            }
-        } else {
-            openConfirmWindow("Do you want to save this map, if yes please enter name blow", temp);
-        }
         try {
             model.addCallableToTask(task);
         } catch (GUIException ex) {
@@ -235,7 +224,7 @@ public class MappingWindowController implements Initializable, IController {
 
     @FXML
     private void delMap(ActionEvent event) {
-        handleDelMap(event);
+        DelSelection();
     }
 
     private void generateRightclickMenu() {
@@ -244,13 +233,10 @@ public class MappingWindowController implements Initializable, IController {
             System.out.println("loading config... \n \n");
             MenuItem item = new MenuItem(config.getName());
             item.setOnAction((event) -> {
-                System.out.println(model.getConfigList());
-                System.out.println(JSONmap);
-                System.out.println(config.getMap());
                 mappingList.clear();
-//                JSONmap.clear();
+                JSONmap.clear();
                 JSONmap.putAll(config.getMap());
-                setInfoInlvMap(config.getMap());
+                setInfoInlvMap(JSONmap);
             });
             configMenu.getItems().add(item);
         });
@@ -277,11 +263,42 @@ public class MappingWindowController implements Initializable, IController {
     }
 
     private void setInfoInlvMap(HashMap map) {
-        System.out.println(map);
         map.forEach((k, v) -> {
             String temp = v + " -> " + k;
             mappingList.add(temp);
         });
     }
+
+    private void DelSelection() {
+        List<String> tempList;
+        tempList = lvMapOverview.getSelectionModel().getSelectedItems();
+
+        //Show confirm box before deleting
+        tempList.forEach((string) -> {
+            JSONmap.remove(string.split(" -> ")[1]);
+        });
+
+        mappingList.removeAll(tempList);
+    }
+
+    @FXML
+    private void HandleCreateConfig(ActionEvent event) {
+        HashMap<String, String> temp = new HashMap<>(JSONmap);
+
+        if (!model.getConfigList().isEmpty()) {
+            for (Config config : model.getConfigList()) {
+                System.out.println(config.getMap().toString() + "\n" + temp.toString());
+                if (config.getMap() == temp) {
+                    return;
+                } else {
+                    openConfirmWindow("Do you want to save this map, if yes please enter name blow", temp);
+                    return;
+                }
+            }
+        } else {
+            openConfirmWindow("Do you want to save this map, if yes please enter name blow", temp);
+        }
+    }
+
 
 }

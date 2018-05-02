@@ -14,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
+import shoreline.be.ConvTask;
 import shoreline.gui.model.MainModel;
 
 /**
@@ -40,7 +41,8 @@ public class TaskWindowController implements Initializable, IController {
 
     @FXML
     private void handleTaskPlay(ActionEvent event) {
-        for (TaskView taskView : taskViewList) {
+        for (TaskView taskView : selectedTaskes) {
+            System.out.println(taskView.getTask().getMapper());
             taskView.getTask().setIsRunning();
             model.startTask(taskView.getTask());
         }
@@ -60,6 +62,10 @@ public class TaskWindowController implements Initializable, IController {
 
         if (model.getTaskList().isEmpty()) {
             return;
+        }
+        
+        for (ConvTask convTask : model.getTaskList()) {
+            System.out.println(convTask.getMapper());
         }
 
         genTasksForList(model);

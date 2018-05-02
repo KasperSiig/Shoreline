@@ -75,5 +75,4 @@ public class ConfirmationWindowController implements Initializable, IController 
         stage = (Stage) lblInfo.getScene().getWindow();
         stage.close();
     }
-
 }
