@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import shoreline.be.Config;
 import shoreline.exceptions.DALException;
 
@@ -33,10 +35,12 @@ public class ConfigDAO {
             throw new DALException("Could not connect to database.", ex);
         }
     }
+
     /**
      * Fetches all configurations from the DB.
+     *
      * @return
-     * @throws DALException 
+     * @throws DALException
      */
     public List<Config> getAllConfigs() throws DALException {
         List<Config> configs = new ArrayList();
@@ -55,7 +59,7 @@ public class ConfigDAO {
                 statement.setInt(1, rs.getInt("id"));
                 ResultSet rsMap = statement.executeQuery();
                 while (rsMap.next()) {
-                    hm.put(rsMap.getString("target"), rsMap.getString("source"));
+                    hm.put(rsMap.getString("targetName"), rsMap.getString("sourceName"));
                 }
                 Config cfg = new Config(rs.getString("name"), rs.getString("extension"), hm);
                 configs.add(cfg);
@@ -68,12 +72,14 @@ public class ConfigDAO {
         return configs;
 
     }
+
     /**
      * Saves the configuration to ConfigTable in the DB.
+     *
      * @param name
      * @param extension
      * @param map
-     * @throws DALException 
+     * @throws DALException
      */
     public void saveConfig(String name, String extension, HashMap map) throws DALException {
         try (Connection con = dbConnector.getConnection()) {
@@ -85,37 +91,42 @@ public class ConfigDAO {
             statement.setString(1, name);
             statement.setString(2, extension);
 
-            ResultSet rs = statement.executeQuery();
-            if (rs.next()) {
-                id = rs.getInt("id");
+            if (statement.executeUpdate() == 1) {
+                ResultSet rs = statement.getGeneratedKeys();
+                rs.next();
+                id = rs.getInt(1);
             }
+            
             final int fid = id;
-            map.forEach(new BiConsumer() {
-                @Override
-                public void accept(Object k, Object v) {
+            map.forEach((Object k, Object v) -> {
+                try {
                     saveMap(con, k, v, fid);
+                } catch (DALException ex) {
+                    Logger.getLogger(ConfigDAO.class.getName()).log(Level.SEVERE, null, ex);
                 }
             });
         } catch (SQLException ex) {
             throw new DALException("SQL Error.", ex);
         }
     }
+
     /**
      * Saves the configurations map to MapTable in DB.
+     *
      * @param con
      * @param k
      * @param v
      * @param id
-     * @throws DALException 
+     * @throws DALException
      */
-    private void saveMap(Connection con, String k, String v, int id) throws DALException {
+    private void saveMap(Connection con, Object k, Object v, int id) throws DALException {
         try {
             String sql = "INSERT INTO MapTable VALUES(?,?,?)";
             PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            statement.setInt(1,id);
-            statement.setString(2,v);
-            statement.setString(3, k);          
-            statement.execute();         
+            statement.setInt(1, id);
+            statement.setString(2, (String) v);
+            statement.setString(3, (String) k);
+            statement.execute();
         } catch (SQLException ex) {
             throw new DALException("SQL Error.", ex);
         }

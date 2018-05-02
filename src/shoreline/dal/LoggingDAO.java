@@ -115,6 +115,7 @@ public class LoggingDAO {
             statement.setString(1, type);
             statement.setInt(2, userId);
             statement.setString(3, message);
+            statement.executeUpdate();
         } catch (SQLException ex) {
             throw new DALException("SQL Error.", ex);
         }

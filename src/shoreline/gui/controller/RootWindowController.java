@@ -6,6 +6,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
@@ -31,14 +33,15 @@ public class RootWindowController implements Initializable, IController {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
         try {
             model = new MainModel();
             model.setBorderPane(borderPane);
             Window.openView(model, borderPane, Window.View.Login, "center", MenuBarFactory.MenuType.Default);
-            
         } catch (GUIException ex) {
-            Window.openExceptionWindow("Something went wrong...");
+            Logger.getLogger(RootWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
+            
     }    
 
     @Override

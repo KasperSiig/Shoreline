@@ -7,20 +7,20 @@ package shoreline.gui.controller;
 
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
-import java.io.File;
 import java.net.URL;
+import java.sql.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import shoreline.dal.TitleStrats.TitleImpl;
-import shoreline.dal.TitleStrats.XLSXTitleStrat;
-import shoreline.exceptions.DALException;
+import shoreline.be.LogItem;
+import shoreline.exceptions.BLLException;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.MainModel;
 import shoreline.statics.Window;
@@ -89,11 +89,14 @@ public class LoginWindowController implements Initializable, IController {
         try {
             if (model.validateLogin(txtUserName.getText(), txtPassword.getText())) {
                 Window.openView(model, model.getBorderPane(), Window.View.Mapping, "center");
+                model.addLog(1, "ERROR", "Some one logged in");
             } else {
                 lblError.setText("there was a problem with the log in");
             }
         } catch (GUIException ex) {
             Window.openExceptionWindow("Something went wrong with the login window", ex.getStackTrace());
+        } catch (BLLException ex) {
+            Logger.getLogger(LoginWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
