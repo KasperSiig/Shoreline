@@ -35,6 +35,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import shoreline.be.Config;
 import shoreline.be.ConvTask;
+import shoreline.bll.ThreadPool;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.MainModel;
 import shoreline.statics.Window;
@@ -107,6 +108,11 @@ public class MappingWindowController implements Initializable, IController {
                     generateRightclickMenu();
                 }
             }
+        });
+
+        model.getBorderPane().getScene().getWindow().setOnCloseRequest((event) -> {
+            ThreadPool tPool = ThreadPool.getInstance();
+            tPool.closeThreadPool();
         });
 
     }
@@ -204,7 +210,7 @@ public class MappingWindowController implements Initializable, IController {
 
         HashMap temp = new HashMap(JSONmap);
         HashMap cellTemp = new HashMap(cellIndexMap);
-        ConvTask task = new ConvTask(cellTemp ,temp, name, inputFile, new File(targetPath + "\\" + targetName + ".json"));
+        ConvTask task = new ConvTask(cellTemp, temp, name, inputFile, new File(targetPath + "\\" + targetName + ".json"));
 //        System.out.println(task.getMapper());
         model.addToTaskList(task);
 
@@ -299,6 +305,5 @@ public class MappingWindowController implements Initializable, IController {
             openConfirmWindow("Do you want to save this map, if yes please enter name blow", temp);
         }
     }
-
 
 }
