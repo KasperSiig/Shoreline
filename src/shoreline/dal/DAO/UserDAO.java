@@ -3,17 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package shoreline.dal;
+package shoreline.dal.DAO;
 
 import com.microsoft.sqlserver.jdbc.SQLServerException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import shoreline.exceptions.DALException;
 
 /**
@@ -22,21 +19,12 @@ import shoreline.exceptions.DALException;
  */
 public class UserDAO {
 
-    DataBaseConnector dbConnector;
-
-    public UserDAO() throws DALException {
-        try {
-            dbConnector = new DataBaseConnector();
-        } catch (IOException ex) {
-            throw new DALException(ex);
-        }
+    public UserDAO(){
     }
 
-    public String getPass(String username) throws DALException {
-        try (Connection con = dbConnector.getConnection()) {
-            String sql = "SELECT password FROM UserTable WHERE username = ?";
-
-            PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    public String getPass(String username, Connection con) throws DALException {
+        String sql = "SELECT password FROM UserTable WHERE username = ?";
+        try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setString(1, username);
 
@@ -52,27 +40,26 @@ public class UserDAO {
         return null;
     }
 
-    /** 
+    /**
      * Connects to the database and insert the user details into it.
+     *
      * @param username
      * @param password
      * @param firstname
      * @param lastname
      * @return
-     * @throws DALException 
+     * @throws DALException
      */
-    public boolean createUser(String username, String password, String firstname, String lastname) throws DALException {
-        try (Connection con = dbConnector.getConnection()) {
-            String sql = "INSERT INTO UserTable VALUES(?,?,?,?)";
-
-            PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    public boolean createUser(String username, String password, String firstname, String lastname, Connection con) throws DALException {
+        String sql = "INSERT INTO UserTable VALUES(?,?,?,?)";
+        try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setString(1, username);
             statement.setString(2, firstname);
             statement.setString(3, lastname);
             statement.setString(4, password);
 
-            if(statement.execute()){
+            if (statement.execute()) {
                 return true;
             }
         } catch (SQLServerException ex) {

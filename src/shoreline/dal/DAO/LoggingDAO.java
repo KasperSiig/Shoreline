@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package shoreline.dal;
+package shoreline.dal.DAO;
 
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
@@ -15,10 +14,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.control.Alert;
 import shoreline.be.LogItem;
+import shoreline.dal.DataBaseConnector;
 import shoreline.exceptions.DALException;
 
 /**
@@ -27,31 +25,25 @@ import shoreline.exceptions.DALException;
  */
 public class LoggingDAO {
 
-    DataBaseConnector dbConnector;
     private static int currentId = 0;
 
-    public LoggingDAO() throws DALException {
+    public LoggingDAO() {
 
-        try {
-            dbConnector = new DataBaseConnector();
-        } catch (IOException ex) {
-            throw new DALException("Could not connect to database.", ex);
-        }
     }
 
     /**
      * Fetches all logs, and set currentId to the highest id fetched.
+     *
+     * @param con
      * @return
-     * @throws DALException 
+     * @throws DALException
      */
-    public List<LogItem> getAllLogs() throws DALException {
-        try (Connection con = dbConnector.getConnection()) {
+    public List<LogItem> getAllLogs(Connection con) throws DALException {
+        String sql = "SELECT LT.*, UT.username FROM LogTable LT "
+                + "JOIN UserTable UT ON UT.id = LT.userId "
+                + "ORDER BY UT.id";
+        try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             List<LogItem> logItems = new ArrayList();
-            String sql = "SELECT LT.*, UT.username FROM LogTable LT "
-                    + "JOIN UserTable UT ON UT.id = LT.userId "
-                    + "ORDER BY UT.id";
-
-            PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
@@ -68,20 +60,21 @@ public class LoggingDAO {
     }
 
     /**
-     * Fetches logs that has an id higher than currentId and sets currentId to the highest fetched.
+     * Fetches logs that has an id higher than currentId and sets currentId to
+     * the highest fetched.
+     *
+     * @param con
      * @return
-     * @throws DALException 
+     * @throws DALException
      */
-    public List<LogItem> getNewLogs() throws DALException {
-        try (Connection con = dbConnector.getConnection()) {
+    public List<LogItem> getNewLogs(Connection con) throws DALException {
+        String sql = "SELECT LT.*, UT.username FROM LogTable LT "
+                + "JOIN UserTable UT ON UT.id = LT.userId "
+                + "WHERE LT.id > ? "
+                + "ORDER BY LT.id;";
+        try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             List<LogItem> logItems = new ArrayList();
-            String sql = "SELECT LT.*, UT.username FROM LogTable LT "
-                    + "JOIN UserTable UT ON UT.id = LT.userId "
-                    + "WHERE LT.id > ? "
-                    + "ORDER BY LT.id;";
 
-            PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            
             statement.setInt(1, currentId);
 
             ResultSet rs = statement.executeQuery();
@@ -97,21 +90,19 @@ public class LoggingDAO {
             throw new DALException("SQL Error.", ex);
         }
     }
-    
+
     /**
-     * Adds a log to the DB. 
+     * Adds a log to the DB.
+     *
      * @param userId
      * @param type
      * @param message
-     * @throws DALException 
+     * @throws DALException
      */
-    public void addLog(int userId, String type, String message) throws DALException{
-        try (Connection con = dbConnector.getConnection() ){
-            
-            String sql = "INSERT INTO LogTable VALUES(?,?,GETDATE(),?)";
-            
-            PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            
+    public void addLog(int userId, String type, String message, Connection con) throws DALException {
+        String sql = "INSERT INTO LogTable VALUES(?,?,GETDATE(),?)";
+        try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
             statement.setString(1, type);
             statement.setInt(2, userId);
             statement.setString(3, message);
@@ -120,12 +111,12 @@ public class LoggingDAO {
             throw new DALException("SQL Error.", ex);
         }
     }
-    
-    
+
     /**
      * Sets logItems' AlertType to the one equal type string in DB.
+     *
      * @param type
-     * @return 
+     * @return
      */
     private Alert.AlertType getAlertType(String type) {
         switch (type) {

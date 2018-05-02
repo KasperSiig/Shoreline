@@ -1,4 +1,4 @@
-package shoreline.dal;
+package shoreline.dal.DAO;
 
 import java.io.*;
 import java.util.Properties;
