@@ -28,6 +28,7 @@ public class ConfirmationWindowController implements Initializable, IController 
     MainModel model;
     HashMap map;
     Stage stage;
+    private boolean confirmation = false;
 
     @FXML
     private JFXTextField txtInput;
@@ -53,18 +54,24 @@ public class ConfirmationWindowController implements Initializable, IController 
 
     @FXML
     private void handleYes(ActionEvent event) {
-        if (txtInput.getText().isEmpty()) {
-            Window.openExceptionWindow("Please enter config name");
-        } else {
-            String name = txtInput.getText();
-            for (Config config : model.getConfigList()) {
-                if (config.getName().equals(name)) {
-                    Window.openExceptionWindow("The name aleardy exists");
-                    return;
+        if (map != null) {
+            if (txtInput.getText().isEmpty()) {
+                Window.openExceptionWindow("Please enter config name");
+            } else {
+                String name = txtInput.getText();
+                for (Config config : model.getConfigList()) {
+                    if (config.getName().equals(name)) {
+                        Window.openExceptionWindow("The name aleardy exists");
+                        return;
+                    }
                 }
+                Config config = new Config(name, "xlsx", map);
+                model.addToConfigList(config);
+
             }
-            Config config = new Config(name, "xlsx", map);
-            model.addToConfigList(config);
+        } else {
+            txtInput.setDisable(true);
+            confirmation = true;
             stage = (Stage) lblInfo.getScene().getWindow();
             stage.close();
         }
@@ -74,5 +81,9 @@ public class ConfirmationWindowController implements Initializable, IController 
     private void handleNo(ActionEvent event) {
         stage = (Stage) lblInfo.getScene().getWindow();
         stage.close();
+    }
+
+    public boolean getConfirmation() {
+        return confirmation;
     }
 }

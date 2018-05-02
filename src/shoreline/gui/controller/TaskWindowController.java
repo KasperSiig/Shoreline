@@ -5,13 +5,20 @@
  */
 package shoreline.gui.controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
@@ -19,8 +26,10 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import shoreline.be.ConvTask;
 import shoreline.gui.model.MainModel;
+import shoreline.statics.Window;
 
 /**
  * FXML Controller class
@@ -33,6 +42,7 @@ public class TaskWindowController implements Initializable, IController {
     List<TaskView> selectedTasks = new ArrayList();
     ContextMenu cMenu = new ContextMenu();
 
+    
     MainModel model;
 
     @FXML
@@ -89,6 +99,7 @@ public class TaskWindowController implements Initializable, IController {
             TaskView taskView = new TaskView(convTask);
             Tooltip tt = new Tooltip(convTask.getTarget().toString());
             Tooltip.install(taskView, tt);
+            genRightClickDel(taskView);
             taskView.setOnMouseClicked((event) -> {
                 if (event.getButton().equals(MouseButton.PRIMARY)) {
                     cMenu.hide();
@@ -102,7 +113,6 @@ public class TaskWindowController implements Initializable, IController {
                     }
                 }
                 if (event.getButton().equals(MouseButton.SECONDARY)) {
-                    genRightClickDel(taskView);
                     cMenu.show(vBox, event.getScreenX(), event.getScreenY());
                 }
             });
@@ -131,10 +141,37 @@ public class TaskWindowController implements Initializable, IController {
     private void genRightClickDel(TaskView task) {
         MenuItem delItem = new MenuItem("Delete task");
         delItem.setOnAction((event) -> {
-            model.getTaskList().remove(task.getTask());
+            if (selectedTasks.size() > 1) {
+                if (openConfirmWindow("Are you sure you want to delete " + selectedTasks.size() + " tasks?", null)) {
+                    taskViewList.removeAll(selectedTasks);
+                }
+            } else {
+                taskViewList.removeAll(selectedTasks);
+            }
+
         });
         cMenu.getItems().addAll(delItem);
     }
-    
-    
+
+    private boolean openConfirmWindow(String msg, HashMap map) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource(Window.View.Confirm.getView()));
+            Parent root = fxmlLoader.load();
+
+            ConfirmationWindowController cwc = fxmlLoader.getController();
+            cwc.postInit(model);
+            cwc.setInfo(msg, map);
+            
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.setTitle("Conforimation");
+            stage.setScene(scene);
+            stage.showAndWait();
+            return cwc.getConfirmation();
+        } catch (IOException ex) {
+            Logger.getLogger(MappingWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
 }
