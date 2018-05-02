@@ -260,7 +260,7 @@ public class MappingWindowController implements Initializable, IController {
 
             Scene scene = new Scene(root);
             Stage stage = new Stage();
-            stage.setTitle("Conforimation");
+            stage.setTitle("Confirmation");
             stage.setScene(scene);
             stage.showAndWait();
         } catch (IOException ex) {
