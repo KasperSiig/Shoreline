@@ -79,18 +79,20 @@ public class TaskWindowController implements Initializable, IController {
 
         genTasksForList(model);
 
-        taskViewList.forEach((taskView) -> {
-            vBox.getChildren().add(taskView);
-        });
-        genRightClick();
         addListener();
+
+        genRightClickStart();
+
     }
 
     private void genTasksForList(MainModel model) {
+        System.out.println(model.getTaskList());
+        vBox.getChildren().clear();
         model.getTaskList().forEach((convTask) -> {
             TaskView taskView = new TaskView(convTask);
             Tooltip tt = new Tooltip(convTask.getTarget().toString());
             Tooltip.install(taskView, tt);
+            genRightClickDel(taskView);
             taskView.setOnMouseClicked((event) -> {
                 if (event.getButton().equals(MouseButton.PRIMARY)) {
                     cMenu.hide();
@@ -104,10 +106,11 @@ public class TaskWindowController implements Initializable, IController {
                     }
                 }
                 if (event.getButton().equals(MouseButton.SECONDARY)) {
+
                     cMenu.show(vBox, event.getScreenX(), event.getScreenY());
                 }
             });
-            taskViewList.add(taskView);
+            vBox.getChildren().add(taskView);
         });
     }
 
@@ -119,28 +122,37 @@ public class TaskWindowController implements Initializable, IController {
 
     }
 
-    private void genRightClick() {
+    private void genRightClickStart() {
         MenuItem startItem = new MenuItem("Start selected tasks");
         startItem.setOnAction((event) -> {
             for (TaskView selectedTask : selectedTasks) {
                 model.startTask(selectedTask.getTask());
             }
         });
+        cMenu.getItems().addAll(startItem);
+    }
 
+    private void genRightClickDel(TaskView task) {
+        cMenu.getItems().remove(0);
         MenuItem delItem = new MenuItem("Delete task");
         delItem.setOnAction((event) -> {
-            
+            model.getTaskList().remove(task.getTask());
         });
-        cMenu.getItems().addAll(startItem);
+        cMenu.getItems().add(0, delItem);
     }
 
     private void addListener() {
         model.getTaskList().addListener((ListChangeListener.Change<? extends ConvTask> c) -> {
-            c.next();
-            if (c.wasAdded() || c.wasPermutated() || c.wasRemoved() || c.wasReplaced() || c.wasUpdated()) {
-                genTasksForList(model);
+            while (c.next()) {
+                System.out.println("inside while");
+                if (c.wasAdded() || c.wasPermutated() || c.wasRemoved() || c.wasReplaced() || c.wasUpdated()) {
+                    genTasksForList(model);
+                    System.out.println("changed");
+                }
             }
-        });
-    }
+            System.out.println("outside while");
 
+        });
+        System.out.println("added listener");
+    }
 }
