@@ -7,9 +7,12 @@ package shoreline.bll;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import shoreline.be.Config;
 import shoreline.be.ConvTask;
+import shoreline.be.LogItem;
 import shoreline.dal.DataManager;
 import shoreline.exceptions.BLLException;
 import shoreline.exceptions.DALException;
@@ -88,4 +91,44 @@ public class LogicManager {
         }
     }
     
+    
+    public void addLog(int userId, String type, String message) throws BLLException{
+        try {
+            dm.addLog(userId, type, message);
+        } catch (DALException ex) {
+            throw new BLLException(ex);
+        }
+    }
+    
+    public List<LogItem> getAllLogs() throws BLLException{
+        try {
+            return dm.getAllLogs();
+        } catch (Exception ex) {
+            throw new BLLException(ex);
+        }
+    }
+    
+    public List<LogItem> getNewLogs() throws BLLException{
+        try {
+            return dm.getNewLogs();
+        } catch (DALException ex) {
+            throw new BLLException(ex);
+        }
+    }
+    
+    public List<Config> getAllConfigs() throws BLLException{
+        try {
+            return dm.getAllConfigs();
+        } catch (DALException ex) {
+            throw new BLLException(ex);
+        }
+    }
+    
+    public void saveConfig(String name, String extension, HashMap map) throws BLLException{
+        try {
+            dm.saveConfig(name, extension, map);
+        } catch (DALException ex) {
+            throw new BLLException(ex);
+        }
+    }
 }

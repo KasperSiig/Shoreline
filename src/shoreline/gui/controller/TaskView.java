@@ -8,7 +8,10 @@ package shoreline.gui.controller;
 import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import shoreline.be.ConvTask;
 import shoreline.gui.model.MainModel;
@@ -48,12 +51,13 @@ public class TaskView extends BorderPane implements IController {
     }
 
     private void setInfo(ConvTask task) {
+        this.task = task;
         lblStatus.setText(String.valueOf(task.isRunning()));
-        
+
         String temp = task.getTarget().getAbsolutePath();
-        String temp2 = temp.substring(0,3);
+        String temp2 = temp.substring(0, 3);
         temp = temp.substring(temp.length() - 20, temp.length());
-        
+
         lblTargetDir.setText(temp2 + "..." + temp);
         lblTaskName.setText(task.getName());
 
@@ -62,5 +66,4 @@ public class TaskView extends BorderPane implements IController {
     public ConvTask getTask() {
         return task;
     }
-
 }

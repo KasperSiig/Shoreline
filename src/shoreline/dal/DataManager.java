@@ -2,7 +2,10 @@ package shoreline.dal;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
+import shoreline.be.Config;
 import shoreline.be.ConvTask;
+import shoreline.be.LogItem;
 import shoreline.dal.ConvStrats.ConvImpl;
 import shoreline.dal.ConvStrats.XLXSConvStrat;
 import shoreline.dal.TitleStrats.TitleImpl;
@@ -17,10 +20,14 @@ public class DataManager {
 
     private PropertiesDAO pDAO;
     private UserDAO userDAO;
-
+    private LoggingDAO logDAO;
+    private ConfigDAO cfgDAO;
+    
     public DataManager() throws DALException {
         this.pDAO = new PropertiesDAO();
         this.userDAO = new UserDAO();
+        this.logDAO = new LoggingDAO();
+        this.cfgDAO = new ConfigDAO();
     }
 
     public String getProperty(String key) throws DALException {
@@ -37,6 +44,26 @@ public class DataManager {
 
     public boolean createUser(String username, String password, String firstname, String lastname) throws DALException {
         return userDAO.createUser(username, password, firstname, lastname);
+    }
+    
+    public void addLog(int userId, String type, String message) throws DALException{
+        logDAO.addLog(userId, type, message);
+    }
+    
+    public List<LogItem> getAllLogs() throws DALException{
+        return logDAO.getAllLogs();
+    }
+    
+    public List<LogItem> getNewLogs() throws DALException{
+        return logDAO.getNewLogs();
+    }
+    
+    public List<Config> getAllConfigs() throws DALException{
+        return cfgDAO.getAllConfigs();
+    }
+    
+    public void saveConfig(String name, String extension, HashMap map) throws DALException{
+        cfgDAO.saveConfig(name, extension, map);
     }
 
     public HashMap<String, Integer> getTitles(File file) throws DALException {

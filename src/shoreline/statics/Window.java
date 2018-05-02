@@ -3,11 +3,13 @@ package shoreline.statics;
 import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import shoreline.Main;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.MenuBarFactory;
@@ -19,15 +21,20 @@ import shoreline.gui.model.MainModel;
  * @author
  */
 public class Window {
+
     private static String dir = "/shoreline/gui/view/";
+
     public enum View {
         Main("MainWindow.fxml"),
         Login("LoginWindow.fxml"),
         CreateUser("CreateUserWindow.fxml"),
         Mapping("MappingWindow.fxml"),
-        TaskView("TaskWindow.fxml");
-        
+        TaskView("TaskWindow.fxml"),
+        logView("LogWindow.fxml"),
+        Confirm("ConfirmationWindow.fxml");
+
         String view;
+
         View(String view) {
             this.view = view;
         }
@@ -149,23 +156,21 @@ public class Window {
 
     public static void closeWindow(String pos, BorderPane borderpane) {
         switch (pos) {
-                case "top":
-                    borderpane.setTop(null);
-                    break;
-                case "center":
-                    borderpane.setCenter(null);
-                    break;
-                case "bottom":
-                    borderpane.setBottom(null);
-                    break;
-                case "left":
-                    borderpane.setLeft(null);
-                    break;
-                case "right":
-                    borderpane.setRight(null);
-                    break;
-            }
+            case "top":
+                borderpane.setTop(null);
+                break;
+            case "center":
+                borderpane.setCenter(null);
+                break;
+            case "bottom":
+                borderpane.setBottom(null);
+                break;
+            case "left":
+                borderpane.setLeft(null);
+                break;
+            case "right":
+                borderpane.setRight(null);
+                break;
+        }
     }
-    
-    
 }
