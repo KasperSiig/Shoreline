@@ -32,13 +32,13 @@ public class MainModel {
     private LogicManager logic;
     private ObservableList<String> templateList;
     private ObservableList<LogItem> logList;
-    private List<ConvTask> taskList;
+    private ObservableList<ConvTask> taskList;
     private ObservableList<Config> configList;
 
     public MainModel() throws GUIException {
         try {
             this.logic = new LogicManager();
-            taskList = new ArrayList();
+            this.taskList = FXCollections.observableArrayList();
             this.logList = FXCollections.observableArrayList(getAllLogs());
             this.templateList = FXCollections.observableArrayList("siteName", "assetSerialNumber", "type", "externalWorkOrderId", "systemStatus", "userStatus", "name", "priority", "latestFinishDate", "earliestStartDate", "latestStartDate", "estimatedTime");
             configList = FXCollections.observableArrayList(getAllConfigs());
@@ -205,7 +205,7 @@ public class MainModel {
      *
      * @return
      */
-    public List<ConvTask> getTaskList() {
+    public ObservableList<ConvTask> getTaskList() {
         return taskList;
     }
 

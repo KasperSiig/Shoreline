@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -82,6 +83,7 @@ public class TaskWindowController implements Initializable, IController {
             vBox.getChildren().add(taskView);
         });
         genRightClick();
+        addListener();
     }
 
     private void genTasksForList(MainModel model) {
@@ -130,6 +132,15 @@ public class TaskWindowController implements Initializable, IController {
             
         });
         cMenu.getItems().addAll(startItem);
+    }
+
+    private void addListener() {
+        model.getTaskList().addListener((ListChangeListener.Change<? extends ConvTask> c) -> {
+            c.next();
+            if (c.wasAdded() || c.wasPermutated() || c.wasRemoved() || c.wasReplaced() || c.wasUpdated()) {
+                genTasksForList(model);
+            }
+        });
     }
 
 }
