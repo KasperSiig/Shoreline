@@ -7,15 +7,18 @@ package shoreline.gui.controller;
 
 import java.net.URL;
 import java.sql.Date;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.text.Text;
-import static javax.management.Query.value;
 import shoreline.be.LogItem;
 import shoreline.gui.model.MainModel;
 
@@ -42,11 +45,11 @@ public class LogWindowController implements Initializable, IController {
     @Override
     public void postInit(MainModel model) {
         this.model = model;
+        makeTable();
         setTable();
     }
 
-    private void setTable() {
-
+    private void makeTable() {
         TableColumn typeCol = new TableColumn("Type");
         typeCol.setCellValueFactory(new PropertyValueFactory<LogItem, Alert.AlertType>("Type"));
 
@@ -58,8 +61,36 @@ public class LogWindowController implements Initializable, IController {
 
         TableColumn userCol = new TableColumn("User");
         userCol.setCellValueFactory(new PropertyValueFactory<LogItem, String>("User"));
-
-        tv.setItems(model.getLogList());
         tv.getColumns().addAll(typeCol, messageCol, dateCol, userCol);
     }
+
+    private void setTable() {
+        ObservableList temp = FXCollections.observableArrayList(model.getLogList());
+
+        FXCollections.sort(temp, (LogItem t, LogItem t1) -> {
+            if (t.getId() < t1.getId()) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+        logListListener();
+
+        tv.setItems(temp);
+    }
+
+    private void logListListener() {
+        model.getLogList().addListener(new ListChangeListener<LogItem>() {
+            @Override
+            public void onChanged(ListChangeListener.Change<? extends LogItem> c) {
+                c.next();
+                if (c.wasAdded() || c.wasRemoved() || c.wasReplaced() || c.wasUpdated()) {
+                    setTable();
+                    System.out.println("change");
+                }
+            }
+        });
+
+    }
+
 }

@@ -14,17 +14,27 @@ import javafx.scene.control.Alert;
  */
 public class LogItem {
     
+    int id;
     Alert.AlertType type;
     String message, user;
     Date date;
 
-    public LogItem(Alert.AlertType type, String message, String user, Date date) {
+    public LogItem(int id, Alert.AlertType type, String message, String user, Date date) {
+        this.id = id;
         this.type = type;
         this.message = message;
         this.user = user;
         this.date = date;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
     public Alert.AlertType getType() {
         return type;
     }

@@ -75,7 +75,7 @@ public class DataManager {
     
     public List<LogItem> getNewLogs() throws DALException {
         Connection con = conPool.checkOut();
-        List<LogItem> items = logDAO.getAllLogs(con);
+        List<LogItem> items = logDAO.getNewLogs(con);
         conPool.checkIn(con);
         return items;
     }
