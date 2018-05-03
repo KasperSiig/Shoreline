@@ -6,10 +6,15 @@
 package shoreline.bll;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import shoreline.be.Config;
 import shoreline.be.ConvTask;
 import shoreline.be.LogItem;
@@ -23,6 +28,9 @@ import shoreline.exceptions.DALException;
  */
 public class LogicManager {
 
+    private ObservableList<LogItem> tempLog = FXCollections.observableArrayList();
+    private Timer t;
+
     private DataManager dm;
 
     public LogicManager() throws BLLException {
@@ -32,7 +40,7 @@ public class LogicManager {
             throw new BLLException(ex);
         }
     }
-    
+
     public String getProperty(String key) throws BLLException {
         try {
             return dm.getProperty(key);
@@ -40,7 +48,7 @@ public class LogicManager {
             throw new BLLException(ex);
         }
     }
-    
+
     public void setProperty(String key, String input) throws BLLException {
         try {
             dm.setProperty(key, input);
@@ -63,7 +71,7 @@ public class LogicManager {
 
     public boolean createUser(String username, String password, String firstname, String lastname) throws BLLException {
         try {
-            return dm.createUser(username,password,firstname,lastname);
+            return dm.createUser(username, password, firstname, lastname);
         } catch (DALException ex) {
             throw new BLLException(ex);
         }
@@ -90,45 +98,73 @@ public class LogicManager {
             throw new BLLException("File format not supported.", ex);
         }
     }
-    
-    
-    public void addLog(int userId, String type, String message) throws BLLException{
+
+    public void addLog(int userId, String type, String message) throws BLLException {
         try {
             dm.addLog(userId, type, message);
         } catch (DALException ex) {
             throw new BLLException(ex);
         }
     }
-    
-    public List<LogItem> getAllLogs() throws BLLException{
+
+    public List<LogItem> getAllLogs() throws BLLException {
         try {
             return dm.getAllLogs();
         } catch (Exception ex) {
             throw new BLLException(ex);
         }
     }
-    
-    public List<LogItem> getNewLogs() throws BLLException{
+
+    public List<LogItem> getNewLogs() throws BLLException {
         try {
             return dm.getNewLogs();
         } catch (DALException ex) {
             throw new BLLException(ex);
         }
     }
-    
-    public List<Config> getAllConfigs() throws BLLException{
+
+    public List<Config> getAllConfigs() throws BLLException {
         try {
             return dm.getAllConfigs();
         } catch (DALException ex) {
             throw new BLLException(ex);
         }
     }
-    
-    public void saveConfig(String name, String extension, HashMap map) throws BLLException{
+
+    public void saveConfig(String name, String extension, HashMap map) throws BLLException {
         try {
             dm.saveConfig(name, extension, map);
         } catch (DALException ex) {
             throw new BLLException(ex);
         }
     }
+
+    public void logTimer() {
+        t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    tempLog.clear();
+                    tempLog.addAll(getNewLogs());
+                    System.out.println("Fetched log");
+                } catch (BLLException ex) {
+                    Logger.getLogger(LogicManager.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }, 0, 5000);
+    }
+
+    public ObservableList<LogItem> getTempLog() {
+        return tempLog;
+    }
+    
+    public Timer getTimer() {
+        if (t != null) {
+            return t;
+        } else {
+            return null;
+        }
+    }
+    
 }

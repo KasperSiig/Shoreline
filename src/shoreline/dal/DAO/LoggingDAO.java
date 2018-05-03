@@ -5,7 +5,6 @@
  */
 package shoreline.dal.DAO;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.control.Alert;
 import shoreline.be.LogItem;
-import shoreline.dal.DataBaseConnector;
 import shoreline.exceptions.DALException;
 
 /**
@@ -48,10 +46,11 @@ public class LoggingDAO {
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 Alert.AlertType at = getAlertType(rs.getString("type"));
-                Date date = rs.getDate("date");
-                LogItem logItem = new LogItem(at, rs.getString("message"), rs.getString("username"), date);
-                logItems.add(logItem);
                 currentId = rs.getInt("id");
+                Date date = rs.getDate("date");
+                LogItem logItem = new LogItem(currentId, at, rs.getString("message"), rs.getString("username"), date);
+                logItems.add(logItem);
+
             }
             return logItems;
         } catch (SQLException ex) {
@@ -81,10 +80,12 @@ public class LoggingDAO {
             while (rs.next()) {
                 Alert.AlertType at = getAlertType(rs.getString("type"));
                 Date date = rs.getDate("date");
-                LogItem logItem = new LogItem(at, rs.getString("message"), rs.getString("username"), date);
-                logItems.add(logItem);
                 currentId = rs.getInt("id");
+                LogItem logItem = new LogItem(currentId, at, rs.getString("message"), rs.getString("username"), date);
+                logItems.add(logItem);
+
             }
+            System.out.println(logItems.size());
             return logItems;
         } catch (SQLException ex) {
             throw new DALException("SQL Error.", ex);

@@ -4,22 +4,20 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Date;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
 import shoreline.be.Config;
 import shoreline.be.ConvTask;
 import shoreline.be.LogItem;
 import shoreline.bll.LogicManager;
 import shoreline.exceptions.BLLException;
-import shoreline.exceptions.DALException;
 import shoreline.exceptions.GUIException;
 
 /**
@@ -42,6 +40,8 @@ public class MainModel {
             this.logList = FXCollections.observableArrayList(getAllLogs());
             this.templateList = FXCollections.observableArrayList("siteName", "assetSerialNumber", "type", "externalWorkOrderId", "systemStatus", "userStatus", "name", "priority", "latestFinishDate", "earliestStartDate", "latestStartDate", "estimatedTime");
             configList = FXCollections.observableArrayList(getAllConfigs());
+            getLatestLog();
+            logicLogListener();
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
@@ -241,6 +241,11 @@ public class MainModel {
         return logList;
     }
 
+    private void getLatestLog() throws GUIException {
+        logic.logTimer();
+    }
+    
+    
     private void addToLogList(LogItem item) {
         logList.add(item);
     }
@@ -288,4 +293,23 @@ public class MainModel {
         logic.saveConfig(name, extension, map);
     }
 
+    public Timer getTimer() {
+        return logic.getTimer();
+    }
+    
+    private void logicLogListener() {
+        logic.getTempLog().addListener(new ListChangeListener<LogItem>() {
+            @Override
+            public void onChanged(ListChangeListener.Change<? extends LogItem> c) {
+                c.next();
+                if (c.wasAdded() || c.wasRemoved() || c.wasReplaced() || c.wasUpdated()) {
+                    logList.addAll(logic.getTempLog());
+                    System.out.println("logic list change");
+                }
+            }
+        });
+    }
+    
+    
+    
 }

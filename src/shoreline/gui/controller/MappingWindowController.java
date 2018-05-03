@@ -113,6 +113,7 @@ public class MappingWindowController implements Initializable, IController {
         model.getBorderPane().getScene().getWindow().setOnCloseRequest((event) -> {
             ThreadPool tPool = ThreadPool.getInstance();
             tPool.closeThreadPool();
+            model.getTimer().cancel();
         });
 
     }
