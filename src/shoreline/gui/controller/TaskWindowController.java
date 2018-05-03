@@ -5,6 +5,7 @@
  */
 package shoreline.gui.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class TaskWindowController implements Initializable, IController {
     private boolean pauseTask() {
         ThreadPool tp = ThreadPool.getInstance();
         if (selectedTasks.size() > 1) {
-            if (openConfirmWindow("Are you sure you want to pause " + selectedTasks.size() + " tasks?", null)) {
+            if (openConfirmWindow("Are you sure you want to pause " + selectedTasks.size() + " tasks?", null, null)) {
                 selectedTasks.forEach((task) -> {
                     tp.pauseTask(task.getTask());
                     try {
@@ -117,7 +118,7 @@ public class TaskWindowController implements Initializable, IController {
     private boolean stopTask() {
         ThreadPool tp = ThreadPool.getInstance();
         if (selectedTasks.size() > 1) {
-            if (openConfirmWindow("Are you sure you want to stop " + selectedTasks.size() + " tasks?", null)) {
+            if (openConfirmWindow("Are you sure you want to stop " + selectedTasks.size() + " tasks?", null, null)) {
                 selectedTasks.forEach((task) -> {
                     tp.cancelTask(task.getTask());
                     model.getTaskList().remove(task.getTask());
@@ -222,11 +223,11 @@ public class TaskWindowController implements Initializable, IController {
         MenuItem delItem = new MenuItem("Delete selected task");
         delItem.setOnAction((event) -> {
             if (selectedTasks.size() > 1) {
-                if (openConfirmWindow("Are you sure you want to delete " + selectedTasks.size() + " tasks?", null)) {
+                if (openConfirmWindow("Are you sure you want to delete " + selectedTasks.size() + " tasks?", null, null)) {
                     selectedTasks.forEach((task) -> {
                         model.getTaskList().remove(task.getTask());
                         try {
-                            model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has paused task " + task.getTask().getName());
+                            model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has deleted task " + task.getTask().getName());
                         } catch (GUIException ex) {
                             Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
                         }
@@ -239,7 +240,7 @@ public class TaskWindowController implements Initializable, IController {
                 selectedTasks.forEach((selectedTask) -> {
                     model.getTaskList().remove(selectedTask.getTask());
                     try {
-                        model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has paused task " + selectedTask.getTask().getName());
+                        model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has deleted task " + selectedTask.getTask().getName());
                     } catch (GUIException ex) {
                         Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
                     }
@@ -281,7 +282,7 @@ public class TaskWindowController implements Initializable, IController {
         System.out.println("added listener");
     }
 
-    private boolean openConfirmWindow(String msg, HashMap map) {
+    private boolean openConfirmWindow(String msg, HashMap map, File file) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(Window.View.Confirm.getView()));
@@ -289,7 +290,7 @@ public class TaskWindowController implements Initializable, IController {
 
             ConfirmationWindowController cwc = fxmlLoader.getController();
             cwc.postInit(model);
-            cwc.setInfo(msg, map);
+            cwc.setInfo(msg, map, file);
 
             Scene scene = new Scene(root);
             Stage stage = new Stage();

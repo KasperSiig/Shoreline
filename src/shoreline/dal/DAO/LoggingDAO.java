@@ -48,7 +48,7 @@ public class LoggingDAO {
                 Alert.AlertType at = getAlertType(rs.getString("type"));
                 currentId = rs.getInt("id");
                 Date date = rs.getDate("date");
-                LogItem logItem = new LogItem(currentId, at, rs.getString("message"), rs.getString("firstName") + " " + rs.getString("firstName"), date);
+                LogItem logItem = new LogItem(currentId, at, rs.getString("message"), rs.getString("firstName") + " " + rs.getString("lastName"), date);
                 logItems.add(logItem);
 
             }
@@ -67,7 +67,7 @@ public class LoggingDAO {
      * @throws DALException
      */
     public List<LogItem> getNewLogs(Connection con) throws DALException {
-        String sql = "SELECT LT.*, UT.username FROM LogTable LT "
+        String sql = "SELECT LT.*, UT.* FROM LogTable LT "
                 + "JOIN UserTable UT ON UT.id = LT.userId "
                 + "WHERE LT.id > ? "
                 + "ORDER BY LT.id;";
@@ -81,7 +81,7 @@ public class LoggingDAO {
                 Alert.AlertType at = getAlertType(rs.getString("type"));
                 Date date = rs.getDate("date");
                 currentId = rs.getInt("id");
-                LogItem logItem = new LogItem(currentId, at, rs.getString("message"), rs.getString("username"), date);
+                LogItem logItem = new LogItem(currentId, at, rs.getString("message"), rs.getString("firstName") + " " + rs.getString("lastName"), date);
                 logItems.add(logItem);
 
             }

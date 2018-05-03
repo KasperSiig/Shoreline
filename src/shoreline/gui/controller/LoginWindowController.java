@@ -94,7 +94,6 @@ public class LoginWindowController implements Initializable, IController {
             } else {
                 lblError.setText("there was a problem with the log in");
                 txtUserName.requestFocus();
-                model.addLog(model.getUser().getId(), Alert.AlertType.ERROR, "There was a login problem");
             }
         } catch (GUIException ex) {
             Window.openExceptionWindow("There was a problem validating your login", ex.getStackTrace());

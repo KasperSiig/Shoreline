@@ -244,20 +244,16 @@ public class MappingWindowController implements Initializable, IController {
             System.out.println("loading config... \n \n");
             MenuItem item = new MenuItem(config.getName());
             item.setOnAction((event) -> {
-                try {
-                    mappingList.clear();
-                    JSONmap.clear();
-                    JSONmap.putAll(config.getMap());
-                    setInfoInlvMap(JSONmap);
-                } catch (GUIException ex) {
-                    Window.openExceptionWindow("There was a problem in the config menu", ex.getStackTrace());
-                }
+                mappingList.clear();
+                JSONmap.clear();
+                JSONmap.putAll(config.getMap());
+                setInfoInlvMap(JSONmap);
             });
             configMenu.getItems().add(item);
         });
     }
 
-    private void openConfirmWindow(String msg, HashMap map) {
+    private void openConfirmWindow(String msg, HashMap map, File file) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(Window.View.Confirm.getView()));
@@ -265,7 +261,7 @@ public class MappingWindowController implements Initializable, IController {
 
             ConfirmationWindowController cwc = fxmlLoader.getController();
             cwc.postInit(model);
-            cwc.setInfo(msg, map);
+            cwc.setInfo(msg, map, file);
 
             Scene scene = new Scene(root);
             Stage stage = new Stage();
@@ -307,12 +303,12 @@ public class MappingWindowController implements Initializable, IController {
                 if (config.getMap() == temp) {
                     return;
                 } else {
-                    openConfirmWindow("Do you want to save this map, if yes please enter name blow", temp);
+                    openConfirmWindow("Do you want to save this map, if yes please enter name blow", temp, inputFile);
                     return;
                 }
             }
         } else {
-            openConfirmWindow("Do you want to save this map, if yes please enter name blow", temp);
+            openConfirmWindow("Do you want to save this map, if yes please enter name blow", temp, inputFile);
         }
     }
 

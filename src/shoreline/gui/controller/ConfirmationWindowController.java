@@ -7,19 +7,16 @@ package shoreline.gui.controller;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
+import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import shoreline.be.Config;
-import shoreline.exceptions.GUIException;
 import shoreline.gui.model.MainModel;
 import shoreline.statics.Window;
 
@@ -33,6 +30,7 @@ public class ConfirmationWindowController implements Initializable, IController 
     MainModel model;
     HashMap map;
     Stage stage;
+    File file;
     private boolean confirmation = false;
 
     @FXML
@@ -54,8 +52,9 @@ public class ConfirmationWindowController implements Initializable, IController 
         this.model = model;
     }
 
-    public void setInfo(String msg, HashMap map) {
+    public void setInfo(String msg, HashMap map, File file) {
         this.map = map;
+        this.file = file;
         lblInfo.setText(msg);
         if (map != null) {
             txtInput.requestFocus();
@@ -77,13 +76,17 @@ public class ConfirmationWindowController implements Initializable, IController 
                         return;
                     }
                 }
-                Config config = new Config(name, "xlsx", map);
-                model.addToConfigList(config);
-                try {
-                    model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has created aconfig" + config.getName());
-                } catch (GUIException ex) {
-                    Window.openExceptionWindow("There was a problem adding a log", ex.getStackTrace());
+                if (file != null) {
+                    String extension = "";
+
+                    int i = file.getAbsolutePath().lastIndexOf('.');
+                    if (i > 0) {
+                        extension = file.getAbsolutePath().substring(i + 1);
+                    }
+                    Config config = new Config(name, extension, map);
+                    model.addToConfigList(config);
                 }
+
             }
         } else {
             txtInput.setDisable(true);
