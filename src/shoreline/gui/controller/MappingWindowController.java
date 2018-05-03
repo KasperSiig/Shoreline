@@ -151,6 +151,7 @@ public class MappingWindowController implements Initializable, IController {
 
     @FXML
     private void handelInputFile(ActionEvent event) {
+        mappingList.clear();
         FileChooser fileChooser = new FileChooser();
         File tempFile = fileChooser.showOpenDialog(bPane.getScene().getWindow());
         if (tempFile != null) {
