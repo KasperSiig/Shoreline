@@ -12,13 +12,16 @@ import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
 import shoreline.be.Config;
 import shoreline.be.ConvTask;
+import shoreline.be.User;
 import shoreline.be.LogItem;
 import shoreline.bll.LogicManager;
 import shoreline.exceptions.BLLException;
 import shoreline.exceptions.GUIException;
+import shoreline.statics.Window;
 
 /**
  *
@@ -33,6 +36,8 @@ public class MainModel {
     private ObservableList<ConvTask> taskList;
     private ObservableList<Config> configList;
 
+    User user;
+
     public MainModel() throws GUIException {
         try {
             this.logic = new LogicManager();
@@ -45,6 +50,14 @@ public class MainModel {
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     /**
@@ -110,6 +123,14 @@ public class MainModel {
         password = hexString.toString();
         try {
             return logic.createUser(username, password, firstname, lastname);
+        } catch (BLLException ex) {
+            throw new GUIException(ex);
+        }
+    }
+
+    public User getUser(String username, String password) throws GUIException {
+        try {
+            return logic.getUser(username, hashString(password).toString());
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
@@ -244,8 +265,7 @@ public class MainModel {
     private void getLatestLog() throws GUIException {
         logic.logTimer();
     }
-    
-    
+
     private void addToLogList(LogItem item) {
         logList.add(item);
     }
@@ -273,8 +293,12 @@ public class MainModel {
         }
     }
 
-    public void addLog(int userId, String type, String message) throws BLLException {
-        logic.addLog(userId, type, message);
+    public void addLog(int userId, Alert.AlertType type, String message) throws GUIException {
+        try {
+            logic.addLog(userId, type, message);
+        } catch (BLLException ex) {
+            throw new GUIException(ex);
+        }
     }
 
     public List<LogItem> getAllLogs() throws BLLException {
@@ -296,7 +320,7 @@ public class MainModel {
     public Timer getTimer() {
         return logic.getTimer();
     }
-    
+
     private void logicLogListener() {
         logic.getTempLog().addListener(new ListChangeListener<LogItem>() {
             @Override
@@ -309,7 +333,5 @@ public class MainModel {
             }
         });
     }
-    
-    
-    
+
 }

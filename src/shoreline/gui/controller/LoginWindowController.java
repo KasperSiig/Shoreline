@@ -88,17 +88,16 @@ public class LoginWindowController implements Initializable, IController {
     private void loginValidation(ActionEvent event) {
         try {
             if (model.validateLogin(txtUserName.getText(), txtPassword.getText())) {
+                model.setUser(model.getUser(txtUserName.getText(), txtPassword.getText()));
                 Window.openView(model, model.getBorderPane(), Window.View.Mapping, "center");
-                model.addLog(1, "ERROR", "Hej Mads :-) DIN LUDER");
-                model.addLog(1, "ERROR", "Hej Mads :-) DIN LUDER!!!");
-                model.addLog(1, "ERROR", "Hej Mads :-) DIN LUDER@@@@@@");
+                model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has logged in");
             } else {
                 lblError.setText("there was a problem with the log in");
+                txtUserName.requestFocus();
+                model.addLog(model.getUser().getId(), Alert.AlertType.ERROR, "There was a login problem");
             }
         } catch (GUIException ex) {
-            Window.openExceptionWindow("Something went wrong with the login window", ex.getStackTrace());
-        } catch (BLLException ex) {
-            Logger.getLogger(LoginWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            Window.openExceptionWindow("There was a problem validating your login", ex.getStackTrace());
         }
 
     }

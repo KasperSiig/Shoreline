@@ -5,16 +5,21 @@
  */
 package shoreline.gui.controller;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import shoreline.be.Config;
+import shoreline.exceptions.GUIException;
 import shoreline.gui.model.MainModel;
 import shoreline.statics.Window;
 
@@ -34,6 +39,8 @@ public class ConfirmationWindowController implements Initializable, IController 
     private JFXTextField txtInput;
     @FXML
     private Label lblInfo;
+    @FXML
+    private JFXButton btnYes;
 
     /**
      * Initializes the controller class.
@@ -50,6 +57,11 @@ public class ConfirmationWindowController implements Initializable, IController 
     public void setInfo(String msg, HashMap map) {
         this.map = map;
         lblInfo.setText(msg);
+        if (map != null) {
+            txtInput.requestFocus();
+        } else {
+            btnYes.requestFocus();
+        }
     }
 
     @FXML
@@ -67,7 +79,11 @@ public class ConfirmationWindowController implements Initializable, IController 
                 }
                 Config config = new Config(name, "xlsx", map);
                 model.addToConfigList(config);
-
+                try {
+                    model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has created aconfig" + config.getName());
+                } catch (GUIException ex) {
+                    Window.openExceptionWindow("There was a problem adding a log", ex.getStackTrace());
+                }
             }
         } else {
             txtInput.setDisable(true);

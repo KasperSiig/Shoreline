@@ -24,6 +24,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
@@ -191,35 +192,37 @@ public class MappingWindowController implements Initializable, IController {
 
     @FXML
     private void handleCreateTask(ActionEvent event) {
-
-        if (JSONmap.isEmpty()) {
-            Window.openExceptionWindow("There is no maps set");
-            return;
-        }
-
-        if (txtFileName.getText().equals("")) {
-            Window.openExceptionWindow("Enter target filename");
-            return;
-        }
-
-        String targetName = txtFileName.getText();
-        String name = inputFile.getName() + " -> " + targetName + ".json";
-
-        if (targetPath == null) {
-            Window.openExceptionWindow("Choose a target path.");
-            return;
-        }
-
-        HashMap temp = new HashMap(JSONmap);
-        HashMap cellTemp = new HashMap(cellIndexMap);
-        ConvTask task = new ConvTask(cellTemp, temp, name, inputFile, new File(targetPath + "\\" + targetName + ".json"));
-//        System.out.println(task.getMapper());
-        model.addToTaskList(task);
-
         try {
+            if (JSONmap.isEmpty()) {
+                Window.openExceptionWindow("There is no maps set");
+                return;
+            }
+
+            if (txtFileName.getText().equals("")) {
+                Window.openExceptionWindow("Enter target filename");
+                return;
+            }
+
+            String targetName = txtFileName.getText();
+            String name = inputFile.getName() + " -> " + targetName + ".json";
+
+            if (targetPath == null) {
+                Window.openExceptionWindow("Choose a target path.");
+                return;
+            }
+
+            HashMap temp = new HashMap(JSONmap);
+            HashMap cellTemp = new HashMap(cellIndexMap);
+            ConvTask task = new ConvTask(cellTemp, temp, name, inputFile, new File(targetPath + "\\" + targetName + ".json"));
+//        System.out.println(task.getMapper());
+            model.addToTaskList(task);
             model.addCallableToTask(task);
+
+            if (task == null) {
+                model.addLog(model.getUser().getId(), Alert.AlertType.ERROR, model.getUser().getfName() + "Tried to create a task and it failed");
+            }
         } catch (GUIException ex) {
-            Window.openExceptionWindow(ex.getMessage());
+            Window.openExceptionWindow("There was truble making a task", ex.getStackTrace());
         }
     }
 
@@ -241,10 +244,14 @@ public class MappingWindowController implements Initializable, IController {
             System.out.println("loading config... \n \n");
             MenuItem item = new MenuItem(config.getName());
             item.setOnAction((event) -> {
-                mappingList.clear();
-                JSONmap.clear();
-                JSONmap.putAll(config.getMap());
-                setInfoInlvMap(JSONmap);
+                try {
+                    mappingList.clear();
+                    JSONmap.clear();
+                    JSONmap.putAll(config.getMap());
+                    setInfoInlvMap(JSONmap);
+                } catch (GUIException ex) {
+                    Window.openExceptionWindow("There was a problem in the config menu", ex.getStackTrace());
+                }
             });
             configMenu.getItems().add(item);
         });
@@ -264,6 +271,7 @@ public class MappingWindowController implements Initializable, IController {
             Stage stage = new Stage();
             stage.setTitle("Confirmation");
             stage.setScene(scene);
+            stage.setAlwaysOnTop(true);
             stage.showAndWait();
         } catch (IOException ex) {
             Logger.getLogger(MappingWindowController.class.getName()).log(Level.SEVERE, null, ex);

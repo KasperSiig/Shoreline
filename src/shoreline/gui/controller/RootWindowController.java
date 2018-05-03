@@ -13,7 +13,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import shoreline.bll.ThreadPool;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.MenuBarFactory;
 import shoreline.gui.model.MainModel;

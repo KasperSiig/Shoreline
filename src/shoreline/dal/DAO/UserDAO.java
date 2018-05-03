@@ -11,6 +11,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import shoreline.be.User;
 import shoreline.exceptions.DALException;
 
 /**
@@ -70,4 +73,25 @@ public class UserDAO {
         return false;
     }
 
+    public User getUser(String userName, String password, Connection con) throws DALException {
+        String sql = "SELECT * FROM UserTable WHERE username = ? AND password = ?";
+        
+        try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            
+            statement.setString(1, userName);
+            statement.setString(2, password);
+            
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return new User(rs.getString("lastName"), rs.getString("firstName"), rs.getString("username"), rs.getInt("id"));
+            }
+            
+        } catch (SQLException ex) {   
+            throw new DALException("Error loading user", ex);
+        }
+        System.out.println("hi");
+        return null;
+    }
+    
+    
 }

@@ -37,7 +37,7 @@ public class LoggingDAO {
      * @throws DALException
      */
     public List<LogItem> getAllLogs(Connection con) throws DALException {
-        String sql = "SELECT LT.*, UT.username FROM LogTable LT "
+        String sql = "SELECT LT.*, UT.* FROM LogTable LT "
                 + "JOIN UserTable UT ON UT.id = LT.userId "
                 + "ORDER BY UT.id";
         try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -48,7 +48,7 @@ public class LoggingDAO {
                 Alert.AlertType at = getAlertType(rs.getString("type"));
                 currentId = rs.getInt("id");
                 Date date = rs.getDate("date");
-                LogItem logItem = new LogItem(currentId, at, rs.getString("message"), rs.getString("username"), date);
+                LogItem logItem = new LogItem(currentId, at, rs.getString("message"), rs.getString("firstName") + " " + rs.getString("firstName"), date);
                 logItems.add(logItem);
 
             }
@@ -96,15 +96,15 @@ public class LoggingDAO {
      * Adds a log to the DB.
      *
      * @param userId
-     * @param type
+     * @param at
      * @param message
      * @throws DALException
      */
-    public void addLog(int userId, String type, String message, Connection con) throws DALException {
+    public void addLog(int userId, Alert.AlertType at, String message, Connection con) throws DALException {
         String sql = "INSERT INTO LogTable VALUES(?,?,GETDATE(),?)";
         try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            statement.setString(1, type);
+            statement.setString(1, at.toString());
             statement.setInt(2, userId);
             statement.setString(3, message);
             statement.executeUpdate();

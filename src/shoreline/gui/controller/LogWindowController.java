@@ -61,7 +61,7 @@ public class LogWindowController implements Initializable, IController {
 
         TableColumn userCol = new TableColumn("User");
         userCol.setCellValueFactory(new PropertyValueFactory<LogItem, String>("User"));
-        tv.getColumns().addAll(typeCol, messageCol, dateCol, userCol);
+        tv.getColumns().addAll(typeCol, userCol, messageCol, dateCol);
     }
 
     private void setTable() {
