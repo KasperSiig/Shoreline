@@ -244,14 +244,10 @@ public class MappingWindowController implements Initializable, IController {
             System.out.println("loading config... \n \n");
             MenuItem item = new MenuItem(config.getName());
             item.setOnAction((event) -> {
-                try {
-                    mappingList.clear();
-                    JSONmap.clear();
-                    JSONmap.putAll(config.getMap());
-                    setInfoInlvMap(JSONmap);
-                } catch (GUIException ex) {
-                    Window.openExceptionWindow("There was a problem in the config menu", ex.getStackTrace());
-                }
+                mappingList.clear();
+                JSONmap.clear();
+                JSONmap.putAll(config.getMap());
+                setInfoInlvMap(JSONmap);
             });
             configMenu.getItems().add(item);
         });
