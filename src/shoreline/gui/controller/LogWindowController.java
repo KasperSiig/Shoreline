@@ -52,15 +52,19 @@ public class LogWindowController implements Initializable, IController {
     private void makeTable() {
         TableColumn typeCol = new TableColumn("Type");
         typeCol.setCellValueFactory(new PropertyValueFactory<LogItem, Alert.AlertType>("Type"));
+        typeCol.setMaxWidth(2000);
 
         TableColumn messageCol = new TableColumn("Message");
         messageCol.setCellValueFactory(new PropertyValueFactory<LogItem, String>("Message"));
 
         TableColumn dateCol = new TableColumn("Date");
         dateCol.setCellValueFactory(new PropertyValueFactory<LogItem, Date>("Date"));
+        dateCol.setMaxWidth(2500);
 
         TableColumn userCol = new TableColumn("User");
         userCol.setCellValueFactory(new PropertyValueFactory<LogItem, String>("User"));
+        userCol.setMaxWidth(1500);
+
         tv.getColumns().addAll(typeCol, userCol, messageCol, dateCol);
     }
 
