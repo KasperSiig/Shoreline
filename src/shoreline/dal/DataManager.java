@@ -55,11 +55,11 @@ public class DataManager {
         return pass;
     }
 
-    public boolean createUser(String username, String password, String firstname, String lastname) throws DALException {
+    public int createUser(String username, String password, String firstname, String lastname) throws DALException {
         Connection con = conPool.checkOut();
-        boolean bool = userDAO.createUser(username, password, firstname, lastname, con);
+        int id = userDAO.createUser(username, password, firstname, lastname, con);
         conPool.checkIn(con);
-        return bool;
+        return id;
     }
     
     public User getUser(String userName, String password) throws DALException {

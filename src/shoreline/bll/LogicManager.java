@@ -70,7 +70,7 @@ public class LogicManager {
         }
     }
 
-    public boolean createUser(String username, String password, String firstname, String lastname) throws BLLException {
+    public int createUser(String username, String password, String firstname, String lastname) throws BLLException {
         try {
             return dm.createUser(username, password, firstname, lastname);
         } catch (DALException ex) {

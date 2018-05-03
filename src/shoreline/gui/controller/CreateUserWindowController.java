@@ -55,13 +55,9 @@ public class CreateUserWindowController implements Initializable, IController {
     private void onCreateAction(ActionEvent event) {
         if (checkEmptyFields()) {
             try {
-                model.createUser(txtUsername.getText(), txtPassword.getText(), txtFirstname.getText(), txtLastname.getText());
+                int id = model.createUser(txtUsername.getText(), txtPassword.getText(), txtFirstname.getText(), txtLastname.getText());
                 Window.openView(model, model.getBorderPane(), Window.View.Login, "center");
-                try {
-                    model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has paused task");
-                } catch (GUIException ex) {
-                    Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
-                }
+                model.addLog(id, Alert.AlertType.INFORMATION, "A new user was created with ID: " + id);
             } catch (GUIException ex) {
                 Window.openExceptionWindow("Error creating user", ex.getStackTrace());
             }

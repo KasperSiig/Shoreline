@@ -118,7 +118,7 @@ public class MainModel {
      * @return
      * @throws GUIException
      */
-    public boolean createUser(String username, String password, String firstname, String lastname) throws GUIException {
+    public int createUser(String username, String password, String firstname, String lastname) throws GUIException {
         StringBuffer hexString = hashString(password);
         password = hexString.toString();
         try {
