@@ -29,6 +29,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import shoreline.be.ConvTask;
+import shoreline.bll.ThreadPool;
 import shoreline.gui.model.MainModel;
 import shoreline.statics.Window;
 
@@ -72,6 +73,23 @@ public class TaskWindowController implements Initializable, IController {
 
     @FXML
     private void handleTaskStop(ActionEvent event) {
+        ThreadPool tp = ThreadPool.getInstance();
+        if (selectedTasks.size() > 1) {
+            if (openConfirmWindow("Are you sure you want to stop " + selectedTasks.size() + " tasks?", null)) {
+                selectedTasks.forEach((task) -> {
+                    tp.cancelTask(task.getTask());
+                    model.getTaskList().remove(task.getTask());
+                });
+                selectedTasks.clear();
+            } else {
+                return;
+            }
+        } else {
+            ConvTask task = selectedTasks.get(0).getTask();
+            tp.cancelTask(task);
+            model.getTaskList().remove(task);
+            selectedTasks.clear();
+        }
     }
 
     @Override
