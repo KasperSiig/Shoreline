@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package shoreline.dal;
+package shoreline.dal.DAO;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -14,10 +14,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import shoreline.be.Config;
+import shoreline.dal.DataBaseConnector;
 import shoreline.exceptions.DALException;
 
 /**
@@ -26,28 +26,21 @@ import shoreline.exceptions.DALException;
  */
 public class ConfigDAO {
 
-    DataBaseConnector dbConnector;
-
-    public ConfigDAO() throws DALException {
-        try {
-            dbConnector = new DataBaseConnector();
-        } catch (IOException ex) {
-            throw new DALException("Could not connect to database.", ex);
-        }
+    public ConfigDAO() {
     }
 
     /**
      * Fetches all configurations from the DB.
      *
+     * @param con
      * @return
      * @throws DALException
      */
-    public List<Config> getAllConfigs() throws DALException {
+    public List<Config> getAllConfigs(Connection con) throws DALException {
         List<Config> configs = new ArrayList();
+        String sql = "SELECT * FROM ConfigTable";
+        try {
 
-        try (Connection con = dbConnector.getConnection()) {
-
-            String sql = "SELECT * FROM ConfigTable";
             PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             ResultSet rs = statement.executeQuery();
@@ -81,8 +74,8 @@ public class ConfigDAO {
      * @param map
      * @throws DALException
      */
-    public void saveConfig(String name, String extension, HashMap map) throws DALException {
-        try (Connection con = dbConnector.getConnection()) {
+    public void saveConfig(String name, String extension, HashMap map, Connection con) throws DALException {
+        try {
             int id = 0;
             String sql = "INSERT INTO ConfigTable VALUES(?,?)";
 
@@ -96,7 +89,7 @@ public class ConfigDAO {
                 rs.next();
                 id = rs.getInt(1);
             }
-            
+
             final int fid = id;
             map.forEach((Object k, Object v) -> {
                 try {
