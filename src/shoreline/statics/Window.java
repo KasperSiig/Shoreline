@@ -3,13 +3,11 @@ package shoreline.statics;
 import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 import shoreline.Main;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.MenuBarFactory;
@@ -18,12 +16,15 @@ import shoreline.gui.model.MainModel;
 
 /**
  *
- * @author
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class Window {
 
     private static String dir = "/shoreline/gui/view/";
 
+    /**
+     * Sets a predefined values that a View can have
+     */
     public enum View {
         Main("MainWindow.fxml"),
         Login("LoginWindow.fxml"),
@@ -154,6 +155,12 @@ public class Window {
         alert.show();
     }
 
+    /**
+     * Removes Node from specified area in BorderPane
+     * 
+     * @param pos
+     * @param borderpane 
+     */
     public static void closeWindow(String pos, BorderPane borderpane) {
         switch (pos) {
             case "top":

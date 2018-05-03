@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.bll;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
@@ -24,7 +18,7 @@ import shoreline.exceptions.DALException;
 
 /**
  *
- * @author Kasper Siig
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class LogicManager {
 
@@ -147,18 +141,17 @@ public class LogicManager {
                 try {
                     tempLog.clear();
                     tempLog.addAll(getNewLogs());
-                    System.out.println("Fetched log");
                 } catch (BLLException ex) {
                     Logger.getLogger(LogicManager.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }, 0, 5000);
+        }, 5000, 5000);
     }
 
     public ObservableList<LogItem> getTempLog() {
         return tempLog;
     }
-    
+
     public Timer getTimer() {
         if (t != null) {
             return t;
@@ -166,5 +159,5 @@ public class LogicManager {
             return null;
         }
     }
-    
+
 }

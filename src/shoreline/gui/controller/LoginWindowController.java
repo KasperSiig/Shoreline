@@ -1,50 +1,45 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.gui.controller;
 
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
-import java.sql.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import shoreline.be.LogItem;
 import shoreline.exceptions.BLLException;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.MainModel;
 import shoreline.statics.Window;
 
 /**
- * FXML Controller class
+ * FXML Controller for Login View
  *
- * @author madst
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class LoginWindowController implements Initializable, IController {
 
-    MainModel model;
+    /* Java Variables */
+    private MainModel model;
+    
+    /* JavaFX Variables*/
     @FXML
     private BorderPane bPane;
+    @FXML
+    private Label lblError;
+    
+    /* JFoenix Variables */
     @FXML
     private JFXTextField txtUserName;
     @FXML
     private JFXPasswordField txtPassword;
-    @FXML
-    private Label lblError;
 
-    /**
-     * Initializes the controller class.
-     */
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     }
@@ -55,17 +50,7 @@ public class LoginWindowController implements Initializable, IController {
     }
 
     /**
-     * sout's that the password was forgotten
-     *
-     * @param event
-     */
-    @FXML
-    private void forgotPassword(MouseEvent event) {
-        System.out.println("forgot you're password eh?");
-    }
-
-    /**
-     * Opens the create new user window
+     * Opens the window to create new user
      *
      * @param event
      */
@@ -79,8 +64,8 @@ public class LoginWindowController implements Initializable, IController {
     }
 
     /**
-     * Validates the information given in the textfields and if it OK it loads
-     * the main window otherwise it set the label to be a text
+     * Validates the information given in the TextFields and if login is valid
+     * logs the user in. Otherwise it shows an error message.
      *
      * @param event
      */

@@ -8,29 +8,45 @@ import shoreline.gui.model.MainModel;
 import shoreline.statics.Window;
 
 /**
- *
- * @author
+ * Factory to generate MenuBar based on Enum MenuType
+ * 
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class MenuBarFactory {
 
-    MainModel model;
-    boolean taskIsOpen = false;
-    boolean logIsOpen = false;
+    private MainModel model;
+    private boolean taskIsOpen = false;
+    private boolean logIsOpen = false;
 
+    /**
+     * Defines what type of Menu can be generated
+     */
     public enum MenuType {
         Default
     }
 
+    /**
+     * Returns MenuBar based on Enum MenuType
+     * 
+     * @param menuType What MenuBar to be generated
+     * @param model Makes it possible to call methods in model from MenuBar
+     * @return MenuBar
+     */
     public MenuBar createMenuBar(MenuType menuType, MainModel model) {
         this.model = model;
         switch (menuType) {
             case Default:
                 return defaultMenuBar();
             default:
-                throw new AssertionError();
+                throw new IllegalArgumentException();
         }
     }
 
+    /**
+     * Is called to return the Default MenuBar
+     * 
+     * @return MenuBar
+     */
     private MenuBar defaultMenuBar() {
         Menu options = new Menu("Options");
         options.getItems().add(openTaskView());
@@ -39,13 +55,18 @@ public class MenuBarFactory {
         return menuBar;
     }
 
+    /**
+     * @return MenuItem to open/close Task View
+     */
     private MenuItem openTaskView() {
-        MenuItem openTaskView = new MenuItem("Open Task view");
+        MenuItem openTaskView = new MenuItem("Open Task View");
         openTaskView.setOnAction((event) -> {
             try {
                 if (!taskIsOpen) {
+                    openTaskView.setText("Close Task View");
                     Window.openView(model, model.getBorderPane(), Window.View.TaskView, "right");
                 } else {
+                    openTaskView.setText("Open Task View");
                     Window.closeWindow("right", model.getBorderPane());
                 }
                 taskIsOpen = !taskIsOpen;
@@ -56,13 +77,18 @@ public class MenuBarFactory {
         return openTaskView;
     }
 
+    /**
+     * @return MenuItem to open/close Log View
+     */
     private MenuItem openLogView() {
         MenuItem openLogView = new MenuItem("Open Log view");
         openLogView.setOnAction((event) -> {
             try {
                 if (!logIsOpen) {
+                    openLogView.setText("Close Log View");
                     Window.openView(model, model.getBorderPane(), Window.View.logView, "bottom");
                 } else {
+                    openLogView.setText("Open Log View");
                     Window.closeWindow("bottom", model.getBorderPane());
                 }
                 logIsOpen = !logIsOpen;
@@ -72,6 +98,4 @@ public class MenuBarFactory {
         });
         return openLogView;
     }
-    
-    
 }

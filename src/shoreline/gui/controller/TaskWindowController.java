@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.gui.controller;
 
 import java.io.IOException;
@@ -30,34 +25,44 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import shoreline.be.ConvTask;
 import shoreline.bll.ThreadPool;
+import shoreline.exceptions.GUIException;
 import shoreline.gui.model.MainModel;
 import shoreline.statics.Window;
 
 /**
  * FXML Controller class
  *
- * @author madst
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class TaskWindowController implements Initializable, IController {
 
-    List<TaskView> taskViewList = new ArrayList();
-    List<TaskView> selectedTasks = new ArrayList();
-    ContextMenu cMenu = new ContextMenu();
+    /* Java Variables */
+    private List<TaskView> selectedTasks;
 
-    MainModel model;
+    private ContextMenu cMenu;
 
+    private MainModel model;
+
+    /* JavaFX Variables */
     @FXML
     private VBox vBox;
     @FXML
     private AnchorPane aPane;
 
-    /**
-     * Initializes the controller class.
-     */
+    public TaskWindowController() {
+        this.cMenu = new ContextMenu();
+        this.selectedTasks = new ArrayList();
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     }
 
+    /**
+     * Starts all the selected tasks
+     *
+     * @param event
+     */
     @FXML
     private void handleTaskPlay(ActionEvent event) {
         for (TaskView taskView : selectedTasks) {
@@ -66,6 +71,11 @@ public class TaskWindowController implements Initializable, IController {
         }
     }
 
+    /**
+     * Pauses all selected tasks
+     *
+     * @param event
+     */
     @FXML
     private void handleTaskPause(ActionEvent event) {
         ThreadPool tp = ThreadPool.getInstance();
@@ -77,12 +87,19 @@ public class TaskWindowController implements Initializable, IController {
             } else {
                 return;
             }
+        } else if (selectedTasks.isEmpty()) {
+            Window.openExceptionWindow("No tasks are selected.");
         } else {
             ConvTask task = selectedTasks.get(0).getTask();
             tp.pauseTask(task);
         }
     }
 
+    /**
+     * Cancels all selected tasks
+     *
+     * @param event
+     */
     @FXML
     private void handleTaskStop(ActionEvent event) {
         ThreadPool tp = ThreadPool.getInstance();
@@ -96,6 +113,8 @@ public class TaskWindowController implements Initializable, IController {
             } else {
                 return;
             }
+        } else if (selectedTasks.isEmpty()) {
+            Window.openExceptionWindow("No tasks are selected.");
         } else {
             ConvTask task = selectedTasks.get(0).getTask();
             tp.cancelTask(task);
@@ -103,7 +122,7 @@ public class TaskWindowController implements Initializable, IController {
             selectedTasks.clear();
         }
     }
-
+    
     @Override
     public void postInit(MainModel model) {
         this.model = model;
@@ -124,8 +143,12 @@ public class TaskWindowController implements Initializable, IController {
         genRightClickDel();
     }
 
+    /**
+     * Generates TaskViews for List
+     * 
+     * @param model 
+     */
     private void genTasksForList(MainModel model) {
-        System.out.println(model.getTaskList());
         vBox.getChildren().clear();
         model.getTaskList().forEach((convTask) -> {
             TaskView taskView = new TaskView(convTask);
@@ -164,24 +187,29 @@ public class TaskWindowController implements Initializable, IController {
 
     }
 
+    /**
+     * Generates MenuItem for starting task
+     */
     private void genRightClickStart() {
         MenuItem startItem = new MenuItem("Start selected tasks");
         startItem.setOnAction((event) -> {
-            for (TaskView selectedTask : selectedTasks) {
+            selectedTasks.forEach((selectedTask) -> {
                 model.startTask(selectedTask.getTask());
-            }
+            });
         });
         cMenu.getItems().addAll(startItem);
     }
 
+    /**
+     * Generates MenuItem for delete task
+     */
     private void genRightClickDel() {
-//        cMenu.getItems().remove(0);
         MenuItem delItem = new MenuItem("Delete task");
         delItem.setOnAction((event) -> {
             if (selectedTasks.size() > 1) {
                 if (openConfirmWindow("Are you sure you want to delete " + selectedTasks.size() + " tasks?", null)) {
-                    selectedTasks.forEach((Task) -> {
-                        model.getTaskList().remove(Task.getTask());
+                    selectedTasks.forEach((selectedTask) -> {
+                        model.getTaskList().remove(selectedTask.getTask());
                     });
                     selectedTasks.clear();
                 } else {
@@ -197,21 +225,26 @@ public class TaskWindowController implements Initializable, IController {
         cMenu.getItems().add(delItem);
     }
 
+    /**
+     * Adds listener to TaskList in model
+     */
     private void addListener() {
         model.getTaskList().addListener((ListChangeListener.Change<? extends ConvTask> c) -> {
             while (c.next()) {
-                System.out.println("inside while");
                 if (c.wasAdded() || c.wasPermutated() || c.wasRemoved() || c.wasReplaced() || c.wasUpdated()) {
                     genTasksForList(model);
-                    System.out.println("changed");
                 }
             }
-            System.out.println("outside while");
-
         });
-        System.out.println("added listener");
     }
 
+    /**
+     * Opens window with yes and no buttons
+     * 
+     * @param msg
+     * @param map
+     * @return 
+     */
     private boolean openConfirmWindow(String msg, HashMap map) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
@@ -229,7 +262,7 @@ public class TaskWindowController implements Initializable, IController {
             stage.showAndWait();
             return cwc.getConfirmation();
         } catch (IOException ex) {
-            Logger.getLogger(MappingWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            Window.openExceptionWindow("Couldn't open confirmation window.");
         }
         return false;
     }

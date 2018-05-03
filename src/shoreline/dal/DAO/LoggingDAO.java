@@ -85,7 +85,6 @@ public class LoggingDAO {
                 logItems.add(logItem);
 
             }
-            System.out.println(logItems.size());
             return logItems;
         } catch (SQLException ex) {
             throw new DALException("SQL Error.", ex);
