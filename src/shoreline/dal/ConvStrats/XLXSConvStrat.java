@@ -11,10 +11,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import shoreline.be.ConvTask;
 import shoreline.bll.ThreadPool;
@@ -43,19 +46,20 @@ public class XLXSConvStrat implements ConvStrategy {
         // Creates the Callable, that's going to be added to the ConvTask
         Callable call = (Callable) () -> {
             try {
+                task.setIsRunning(true);
                 threadPool.removeFromPending(task);
                 fin = new FileInputStream(task.getSource());
                 wb = new XSSFWorkbook(fin);
-
                 // XLSX files can contain more sheets, this gets the one at index 0
                 sheet1 = wb.getSheetAt(0);
                 writeJson(task);
                 threadPool.removeFromRunning(task);
                 threadPool.addToFinished(task);
+                task.setIsRunning(false);
             } catch (FileNotFoundException ex) {
                 throw new DALException("File was not found.", ex);
             } catch (IOException ex) {
-                throw new DALException("Something went wrong.", ex);
+                throw new DALException("Error reading file", ex);
             }
             return null;
         };
@@ -89,38 +93,20 @@ public class XLXSConvStrat implements ConvStrategy {
      */
     private void writeJson(ConvTask task) throws DALException {
 
-        JSONArray jAr = new JSONArray();
+        JSONArray jAr = task.getjAr();
 
         // Is being used to keep track of what row to pull data from
-        int i = 1;
-        while (sheet1.getRow(i) != null) {
-            JSONObject jOb = new JSONObject();
-
-            // Needs to be final, to be used inside lambda expression
-            final int pos = i;
-            JSONObject planning = new JSONObject();
-            task.getMapper().forEach((key, value) -> {
-                if (key.equals("name")) {
-                    if (getSheetdata(value, pos, task).equals("")) {
-                        jOb.put("name", getSheetdata("Description2", pos, task));
-                    } else {
-                        jOb.put(key, getSheetdata(value, pos, task));
-                    }
-                } else if (key.equals("earliestStartDate") || key.equals("latestFinishDate") || key.equals("latestStartDate")) {
-                    planning.put(key, getSheetdata(value, pos, task));
-                } else if (key.equals("estimatedTime")) {
-                    planning.put("estimatedTime", getSheetdata(value, pos, task));
-                } else {
-                    jOb.put(key, getSheetdata(value, pos, task));
-                }
-            });
-            jOb.put("createdOn", Calendar.getInstance().getTime());
-            jOb.put("createdBy", "SAP");
-            jOb.put("planning", planning);
-
+        int i = task.getProgress();
+        while (sheet1.getRow(i++) != null) {
+            JSONObject jOb = createJSONObject(i, task);
             jAr.put(jOb);
-            i++;
+            task.setProgress(i);
+            task.setjAr(jAr);
+            writeToFile(task, jAr);            
         }
+    }
+
+    private void writeToFile(ConvTask task, JSONArray jAr) throws JSONException, DALException {
         try {
             // Gets the destination to write to 
             File file = task.getTarget();
@@ -129,12 +115,47 @@ public class XLXSConvStrat implements ConvStrategy {
                 fileWriter.write(jAr.toString(4));
                 fileWriter.flush();
                 fileWriter.close();
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                throw new DALException("Thread sleep fail", ex);
             }
         } catch (IOException ex) {
             throw new DALException("Error writing JSON File", ex);
         }
     }
 
+    private JSONObject createJSONObject(int i, ConvTask task) throws JSONException {
+        JSONObject jOb = new JSONObject();
+        // Needs to be final, to be used inside lambda expression
+        final int pos = i;
+        JSONObject planning = new JSONObject();
+        task.getMapper().forEach((key, value) -> {
+            if (key.equals("name")) {
+                if (getSheetdata(value, pos, task).equals("")) {
+                    jOb.put("name", getSheetdata("Description2", pos, task));
+                } else {
+                    jOb.put(key, getSheetdata(value, pos, task));
+                }
+            } else if (key.equals("earliestStartDate") || key.equals("latestFinishDate") || key.equals("latestStartDate")) {
+                planning.put(key, getSheetdata(value, pos, task));
+            } else if (key.equals("estimatedTime")) {
+                planning.put("estimatedTime", getSheetdata(value, pos, task));
+            } else {
+                jOb.put(key, getSheetdata(value, pos, task));
+            }
+        });
+        jOb.put("createdOn", Calendar.getInstance().getTime());
+        jOb.put("createdBy", "SAP");
+        jOb.put("planning", planning);
+        return jOb;
+    }
+    
+    private void writeToFile(JSONArray jAr) {
+        
+    }
+    
+
+    
     private Date getDate(String sheetdata) throws DALException {
         try {
             DateFormat format = new SimpleDateFormat("dd-MM-yyyy");

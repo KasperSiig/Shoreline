@@ -112,10 +112,22 @@ public class ThreadPool {
     public boolean cancelTask(ConvTask task) {
         if (running.contains(task)) {
             running.remove(task);
+            task.setIsRunning(false);
             return task.getFuture().cancel(true);
         }
         return false;
     }
+    
+    public boolean pauseTask(ConvTask task) {
+        if (running.contains(task)) {
+            running.remove(task);
+            pending.add(task);
+            task.setIsRunning(true);
+            return task.getFuture().cancel(true);
+        }
+        return false;
+    }
+
     
     /**
      * Shuts down the ExecutorSerivce

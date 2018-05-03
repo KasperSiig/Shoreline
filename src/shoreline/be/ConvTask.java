@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import org.json.JSONArray;
 
 
 /**
@@ -23,8 +24,12 @@ public class ConvTask {
     private boolean isRunning;
     private Callable<ConvTask> Callable;
     private Future future;
+    private int progress;
+    private JSONArray jAr;
 
     public ConvTask(HashMap<String, Integer> cellIndexMap, HashMap<String, String> mapper, String name, File source, File target) {
+        this.jAr = new JSONArray();
+        this.progress = 0;
         this.cellIndexMap = cellIndexMap;
         this.mapper = mapper;
         this.name = name;
@@ -57,8 +62,8 @@ public class ConvTask {
         return isRunning;
     }
 
-    public void setIsRunning() {
-        this.isRunning = !isRunning;
+    public void setIsRunning(boolean isRunning) {
+        this.isRunning = isRunning;
     }
 
     public Callable<ConvTask> getCallable() {
@@ -76,6 +81,23 @@ public class ConvTask {
     public void setFuture(Future future) {
         this.future = future;
     }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
+    public JSONArray getjAr() {
+        return jAr;
+    }
+
+    public void setjAr(JSONArray jAr) {
+        this.jAr = jAr;
+    }
+    
     
     
 }
