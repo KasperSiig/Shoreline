@@ -62,13 +62,25 @@ public class TaskWindowController implements Initializable, IController {
     private void handleTaskPlay(ActionEvent event) {
         for (TaskView taskView : selectedTasks) {
             System.out.println(taskView.getTask().getMapper());
-            taskView.getTask().setIsRunning();
             model.startTask(taskView.getTask());
         }
     }
 
     @FXML
     private void handleTaskPause(ActionEvent event) {
+        ThreadPool tp = ThreadPool.getInstance();
+        if (selectedTasks.size() > 1) {
+            if (openConfirmWindow("Are you sure you want to pause " + selectedTasks.size() + " tasks?", null)) {
+                selectedTasks.forEach((task) -> {
+                    tp.pauseTask(task.getTask());
+                });
+            } else {
+                return;
+            }
+        } else {
+            ConvTask task = selectedTasks.get(0).getTask();
+            tp.pauseTask(task);
+        }
     }
 
     @FXML
