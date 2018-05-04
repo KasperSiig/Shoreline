@@ -8,9 +8,11 @@ import java.io.File;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
+import javafx.scene.control.Alert;
 import shoreline.be.Config;
 import shoreline.be.ConvTask;
 import shoreline.be.LogItem;
+import shoreline.be.User;
 import shoreline.dal.ConvStrats.ConvImpl;
 import shoreline.dal.ConvStrats.XLXSConvStrat;
 import shoreline.dal.ObjectPool.ConnectionPool;
@@ -53,14 +55,22 @@ public class DataManager {
         return pass;
     }
 
-    public boolean createUser(String username, String password, String firstname, String lastname) throws DALException {
+    public int createUser(String username, String password, String firstname, String lastname) throws DALException {
         Connection con = conPool.checkOut();
-        boolean bool = userDAO.createUser(username, password, firstname, lastname, con);
+        int id = userDAO.createUser(username, password, firstname, lastname, con);
         conPool.checkIn(con);
-        return bool;
+        return id;
     }
     
-    public void addLog(int userId, String type, String message) throws DALException{
+    public User getUser(String userName, String password) throws DALException {
+        Connection con = conPool.checkOut();
+        User user = userDAO.getUser(userName, password, con);
+        conPool.checkIn(con);
+        return user;
+    }
+    
+    
+    public void addLog(int userId, Alert.AlertType type, String message) throws DALException{
         Connection con = conPool.checkOut();
         logDAO.addLog(userId, type, message, con);
         conPool.checkIn(con);

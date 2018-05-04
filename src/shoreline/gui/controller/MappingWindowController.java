@@ -24,6 +24,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
@@ -191,35 +192,37 @@ public class MappingWindowController implements Initializable, IController {
 
     @FXML
     private void handleCreateTask(ActionEvent event) {
-
-        if (JSONmap.isEmpty()) {
-            Window.openExceptionWindow("There is no maps set");
-            return;
-        }
-
-        if (txtFileName.getText().equals("")) {
-            Window.openExceptionWindow("Enter target filename");
-            return;
-        }
-
-        String targetName = txtFileName.getText();
-        String name = inputFile.getName() + " -> " + targetName + ".json";
-
-        if (targetPath == null) {
-            Window.openExceptionWindow("Choose a target path.");
-            return;
-        }
-
-        HashMap temp = new HashMap(JSONmap);
-        HashMap cellTemp = new HashMap(cellIndexMap);
-        ConvTask task = new ConvTask(cellTemp, temp, name, inputFile, new File(targetPath + "\\" + targetName + ".json"));
-//        System.out.println(task.getMapper());
-        model.addToTaskList(task);
-
         try {
+            if (JSONmap.isEmpty()) {
+                Window.openExceptionWindow("There is no maps set");
+                return;
+            }
+
+            if (txtFileName.getText().equals("")) {
+                Window.openExceptionWindow("Enter target filename");
+                return;
+            }
+
+            String targetName = txtFileName.getText();
+            String name = inputFile.getName() + " -> " + targetName + ".json";
+
+            if (targetPath == null) {
+                Window.openExceptionWindow("Choose a target path.");
+                return;
+            }
+
+            HashMap temp = new HashMap(JSONmap);
+            HashMap cellTemp = new HashMap(cellIndexMap);
+            ConvTask task = new ConvTask(cellTemp, temp, name, inputFile, new File(targetPath + "\\" + targetName + ".json"));
+//        System.out.println(task.getMapper());
+            model.addToTaskList(task);
             model.addCallableToTask(task);
+
+            if (task == null) {
+                model.addLog(model.getUser().getId(), Alert.AlertType.ERROR, model.getUser().getfName() + "Tried to create a task and it failed");
+            }
         } catch (GUIException ex) {
-            Window.openExceptionWindow(ex.getMessage());
+            Window.openExceptionWindow("There was truble making a task", ex.getStackTrace());
         }
     }
 
@@ -250,7 +253,7 @@ public class MappingWindowController implements Initializable, IController {
         });
     }
 
-    private void openConfirmWindow(String msg, HashMap map) {
+    private void openConfirmWindow(String msg, HashMap map, File file) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(Window.View.Confirm.getView()));
@@ -258,12 +261,13 @@ public class MappingWindowController implements Initializable, IController {
 
             ConfirmationWindowController cwc = fxmlLoader.getController();
             cwc.postInit(model);
-            cwc.setInfo(msg, map);
+            cwc.setInfo(msg, map, file);
 
             Scene scene = new Scene(root);
             Stage stage = new Stage();
             stage.setTitle("Confirmation");
             stage.setScene(scene);
+            stage.setAlwaysOnTop(true);
             stage.showAndWait();
         } catch (IOException ex) {
             Logger.getLogger(MappingWindowController.class.getName()).log(Level.SEVERE, null, ex);
@@ -299,12 +303,12 @@ public class MappingWindowController implements Initializable, IController {
                 if (config.getMap() == temp) {
                     return;
                 } else {
-                    openConfirmWindow("Do you want to save this map, if yes please enter name blow", temp);
+                    openConfirmWindow("Do you want to save this map, if yes please enter name blow", temp, inputFile);
                     return;
                 }
             }
         } else {
-            openConfirmWindow("Do you want to save this map, if yes please enter name blow", temp);
+            openConfirmWindow("Do you want to save this map, if yes please enter name blow", temp, inputFile);
         }
     }
 

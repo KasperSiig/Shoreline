@@ -5,7 +5,9 @@
  */
 package shoreline.gui.controller;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
+import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
@@ -28,12 +30,15 @@ public class ConfirmationWindowController implements Initializable, IController 
     MainModel model;
     HashMap map;
     Stage stage;
+    File file;
     private boolean confirmation = false;
 
     @FXML
     private JFXTextField txtInput;
     @FXML
     private Label lblInfo;
+    @FXML
+    private JFXButton btnYes;
 
     /**
      * Initializes the controller class.
@@ -47,9 +52,15 @@ public class ConfirmationWindowController implements Initializable, IController 
         this.model = model;
     }
 
-    public void setInfo(String msg, HashMap map) {
+    public void setInfo(String msg, HashMap map, File file) {
         this.map = map;
+        this.file = file;
         lblInfo.setText(msg);
+        if (map != null) {
+            txtInput.requestFocus();
+        } else {
+            btnYes.requestFocus();
+        }
     }
 
     @FXML
@@ -65,8 +76,16 @@ public class ConfirmationWindowController implements Initializable, IController 
                         return;
                     }
                 }
-                Config config = new Config(name, "xlsx", map);
-                model.addToConfigList(config);
+                if (file != null) {
+                    String extension = "";
+
+                    int i = file.getAbsolutePath().lastIndexOf('.');
+                    if (i > 0) {
+                        extension = file.getAbsolutePath().substring(i + 1);
+                    }
+                    Config config = new Config(name, extension, map);
+                    model.addToConfigList(config);
+                }
 
             }
         } else {

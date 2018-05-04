@@ -9,9 +9,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
 import shoreline.be.Config;
 import shoreline.be.ConvTask;
 import shoreline.be.LogItem;
+import shoreline.be.User;
 import shoreline.dal.DataManager;
 import shoreline.exceptions.BLLException;
 import shoreline.exceptions.DALException;
@@ -63,13 +65,22 @@ public class LogicManager {
         }
     }
 
-    public boolean createUser(String username, String password, String firstname, String lastname) throws BLLException {
+    public int createUser(String username, String password, String firstname, String lastname) throws BLLException {
         try {
             return dm.createUser(username, password, firstname, lastname);
         } catch (DALException ex) {
             throw new BLLException(ex);
         }
     }
+    
+    public User getUser(String username, String password) throws BLLException {
+        try {
+            return dm.getUser(username, password);
+        } catch (DALException ex) {
+            throw new BLLException(ex);
+        }
+    }
+    
 
     public HashMap<String, Integer> getTitles(File file) throws BLLException {
         try {
@@ -93,7 +104,7 @@ public class LogicManager {
         }
     }
 
-    public void addLog(int userId, String type, String message) throws BLLException {
+    public void addLog(int userId, Alert.AlertType type, String message) throws BLLException {
         try {
             dm.addLog(userId, type, message);
         } catch (DALException ex) {

@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.MainModel;
@@ -47,24 +48,27 @@ public class CreateUserWindowController implements Initializable, IController {
 
     /**
      * Creates a new user login
-     * @param event 
+     *
+     * @param event
      */
     @FXML
     private void onCreateAction(ActionEvent event) {
-        if(checkEmptyFields()){
+        if (checkEmptyFields()) {
             try {
-                model.createUser(txtUsername.getText(), txtPassword.getText(), txtFirstname.getText(), txtLastname.getText());
+                int id = model.createUser(txtUsername.getText(), txtPassword.getText(), txtFirstname.getText(), txtLastname.getText());
                 Window.openView(model, model.getBorderPane(), Window.View.Login, "center");
-
+                model.addLog(id, Alert.AlertType.INFORMATION, "A new user was created with ID: " + id);
             } catch (GUIException ex) {
                 Window.openExceptionWindow("Error creating user", ex.getStackTrace());
             }
         }
 
     }
+
     /**
      * Returns to the login screen.
-     * @param event 
+     *
+     * @param event
      */
     @FXML
     private void onCancelAction(ActionEvent event) {
@@ -74,18 +78,22 @@ public class CreateUserWindowController implements Initializable, IController {
             Window.openExceptionWindow("Could not load Login screen", ex.getStackTrace());
         }
     }
+
     /**
      * Loads data after initialization
-     * @param model 
+     *
+     * @param model
      */
     @Override
     public void postInit(MainModel model) {
         this.model = model;
     }
+
     /**
-     * Checks if any fields are empty.
-     * If there is any it returns false, else, it returns true.
-     * @return 
+     * Checks if any fields are empty. If there is any it returns false, else,
+     * it returns true.
+     *
+     * @return
      */
     private boolean checkEmptyFields() {
         if (txtFirstname.getText().isEmpty()) {
@@ -104,7 +112,7 @@ public class CreateUserWindowController implements Initializable, IController {
             lblError.setText("Please enter a password!");
             txtPassword.requestFocus();
             return false;
-        }else{
+        } else {
             return true;
         }
 

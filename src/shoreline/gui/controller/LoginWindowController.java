@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -26,20 +27,19 @@ public class LoginWindowController implements Initializable, IController {
 
     /* Java Variables */
     private MainModel model;
-    
+
     /* JavaFX Variables*/
     @FXML
     private BorderPane bPane;
     @FXML
     private Label lblError;
-    
+
     /* JFoenix Variables */
     @FXML
     private JFXTextField txtUserName;
     @FXML
     private JFXPasswordField txtPassword;
 
-    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     }
@@ -73,15 +73,15 @@ public class LoginWindowController implements Initializable, IController {
     private void loginValidation(ActionEvent event) {
         try {
             if (model.validateLogin(txtUserName.getText(), txtPassword.getText())) {
+                model.setUser(model.getUser(txtUserName.getText(), txtPassword.getText()));
                 Window.openView(model, model.getBorderPane(), Window.View.Mapping, "center");
-                model.addLog(1, "ERROR", "Hej Mads :-) DIN LUDER");
-                model.addLog(1, "ERROR", "Hej Mads :-) DIN LUDER!!!");
-                model.addLog(1, "ERROR", "Hej Mads :-) DIN LUDER@@@@@@");
+                model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has logged in");
             } else {
                 lblError.setText("there was a problem with the log in");
+                txtUserName.requestFocus();
             }
         } catch (GUIException ex) {
-            Window.openExceptionWindow("Something went wrong with the login window", ex.getStackTrace());
+            Window.openExceptionWindow("There was a problem validating your login", ex.getStackTrace());
         }
 
     }

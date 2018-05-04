@@ -1,5 +1,6 @@
 package shoreline.gui.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
@@ -68,6 +70,11 @@ public class TaskWindowController implements Initializable, IController {
         for (TaskView taskView : selectedTasks) {
             System.out.println(taskView.getTask().getMapper());
             model.startTask(taskView.getTask());
+            try {
+                model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has started task " + taskView.getTask().getName());
+            } catch (GUIException ex) {
+                Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
+            }
         }
     }
 
@@ -78,21 +85,38 @@ public class TaskWindowController implements Initializable, IController {
      */
     @FXML
     private void handleTaskPause(ActionEvent event) {
+        if (pauseTask()) {
+            return;
+        }
+    }
+
+    private boolean pauseTask() {
         ThreadPool tp = ThreadPool.getInstance();
         if (selectedTasks.size() > 1) {
-            if (openConfirmWindow("Are you sure you want to pause " + selectedTasks.size() + " tasks?", null)) {
+            if (openConfirmWindow("Are you sure you want to pause " + selectedTasks.size() + " tasks?", null, null)) {
                 selectedTasks.forEach((task) -> {
                     tp.pauseTask(task.getTask());
+                    try {
+                        model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has paused task " + task.getTask().getName());
+                    } catch (GUIException ex) {
+                        Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
+                    }
                 });
             } else {
-                return;
+                return true;
             }
         } else if (selectedTasks.isEmpty()) {
             Window.openExceptionWindow("No tasks are selected.");
         } else {
             ConvTask task = selectedTasks.get(0).getTask();
             tp.pauseTask(task);
+            try {
+                model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has paused task " + task.getName());
+            } catch (GUIException ex) {
+                Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
+            }
         }
+        return false;
     }
 
     /**
@@ -102,16 +126,27 @@ public class TaskWindowController implements Initializable, IController {
      */
     @FXML
     private void handleTaskStop(ActionEvent event) {
+        if (stopTask()) {
+            return;
+        }
+    }
+
+    private boolean stopTask() {
         ThreadPool tp = ThreadPool.getInstance();
         if (selectedTasks.size() > 1) {
-            if (openConfirmWindow("Are you sure you want to stop " + selectedTasks.size() + " tasks?", null)) {
+            if (openConfirmWindow("Are you sure you want to stop " + selectedTasks.size() + " tasks?", null, null)) {
                 selectedTasks.forEach((task) -> {
                     tp.cancelTask(task.getTask());
                     model.getTaskList().remove(task.getTask());
+                    try {
+                        model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has stopped task " + task.getTask().getName());
+                    } catch (GUIException ex) {
+                        Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
+                    }
                 });
                 selectedTasks.clear();
             } else {
-                return;
+                return true;
             }
         } else if (selectedTasks.isEmpty()) {
             Window.openExceptionWindow("No tasks are selected.");
@@ -120,7 +155,13 @@ public class TaskWindowController implements Initializable, IController {
             tp.cancelTask(task);
             model.getTaskList().remove(task);
             selectedTasks.clear();
+            try {
+                model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has paused task " + task.getName());
+            } catch (GUIException ex) {
+                Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
+            }
         }
+        return false;
     }
     
     @Override
@@ -141,6 +182,8 @@ public class TaskWindowController implements Initializable, IController {
 
         genRightClickStart();
         genRightClickDel();
+        genRightClickPause();
+        genRightClickStop();
     }
 
     /**
@@ -204,12 +247,19 @@ public class TaskWindowController implements Initializable, IController {
      * Generates MenuItem for delete task
      */
     private void genRightClickDel() {
-        MenuItem delItem = new MenuItem("Delete task");
+//        cMenu.getItems().remove(0);
+        MenuItem delItem = new MenuItem("Delete selected task");
         delItem.setOnAction((event) -> {
             if (selectedTasks.size() > 1) {
-                if (openConfirmWindow("Are you sure you want to delete " + selectedTasks.size() + " tasks?", null)) {
-                    selectedTasks.forEach((selectedTask) -> {
-                        model.getTaskList().remove(selectedTask.getTask());
+                if (openConfirmWindow("Are you sure you want to delete " + selectedTasks.size() + " tasks?", null, null)) {
+                    selectedTasks.forEach((task) -> {
+                        model.getTaskList().remove(task.getTask());
+                        try {
+                            model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has deleted task " + task.getTask().getName());
+                        } catch (GUIException ex) {
+                            Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
+                        }
+
                     });
                     selectedTasks.clear();
                 } else {
@@ -218,6 +268,11 @@ public class TaskWindowController implements Initializable, IController {
             } else {
                 selectedTasks.forEach((selectedTask) -> {
                     model.getTaskList().remove(selectedTask.getTask());
+                    try {
+                        model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has deleted task " + selectedTask.getTask().getName());
+                    } catch (GUIException ex) {
+                        Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
+                    }
                 });
                 selectedTasks.clear();
             }
@@ -228,6 +283,23 @@ public class TaskWindowController implements Initializable, IController {
     /**
      * Adds listener to TaskList in model
      */
+
+    private void genRightClickPause() {
+        MenuItem item = new MenuItem("Pause selected task");
+        item.setOnAction((event) -> {
+            pauseTask();
+        });
+        cMenu.getItems().add(item);
+    }
+
+    private void genRightClickStop() {
+        MenuItem item = new MenuItem("Stop selected task");
+        item.setOnAction((event) -> {
+            stopTask();
+        });
+        cMenu.getItems().add(item);
+    }
+
     private void addListener() {
         model.getTaskList().addListener((ListChangeListener.Change<? extends ConvTask> c) -> {
             while (c.next()) {
@@ -238,6 +310,7 @@ public class TaskWindowController implements Initializable, IController {
         });
     }
 
+
     /**
      * Opens window with yes and no buttons
      * 
@@ -245,7 +318,8 @@ public class TaskWindowController implements Initializable, IController {
      * @param map
      * @return 
      */
-    private boolean openConfirmWindow(String msg, HashMap map) {
+    private boolean openConfirmWindow(String msg, HashMap map, File file) {
+
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(Window.View.Confirm.getView()));
@@ -253,12 +327,13 @@ public class TaskWindowController implements Initializable, IController {
 
             ConfirmationWindowController cwc = fxmlLoader.getController();
             cwc.postInit(model);
-            cwc.setInfo(msg, map);
+            cwc.setInfo(msg, map, file);
 
             Scene scene = new Scene(root);
             Stage stage = new Stage();
             stage.setTitle("Confirmation");
             stage.setScene(scene);
+            stage.setAlwaysOnTop(true);
             stage.showAndWait();
             return cwc.getConfirmation();
         } catch (IOException ex) {

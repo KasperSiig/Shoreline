@@ -12,13 +12,16 @@ import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
 import shoreline.be.Config;
 import shoreline.be.ConvTask;
+import shoreline.be.User;
 import shoreline.be.LogItem;
 import shoreline.bll.LogicManager;
 import shoreline.exceptions.BLLException;
 import shoreline.exceptions.GUIException;
+import shoreline.statics.Window;
 
 /**
  * Collects all information about User Interface, and contains UI Logic
@@ -42,6 +45,10 @@ public class MainModel {
      *
      * @throws GUIException
      */
+
+    User user;
+
+
     public MainModel() throws GUIException {
         try {
             
@@ -55,6 +62,14 @@ public class MainModel {
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     /**
@@ -113,7 +128,7 @@ public class MainModel {
      * @return Boolean whether the user was successfully created or not
      * @throws GUIException
      */
-    public boolean createUser(String username, String password, String firstname, String lastname) throws GUIException {
+    public int createUser(String username, String password, String firstname, String lastname) throws GUIException {
         try {
             return logic.createUser(username, hashString(password), firstname, lastname);
         } catch (BLLException ex) {
@@ -129,6 +144,16 @@ public class MainModel {
      * @return Boolean whether the user is valid
      * @throws GUIException
      */
+
+    public User getUser(String username, String password) throws GUIException {
+        try {
+            return logic.getUser(username, hashString(password).toString());
+        } catch (BLLException ex) {
+            throw new GUIException(ex);
+        }
+    }
+
+
     public boolean validateLogin(String username, String pass) throws GUIException {
         try {
             return logic.validateLogin(username, hashString(pass));
@@ -252,6 +277,7 @@ public class MainModel {
         }
     }
 
+
     /**
      * Adds log to database
      * 
@@ -260,7 +286,7 @@ public class MainModel {
      * @param message Log message
      * @throws GUIException
      */
-    public void addLog(int userId, String type, String message) throws GUIException {
+    public void addLog(int userId, Alert.AlertType type, String message) throws GUIException {
         try {
             logic.addLog(userId, type, message);
         } catch (BLLException ex) {
@@ -322,6 +348,7 @@ public class MainModel {
     public Timer getTimer() {
         return logic.getTimer();
     }
+
 
     /**
      * Adds listener to Log List in BLL
