@@ -5,7 +5,10 @@
  */
 package shoreline.gui.controller;
 
+import com.jfoenix.controls.JFXSpinner;
 import java.io.IOException;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ContextMenu;
@@ -13,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import shoreline.be.ConvTask;
 import shoreline.gui.model.MainModel;
 
@@ -31,6 +35,8 @@ public class TaskView extends BorderPane implements IController {
     private Label lblTargetDir;
     @FXML
     private Label lblStatus;
+    @FXML
+    private VBox vBox;
 
     public TaskView(ConvTask task) {
         try {
@@ -52,8 +58,16 @@ public class TaskView extends BorderPane implements IController {
 
     private void setInfo(ConvTask task) {
         this.task = task;
-        lblStatus.setText(String.valueOf(task.isRunning()));
-
+        lblStatus.setText(task.getStatus().getValue());
+        task.getStatus().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            if (newValue.equals("Running")) {
+                JFXSpinner spin = new JFXSpinner();
+                vBox.getChildren().set(0, spin);
+            } else {
+                vBox.getChildren().set(0, lblStatus);
+                lblStatus.setText(task.getStatus().getValue());
+            }
+        });
         String temp = task.getTarget().getAbsolutePath();
         String temp2 = temp.substring(0, 3);
         temp = temp.substring(temp.length() - 20, temp.length());

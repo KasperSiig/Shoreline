@@ -41,12 +41,12 @@ public class ThreadPool {
         pending = new ArrayList();
         running = new ArrayList();
         finished = new ArrayList();
-        this.threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        this.threadPool = Executors.newFixedThreadPool(3);
     }
 
     /**
      * Adds to the pending tasks list
-     * 
+     *
      * @param task Task to be added
      */
     public void addToPending(ConvTask task) {
@@ -55,7 +55,7 @@ public class ThreadPool {
 
     /**
      * Removes from the pending list
-     * 
+     *
      * @param task Task to be removed
      */
     public void removeFromPending(ConvTask task) {
@@ -64,7 +64,7 @@ public class ThreadPool {
 
     /**
      * Adds to the finished list
-     * 
+     *
      * @param task Task to be added
      */
     public void addToFinished(ConvTask task) {
@@ -73,21 +73,21 @@ public class ThreadPool {
 
     /**
      * Remove from finished list
-     * 
+     *
      * @param task Task to be removed
      */
     public void removeFromFinished(ConvTask task) {
         finished.remove(task);
     }
-    
+
     /**
-     * Starts conversion of the task, sets the Future object to the Thread that is running
-     * removes from pending list, and adds to running list.
-     * 
-     * @param task 
+     * Starts conversion of the task, sets the Future object to the Thread that
+     * is running removes from pending list, and adds to running list.
+     *
+     * @param task
      */
     public void startTask(ConvTask task) {
-        System.out.println("thread started");
+        task.setStatus("Pending");
         Future future = threadPool.submit(task.getCallable());
         task.setFuture(future);
         pending.remove(task);
@@ -96,16 +96,16 @@ public class ThreadPool {
 
     /**
      * Removes from running list
-     * 
+     *
      * @param task Task to be removed
      */
     public void removeFromRunning(ConvTask task) {
         running.remove(task);
     }
-    
+
     /**
      * Cancels the task passed as parameter
-     * 
+     *
      * @param task The task to be canceled
      * @return Whether the cancellation was successful or not
      */
@@ -117,7 +117,7 @@ public class ThreadPool {
         }
         return false;
     }
-    
+
     public boolean pauseTask(ConvTask task) {
         if (running.contains(task)) {
             running.remove(task);
@@ -128,13 +128,11 @@ public class ThreadPool {
         return false;
     }
 
-    
     /**
      * Shuts down the ExecutorSerivce
      */
     public void closeThreadPool() {
         threadPool.shutdown();
     }
-    
 
 }

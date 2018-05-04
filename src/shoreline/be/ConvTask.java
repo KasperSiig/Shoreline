@@ -9,6 +9,12 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import org.json.JSONArray;
 
 
@@ -26,10 +32,11 @@ public class ConvTask {
     private Future future;
     private int progress;
     private JSONArray jAr;
+    private StringProperty status = new SimpleStringProperty("Ready");
 
     public ConvTask(HashMap<String, Integer> cellIndexMap, HashMap<String, String> mapper, String name, File source, File target) {
         this.jAr = new JSONArray();
-        this.progress = 0;
+        this.progress = 1;
         this.cellIndexMap = cellIndexMap;
         this.mapper = mapper;
         this.name = name;
@@ -97,6 +104,16 @@ public class ConvTask {
     public void setjAr(JSONArray jAr) {
         this.jAr = jAr;
     }
+
+    public StringProperty getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status.setValue(status);
+    }
+
+    
     
     
     

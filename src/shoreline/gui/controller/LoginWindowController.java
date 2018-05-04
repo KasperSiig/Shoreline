@@ -82,8 +82,6 @@ public class LoginWindowController implements Initializable, IController {
             }
         } catch (GUIException ex) {
             Window.openExceptionWindow("Something went wrong with the login window", ex.getStackTrace());
-        } catch (BLLException ex) {
-            Logger.getLogger(LoginWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }

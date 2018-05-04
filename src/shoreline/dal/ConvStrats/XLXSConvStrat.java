@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -46,6 +48,9 @@ public class XLXSConvStrat implements ConvStrategy {
         // Creates the Callable, that's going to be added to the ConvTask
         Callable call = (Callable) () -> {
             try {
+                Platform.runLater(() -> {
+                    task.setStatus("Running");
+                });
                 task.setIsRunning(true);
                 threadPool.removeFromPending(task);
                 fin = new FileInputStream(task.getSource());
@@ -53,9 +58,16 @@ public class XLXSConvStrat implements ConvStrategy {
                 // XLSX files can contain more sheets, this gets the one at index 0
                 sheet1 = wb.getSheetAt(0);
                 writeJson(task);
+                Platform.runLater(() -> {
+                    task.setStatus("Finished");
+                });
+                System.out.println("shoreline.dal.ConvStrats.XLXSConvStrat.addCallableToTask()");
+                System.out.println("status = " + task.getStatus() + "\n");
                 threadPool.removeFromRunning(task);
+
                 threadPool.addToFinished(task);
                 task.setIsRunning(false);
+
             } catch (FileNotFoundException ex) {
                 throw new DALException("File was not found.", ex);
             } catch (IOException ex) {
@@ -97,12 +109,13 @@ public class XLXSConvStrat implements ConvStrategy {
 
         // Is being used to keep track of what row to pull data from
         int i = task.getProgress();
-        while (sheet1.getRow(i++) != null) {
+        while (sheet1.getRow(i) != null) {
             JSONObject jOb = createJSONObject(i, task);
             jAr.put(jOb);
             task.setProgress(i);
             task.setjAr(jAr);
-            writeToFile(task, jAr);            
+            writeToFile(task, jAr);
+            i++;
         }
     }
 
@@ -115,9 +128,9 @@ public class XLXSConvStrat implements ConvStrategy {
                 fileWriter.write(jAr.toString(4));
                 fileWriter.flush();
                 fileWriter.close();
-                Thread.sleep(1000);
+                Thread.sleep(10);
             } catch (InterruptedException ex) {
-                throw new DALException("Thread sleep fail", ex);
+                Logger.getLogger(XLXSConvStrat.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (IOException ex) {
             throw new DALException("Error writing JSON File", ex);
@@ -149,13 +162,11 @@ public class XLXSConvStrat implements ConvStrategy {
         jOb.put("planning", planning);
         return jOb;
     }
-    
-    private void writeToFile(JSONArray jAr) {
-        
-    }
-    
 
-    
+    private void writeToFile(JSONArray jAr) {
+
+    }
+
     private Date getDate(String sheetdata) throws DALException {
         try {
             DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
