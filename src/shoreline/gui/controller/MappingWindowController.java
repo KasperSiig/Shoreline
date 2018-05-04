@@ -155,7 +155,13 @@ public class MappingWindowController implements Initializable, IController {
     private void handelInputFile(ActionEvent event) {
         mappingList.clear();
         FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("All supported types", "*.xlsx"),
+                new FileChooser.ExtensionFilter("XLSX files (.xlsx)", ".xlsx")
+        // ADD NEW EXTENSIONS HERE, Seperate with comma (,)
+        );
         File tempFile = fileChooser.showOpenDialog(bPane.getScene().getWindow());
+
         if (tempFile != null) {
             try {
                 JSONmap.clear();
