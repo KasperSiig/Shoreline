@@ -14,7 +14,7 @@ import javafx.scene.Node;
 public class Styling {
     
     public static void redOutline (Node node) {
-        node.setStyle("-fx-border-radius: 4px; -fx-border-color: red;");
+        node.setStyle("-fx-border-radius: 6px; -fx-border-color: red;");
     }
     
     public static void clearRedOutline(Node node) {

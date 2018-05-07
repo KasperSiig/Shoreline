@@ -61,8 +61,7 @@ public class MappingWindowController implements Initializable, IController {
     File inputFile;
 
     private HashMap<String, Integer> cellIndexMap;
-    JFXSnackbar snack;
-
+    
     @FXML
     private JFXListView<String> lvInput;
     @FXML
@@ -100,9 +99,9 @@ public class MappingWindowController implements Initializable, IController {
         lvMapOverview.setItems(mappingList);
         lvMapOverview.setOnMouseClicked((event) -> {
             if (lvMapOverview.getSelectionModel().getSelectedItems().size() == 1) {
-                Delete.setText("Delete");
+                Delete.setText("Remove");
             } else if (lvMapOverview.getSelectionModel().getSelectedItems().size() > 1) {
-                Delete.setText("Delete all");
+                Delete.setText("Remove all");
             }
         });
         if (!model.getConfigList().isEmpty()) {
@@ -124,8 +123,6 @@ public class MappingWindowController implements Initializable, IController {
             tPool.closeThreadPool();
             model.getTimer().cancel();
         });
-
-        snack = new JFXSnackbar(bPane);
 
     }
 
@@ -239,7 +236,7 @@ public class MappingWindowController implements Initializable, IController {
             model.addToTaskList(task);
             model.addCallableToTask(task);
 
-            snack.show("Task " + task.getName() + " was created", 2500);
+            Window.openSnack("Task " + task.getName() + " was created", bPane);
             if (task == null) {
                 model.addLog(model.getUser().getId(), Alert.AlertType.ERROR, model.getUser().getfName() + "Tried to create a task and it failed");
             }
@@ -252,6 +249,7 @@ public class MappingWindowController implements Initializable, IController {
         if (inputFile == null) {
             Styling.redOutline(lvInput);
             Styling.redOutline(btnInput);
+            Window.openSnack("Please choose an input file", bPane);
             return true;
         } else {
             Styling.clearRedOutline(lvInput);
@@ -259,18 +257,21 @@ public class MappingWindowController implements Initializable, IController {
         }
         if (JSONmap.isEmpty()) {
             Styling.redOutline(lvMapOverview);
+            Window.openSnack("Please make a link or load a config", bPane);
             return true;
         } else {
             Styling.clearRedOutline(lvMapOverview);
         }
         if (txtFileName.getText().equals("")) {
             Styling.redOutline(txtFileName);
+            Window.openSnack("Please enter a file name", bPane);
             return true;
         } else {
             Styling.clearRedOutline(txtFileName);
         }
         if (targetPath == null) {
             Styling.redOutline(btnTarget);
+            Window.openSnack("Please choose a target folder", bPane);
             return true;
         } else {
             Styling.clearRedOutline(btnTarget);
@@ -293,7 +294,6 @@ public class MappingWindowController implements Initializable, IController {
     private void generateRightclickMenu() {
         configMenu.getItems().clear();
         model.getConfigList().forEach((config) -> {
-            System.out.println("loading config... \n \n");
             MenuItem item = new MenuItem(config.getName());
             item.setOnAction((event) -> {
                 if (inputFile == null) {
@@ -304,7 +304,7 @@ public class MappingWindowController implements Initializable, IController {
                 JSONmap.clear();
                 JSONmap.putAll(config.getMap());
                 setInfoInlvMap(JSONmap);
-                snack.show("Config " + config.getName() + "was loaded", 2500);
+                Window.openSnack("Config " + config.getName() + " was loaded", bPane);
             });
             configMenu.getItems().add(item);
         });
@@ -358,7 +358,6 @@ public class MappingWindowController implements Initializable, IController {
 
         if (!model.getConfigList().isEmpty()) {
             for (Config config : model.getConfigList()) {
-                System.out.println(config.getMap().toString() + "\n" + temp.toString());
                 if (config.getMap() == temp) {
                     return;
                 } else {
@@ -369,7 +368,7 @@ public class MappingWindowController implements Initializable, IController {
         } else {
             openConfirmWindow("Do you want to save this map, if yes please enter name blow", temp, inputFile, true);
         }
-        snack.show("Config created", 2500);
+        Window.openSnack("Config created", bPane);
     }
 
 }
