@@ -49,9 +49,8 @@ public class XLXSConvStrat implements ConvStrategy {
         Callable call = (Callable) () -> {
             try {
                 Platform.runLater(() -> {
-                    task.setStatus("Running");
+                    task.setStatus(ConvTask.Status.Running);
                 });
-                task.setIsRunning(true);
                 threadPool.removeFromPending(task);
                 fin = new FileInputStream(task.getSource());
                 wb = new XSSFWorkbook(fin);
@@ -59,14 +58,11 @@ public class XLXSConvStrat implements ConvStrategy {
                 sheet1 = wb.getSheetAt(0);
                 writeJson(task);
                 Platform.runLater(() -> {
-                    task.setStatus("Finished");
+                    task.setStatus(ConvTask.Status.Finished);
                 });
-                System.out.println("shoreline.dal.ConvStrats.XLXSConvStrat.addCallableToTask()");
-                System.out.println("status = " + task.getStatus() + "\n");
                 threadPool.removeFromRunning(task);
 
                 threadPool.addToFinished(task);
-                task.setIsRunning(false);
 
             } catch (FileNotFoundException ex) {
                 throw new DALException("File was not found.", ex);

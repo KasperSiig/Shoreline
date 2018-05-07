@@ -37,7 +37,9 @@ public class MainModel {
     // Observable Lists
     private ObservableList<String> templateList;
     private ObservableList<LogItem> logList;
-    private ObservableList<ConvTask> taskList;
+    private ObservableList<ConvTask> pendingTasks;
+    private ObservableList<ConvTask> finishedTasks;
+    private ObservableList<ConvTask> canceledTasks;
     private ObservableList<Config> configList;
 
     /**
@@ -53,7 +55,9 @@ public class MainModel {
         try {
             
             this.logic = new LogicManager();
-            this.taskList = FXCollections.observableArrayList();
+            this.pendingTasks = FXCollections.observableArrayList();
+            this.finishedTasks = FXCollections.observableArrayList();
+            this.canceledTasks = FXCollections.observableArrayList();
             this.logList = FXCollections.observableArrayList(getAllLogs());
             this.templateList = FXCollections.observableArrayList("siteName", "assetSerialNumber", 
                     "type", "externalWorkOrderId", "systemStatus", "userStatus", "name", "priority", 
@@ -215,15 +219,80 @@ public class MainModel {
      *
      * @param task Task to be added
      */
-    public void addToTaskList(ConvTask task) {
-        taskList.add(task);
+    public void addToPendingTasks(ConvTask task) {
+        pendingTasks.add(task);
+    }
+    
+    /**
+     * Removes task from List of pending tasks
+     * 
+     * @param task Task to be removed
+     */
+    public void removeFromPendingTasks(ConvTask task) {
+        pendingTasks.remove(task);
     }
 
     /**
      * @return ObersableList containing ConvTasks
      */
-    public ObservableList<ConvTask> getTaskList() {
-        return taskList;
+//    public ObservableList<ConvTask> getTaskList() {
+//        return pendingTasks;
+//    }
+
+    public ObservableList<ConvTask> getPendingTasks() {
+        return pendingTasks;
+    }
+
+    /**
+     * Adds a task to the list of tasks
+     *
+     * @param task Task to be added
+     */
+    public void addToFinishedTasks(ConvTask task) {
+        finishedTasks.add(task);
+        System.out.println("shoreline.gui.model.MainModel.addToFinishedTasks()");
+        System.out.println("finishedTasks = " + finishedTasks.size() + "\n");
+    }
+    
+    /**
+     * Removes task from List of pending tasks
+     * 
+     * @param task Task to be removed
+     */
+    public void removeFromFinishedTasks(ConvTask task) {
+        finishedTasks.remove(task);
+    }
+
+    /**
+     * @return ObersableList containing ConvTasks
+     */
+    public ObservableList<ConvTask> getFinishedTasks() {
+        return finishedTasks;
+    }
+
+    /**
+     * Adds a task to the list of tasks
+     *
+     * @param task Task to be added
+     */
+    public void addToCanceledTasks(ConvTask task) {
+        canceledTasks.add(task);
+    }
+    
+    /**
+     * Removes task from List of canceled tasks
+     * 
+     * @param task Task to be removed
+     */
+    public void removeFromCanceledTasks(ConvTask task) {
+        canceledTasks.remove(task);
+    }
+
+    /**
+     * @return ObersableList containing ConvTasks
+     */
+    public ObservableList<ConvTask> getCanceledTasks() {
+        return canceledTasks;
     }
 
     /**

@@ -233,7 +233,7 @@ public class MappingWindowController implements Initializable, IController {
             HashMap cellTemp = new HashMap(cellIndexMap);
             ConvTask task = new ConvTask(cellTemp, temp, name, inputFile, new File(targetPath + "\\" + targetName + ".json"));
 
-            model.addToTaskList(task);
+            model.addToPendingTasks(task);
             model.addCallableToTask(task);
 
             Window.openSnack("Task " + task.getName() + " was created", bPane);

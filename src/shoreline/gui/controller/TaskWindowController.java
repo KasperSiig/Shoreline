@@ -8,8 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.ListChangeListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,10 +18,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import shoreline.be.ConvTask;
@@ -39,7 +37,9 @@ import shoreline.statics.Window;
 public class TaskWindowController implements Initializable, IController {
 
     /* Java Variables */
-    private List<TaskView> selectedTasks;
+    private List<TaskView> selectedPenTasks;
+    private List<TaskView> selectedFinTasks;
+    private List<TaskView> selectedCanTasks;
 
     private ContextMenu cMenu;
 
@@ -47,13 +47,23 @@ public class TaskWindowController implements Initializable, IController {
 
     /* JavaFX Variables */
     @FXML
-    private VBox vBox;
+    private VBox vBoxPen;
     @FXML
-    private AnchorPane aPane;
+    private VBox vBoxFin;
+    @FXML
+    private VBox vBoxCan;
+    @FXML
+    private ScrollPane scrlPanePen;
+    @FXML
+    private ScrollPane scrlPaneFin;
+    @FXML
+    private ScrollPane scrlPaneCan;
 
     public TaskWindowController() {
         this.cMenu = new ContextMenu();
-        this.selectedTasks = new ArrayList();
+        this.selectedPenTasks = new ArrayList();
+        this.selectedFinTasks = new ArrayList();
+        this.selectedCanTasks = new ArrayList();
     }
 
     @Override
@@ -67,15 +77,14 @@ public class TaskWindowController implements Initializable, IController {
      */
     @FXML
     private void handleTaskPlay(ActionEvent event) {
-        for (TaskView taskView : selectedTasks) {
-            System.out.println(taskView.getTask().getMapper());
+        selectedPenTasks.forEach((taskView) -> {
             model.startTask(taskView.getTask());
             try {
                 model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has started task " + taskView.getTask().getName());
             } catch (GUIException ex) {
                 Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
             }
-        }
+        });
     }
 
     /**
@@ -85,16 +94,16 @@ public class TaskWindowController implements Initializable, IController {
      */
     @FXML
     private void handleTaskPause(ActionEvent event) {
-        if (pauseTask()) {
+        if (pauseTask(selectedPenTasks)) {
             return;
         }
     }
 
-    private boolean pauseTask() {
+    private boolean pauseTask(List<TaskView> tasks) {
         ThreadPool tp = ThreadPool.getInstance();
-        if (selectedTasks.size() > 1) {
-            if (openConfirmWindow("Are you sure you want to pause " + selectedTasks.size() + " tasks?", null, null, false)) {
-                selectedTasks.forEach((task) -> {
+        if (tasks.size() > 1) {
+            if (openConfirmWindow("Are you sure you want to pause " + tasks.size() + " tasks?", null, null, false)) {
+                tasks.forEach((task) -> {
                     tp.pauseTask(task.getTask());
                     try {
                         model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has paused task " + task.getTask().getName());
@@ -105,10 +114,10 @@ public class TaskWindowController implements Initializable, IController {
             } else {
                 return true;
             }
-        } else if (selectedTasks.isEmpty()) {
+        } else if (tasks.isEmpty()) {
             Window.openExceptionWindow("No tasks are selected.");
         } else {
-            ConvTask task = selectedTasks.get(0).getTask();
+            ConvTask task = tasks.get(0).getTask();
             tp.pauseTask(task);
             try {
                 model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has paused task " + task.getName());
@@ -119,42 +128,28 @@ public class TaskWindowController implements Initializable, IController {
         return false;
     }
 
-    /**
-     * Cancels all selected tasks
-     *
-     * @param event
-     */
-    @FXML
-    private void handleTaskStop(ActionEvent event) {
-        if (stopTask()) {
-            return;
-        }
-    }
-
-    private boolean stopTask() {
+    private boolean cancelTask(List<TaskView> tasks) {
         ThreadPool tp = ThreadPool.getInstance();
-        if (selectedTasks.size() > 1) {
-            if (openConfirmWindow("Are you sure you want to stop " + selectedTasks.size() + " tasks?", null, null, false)) {
-                selectedTasks.forEach((task) -> {
+        if (tasks.size() > 1) {
+            if (openConfirmWindow("Are you sure you want to stop " + tasks.size() + " tasks?", null, null, false)) {
+                tasks.forEach((task) -> {
                     tp.cancelTask(task.getTask());
-                    model.getTaskList().remove(task.getTask());
                     try {
                         model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has stopped task " + task.getTask().getName());
                     } catch (GUIException ex) {
                         Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
                     }
                 });
-                selectedTasks.clear();
+                tasks.clear();
             } else {
                 return true;
             }
-        } else if (selectedTasks.isEmpty()) {
+        } else if (tasks.isEmpty()) {
             Window.openExceptionWindow("No tasks are selected.");
         } else {
-            ConvTask task = selectedTasks.get(0).getTask();
+            ConvTask task = tasks.get(0).getTask();
             tp.cancelTask(task);
-            model.getTaskList().remove(task);
-            selectedTasks.clear();
+            tasks.clear();
             try {
                 model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has paused task " + task.getName());
             } catch (GUIException ex) {
@@ -163,22 +158,21 @@ public class TaskWindowController implements Initializable, IController {
         }
         return false;
     }
-    
+
     @Override
     public void postInit(MainModel model) {
         this.model = model;
 
-        if (model.getTaskList().isEmpty()) {
+        if (model.getPendingTasks().isEmpty()) {
             return;
         }
 
-        for (ConvTask convTask : model.getTaskList()) {
-            System.out.println(convTask.getMapper());
-        }
-
-        genTasksForList(model);
-
-        addListener();
+//        addTaskViews(selectedPenTasks, vBoxPen);
+//        addTaskViews(selectedFinTasks, vBoxFin);
+//        addTaskViews(selectedCanTasks, vBoxCan);
+        setTasks(selectedPenTasks, model.getPendingTasks(), vBoxPen);
+        setTasks(selectedFinTasks, model.getFinishedTasks(), vBoxFin);
+        setTasks(selectedCanTasks, model.getCanceledTasks(), vBoxCan);
 
         genRightClickStart();
         genRightClickDel();
@@ -186,48 +180,59 @@ public class TaskWindowController implements Initializable, IController {
         genRightClickStop();
     }
 
+    private void setTasks(List<TaskView> selectedTasks, ObservableList<ConvTask> tasks, VBox vBox) {
+        setTaskView(selectedTasks, tasks, vBox);
+        tasks.addListener((ListChangeListener.Change<? extends ConvTask> c) -> {
+            while (c.next()) {
+                if (c.wasAdded() || c.wasPermutated() || c.wasRemoved() || c.wasReplaced() || c.wasUpdated()) {
+                    setTaskView(selectedTasks, tasks, vBox);
+                }
+            }
+        });
+    }
+
     /**
      * Generates TaskViews for List
-     * 
-     * @param model 
+     *
+     * @param model
      */
-    private void genTasksForList(MainModel model) {
+    private void setTaskView(List<TaskView> selectedTasks, ObservableList<ConvTask> tasks, VBox vBox) {
         vBox.getChildren().clear();
-        model.getTaskList().forEach((convTask) -> {
-            TaskView taskView = new TaskView(convTask);
-            Tooltip tt = new Tooltip(convTask.getTarget().toString());
-            Tooltip.install(taskView, tt);
-            taskView.setOnMouseClicked((event) -> {
-                if (event.getButton().equals(MouseButton.PRIMARY)) {
-                    cMenu.hide();
-                    if (selectedTasks.contains(taskView)) {
-                        selectedTasks.remove(taskView);
-                        taskView.setStyle("-fx-border-color: transparent");
-                    } else {
-                        selectedTasks.add(taskView);
-                        taskView.setStyle("-fx-border-color: #2e6da4; -fx-border-radius: 4px; -fx-background-color: derive(#337ab7, 80%); "
-                                + "-fx-background-radius: 4px; -fx-text-fill: white");
-                    }
-                }
-                if (event.getButton().equals(MouseButton.SECONDARY)) {
-                    cMenu.show(vBox, event.getScreenX(), event.getScreenY());
-                    if (!selectedTasks.contains(taskView)) {
-                        selectedTasks.add(taskView);
-                        taskView.setStyle("-fx-border-color: #2e6da4; -fx-border-radius: 4px; -fx-background-color: derive(#337ab7, 80%); "
-                                + "-fx-background-radius: 4px; -fx-text-fill: white");
-                    }
-                }
-            });
+        tasks.forEach((convTask) -> {
+            TaskView taskView = makeTaskView(selectedTasks, vBox, convTask);
             vBox.getChildren().add(taskView);
         });
     }
 
-    @FXML
-    private void showRigthClick(MouseEvent event) {
-//        if (event.getButton().equals(MouseButton.SECONDARY)) {
-//            cMenu.show(vBox, event.getSceneX(), event.getSceneY());
-//        }
-
+    private TaskView makeTaskView(List<TaskView> selectedTasks, VBox vBox, ConvTask convTask) {
+        TaskView taskView = new TaskView(convTask);
+        taskView.postInit(model);
+        Tooltip tt = new Tooltip(convTask.getTarget().toString());
+        Tooltip.install(taskView, tt);
+        taskView.setOnMouseClicked((event) -> {
+            if (event.getButton().equals(MouseButton.PRIMARY)) {
+                cMenu.hide();
+                if (selectedTasks.contains(taskView)) {
+                    selectedTasks.remove(taskView);
+                    taskView.setStyle("-fx-border-color: transparent");
+                } else {
+                    selectedTasks.add(taskView);
+                    taskView.setStyle("-fx-border-color: #2e6da4; -fx-border-radius: 4px; "
+                            + "-fx-background-color: derive(#337ab7, 80%); "
+                            + "-fx-background-radius: 4px; -fx-text-fill: white");
+                }
+            }
+            if (event.getButton().equals(MouseButton.SECONDARY)) {
+                cMenu.show(vBox, event.getScreenX(), event.getScreenY());
+                if (!selectedTasks.contains(taskView)) {
+                    selectedTasks.add(taskView);
+                    taskView.setStyle("-fx-border-color: #2e6da4; -fx-border-radius: 4px; "
+                            + "-fx-background-color: derive(#337ab7, 80%); "
+                            + "-fx-background-radius: 4px; -fx-text-fill: white");
+                }
+            }
+        });
+        return taskView;
     }
 
     /**
@@ -236,7 +241,7 @@ public class TaskWindowController implements Initializable, IController {
     private void genRightClickStart() {
         MenuItem startItem = new MenuItem("Start selected tasks");
         startItem.setOnAction((event) -> {
-            selectedTasks.forEach((selectedTask) -> {
+            selectedPenTasks.forEach((selectedTask) -> {
                 model.startTask(selectedTask.getTask());
             });
         });
@@ -250,10 +255,10 @@ public class TaskWindowController implements Initializable, IController {
 //        cMenu.getItems().remove(0);
         MenuItem delItem = new MenuItem("Delete selected task");
         delItem.setOnAction((event) -> {
-            if (selectedTasks.size() > 1) {
-                if (openConfirmWindow("Are you sure you want to delete " + selectedTasks.size() + " tasks?", null, null, false)) {
-                    selectedTasks.forEach((task) -> {
-                        model.getTaskList().remove(task.getTask());
+            if (selectedPenTasks.size() > 1) {
+                if (openConfirmWindow("Are you sure you want to delete " + selectedPenTasks.size() + " tasks?", null, null, false)) {
+                    selectedPenTasks.forEach((task) -> {
+                        model.getPendingTasks().remove(task.getTask());
                         try {
                             model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has deleted task " + task.getTask().getName());
                         } catch (GUIException ex) {
@@ -261,20 +266,20 @@ public class TaskWindowController implements Initializable, IController {
                         }
 
                     });
-                    selectedTasks.clear();
+                    selectedPenTasks.clear();
                 } else {
                     return;
                 }
             } else {
-                selectedTasks.forEach((selectedTask) -> {
-                    model.getTaskList().remove(selectedTask.getTask());
+                selectedPenTasks.forEach((selectedTask) -> {
+                    model.getPendingTasks().remove(selectedTask.getTask());
                     try {
                         model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has deleted task " + selectedTask.getTask().getName());
                     } catch (GUIException ex) {
                         Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
                     }
                 });
-                selectedTasks.clear();
+                selectedPenTasks.clear();
             }
         });
         cMenu.getItems().add(delItem);
@@ -283,11 +288,10 @@ public class TaskWindowController implements Initializable, IController {
     /**
      * Adds listener to TaskList in model
      */
-
     private void genRightClickPause() {
         MenuItem item = new MenuItem("Pause selected task");
         item.setOnAction((event) -> {
-            pauseTask();
+            pauseTask(selectedPenTasks);
         });
         cMenu.getItems().add(item);
     }
@@ -295,28 +299,17 @@ public class TaskWindowController implements Initializable, IController {
     private void genRightClickStop() {
         MenuItem item = new MenuItem("Stop selected task");
         item.setOnAction((event) -> {
-            stopTask();
+            cancelTask(selectedPenTasks);
         });
         cMenu.getItems().add(item);
     }
 
-    private void addListener() {
-        model.getTaskList().addListener((ListChangeListener.Change<? extends ConvTask> c) -> {
-            while (c.next()) {
-                if (c.wasAdded() || c.wasPermutated() || c.wasRemoved() || c.wasReplaced() || c.wasUpdated()) {
-                    genTasksForList(model);
-                }
-            }
-        });
-    }
-
-
     /**
      * Opens window with yes and no buttons
-     * 
+     *
      * @param msg
      * @param map
-     * @return 
+     * @return
      */
     private boolean openConfirmWindow(String msg, HashMap map, File file, boolean txtField) {
 
@@ -340,5 +333,20 @@ public class TaskWindowController implements Initializable, IController {
             Window.openExceptionWindow("Couldn't open confirmation window.");
         }
         return false;
+    }
+
+    @FXML
+    private void handleTaskCancel(ActionEvent event) {
+        if (cancelTask(selectedPenTasks)) {
+            return;
+        }
+    }
+
+    @FXML
+    private void handleStartAgainFin(ActionEvent event) {
+    }
+
+    @FXML
+    private void handleStartAgainCan(ActionEvent event) {
     }
 }

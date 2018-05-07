@@ -87,7 +87,7 @@ public class ThreadPool {
      * @param task
      */
     public void startTask(ConvTask task) {
-        task.setStatus("Pending");
+        task.setStatus(ConvTask.Status.Pending);
         Future future = threadPool.submit(task.getCallable());
         task.setFuture(future);
         pending.remove(task);
@@ -110,19 +110,19 @@ public class ThreadPool {
      * @return Whether the cancellation was successful or not
      */
     public boolean cancelTask(ConvTask task) {
+        task.setStatus(ConvTask.Status.Canceled);
         if (running.contains(task)) {
             running.remove(task);
-            task.setIsRunning(false);
             return task.getFuture().cancel(true);
         }
         return false;
     }
 
     public boolean pauseTask(ConvTask task) {
+        task.setStatus(ConvTask.Status.Paused);
         if (running.contains(task)) {
             running.remove(task);
             pending.add(task);
-            task.setIsRunning(true);
             return task.getFuture().cancel(true);
         }
         return false;

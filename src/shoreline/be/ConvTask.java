@@ -23,6 +23,25 @@ import org.json.JSONArray;
  * @author Kasper Siig
  */
 public class ConvTask {
+    
+    public enum Status {
+        Pending("Pending"),
+        Running("Running"),
+        Paused("Paused"),
+        Finished("Finished"),
+        Canceled("Canceled");
+        
+        String status;
+
+        Status(String status) {
+            this.status = status;
+        }
+
+        public String getValue() {
+            return status;
+        }
+    }
+    
     private HashMap<String, Integer> cellIndexMap;
     private HashMap<String, String> mapper;
     private String name;
@@ -42,7 +61,6 @@ public class ConvTask {
         this.name = name;
         this.source = source;
         this.target = target;
-        isRunning = false;
     }
 
     public HashMap<String, Integer> getCellIndexMap() {
@@ -63,14 +81,6 @@ public class ConvTask {
 
     public File getTarget() {
         return target;
-    }
-
-    public boolean isRunning() {
-        return isRunning;
-    }
-
-    public void setIsRunning(boolean isRunning) {
-        this.isRunning = isRunning;
     }
 
     public Callable<ConvTask> getCallable() {
@@ -108,13 +118,10 @@ public class ConvTask {
     public StringProperty getStatus() {
         return status;
     }
-
-    public void setStatus(String status) {
-        this.status.setValue(status);
+    
+    public void setStatus(Status status) {
+        this.status.setValue(status.getValue());
     }
-
-    
-    
     
     
 }
