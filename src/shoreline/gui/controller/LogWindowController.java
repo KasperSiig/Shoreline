@@ -7,8 +7,6 @@ package shoreline.gui.controller;
 
 import java.net.URL;
 import java.sql.Date;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -42,6 +40,11 @@ public class LogWindowController implements Initializable, IController {
         // TODO
     }
 
+    /**
+     * Runs before the rest of the class.
+     * 
+     * @param model 
+     */
     @Override
     public void postInit(MainModel model) {
         this.model = model;
@@ -49,6 +52,12 @@ public class LogWindowController implements Initializable, IController {
         setTable();
     }
 
+    /**
+     * Creates the columns for the table view
+     * and set a max width on them.
+     * then adds them to the table view.
+     * 
+     */
     private void makeTable() {
         TableColumn typeCol = new TableColumn("Type");
         typeCol.setCellValueFactory(new PropertyValueFactory<LogItem, Alert.AlertType>("Type"));
@@ -68,6 +77,15 @@ public class LogWindowController implements Initializable, IController {
         tv.getColumns().addAll(typeCol, userCol, messageCol, dateCol);
     }
 
+    
+    /**
+     * makes a temp observable list then
+     * sorts it.
+     * runes the LogListListener method
+     * then sets the table view to be 
+     * the content of the temp list.
+     * 
+     */
     private void setTable() {
         ObservableList temp = FXCollections.observableArrayList(model.getLogList());
 
@@ -83,6 +101,12 @@ public class LogWindowController implements Initializable, IController {
         tv.setItems(temp);
     }
 
+    /**
+     * Adds a listener to the loglist in model
+     * if there is any change in the list it
+     * runs the setTable method again
+     * 
+     */
     private void logListListener() {
         model.getLogList().addListener(new ListChangeListener<LogItem>() {
             @Override
@@ -90,7 +114,6 @@ public class LogWindowController implements Initializable, IController {
                 c.next();
                 if (c.wasAdded() || c.wasRemoved() || c.wasReplaced() || c.wasUpdated()) {
                     setTable();
-                    System.out.println("change");
                 }
             }
         });
