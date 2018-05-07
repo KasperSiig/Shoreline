@@ -263,7 +263,12 @@ and open the template in the editor.
     -fx-prompt-text-fill: #2e6da4;
 }
 
-.jfx-snackbar-content  {
-    -fx-background-color: darkgrey;
+.jfx-snackbar-content-error  {
     -fx-text-fill: white;
+    -fx-backgrouns: #ff3333;
+}
+
+.jfx-snackbar-content-info  {
+    -fx-text-fill: white;
+    -fx-backgrouns: #337ab7;
 }

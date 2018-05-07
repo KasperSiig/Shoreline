@@ -57,7 +57,7 @@ public class CreateUserWindowController implements Initializable, IController {
             try {
                 int id = model.createUser(txtUsername.getText(), txtPassword.getText(), txtFirstname.getText(), txtLastname.getText());
                 Window.openView(model, model.getBorderPane(), Window.View.Login, "center");
-                Window.openSnack("User " + txtUsername.getText() + " was created", model.getBorderPane());
+                Window.openSnack("User " + txtUsername.getText() + " was created", model.getBorderPane(), "blue");
                 model.addLog(id, Alert.AlertType.INFORMATION, "A new user was created with ID: " + id);
             } catch (GUIException ex) {
                 Window.openExceptionWindow("Error creating user", ex.getStackTrace());

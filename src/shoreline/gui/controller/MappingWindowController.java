@@ -173,11 +173,11 @@ public class MappingWindowController implements Initializable, IController {
             return;
         }
         if (JSONmap.containsKey(templateSelection.getSelectedItem())) {
-            Window.openSnack(templateSelection.getSelectedItem() + " is already mapped", bPane);
+            Window.openSnack(templateSelection.getSelectedItem() + " is already mapped", bPane, "red");
             return;
         }
         if (JSONmap.containsValue(inputSelection.getSelectedItem())) {
-            Window.openSnack(inputSelection.getSelectedItem() + " is already mapped", bPane);
+            Window.openSnack(inputSelection.getSelectedItem() + " is already mapped", bPane, "red");
             return;
         }
 
@@ -308,7 +308,7 @@ public class MappingWindowController implements Initializable, IController {
             model.addToTaskList(task);
             model.addCallableToTask(task);
 
-            Window.openSnack("Task " + task.getName() + " was created", bPane);
+            Window.openSnack("Task " + task.getName() + " was created", bPane, "blue");
             if (task == null) {
                 model.addLog(model.getUser().getId(), Alert.AlertType.ERROR, model.getUser().getfName() + "Tried to create a task and it failed");
             }
@@ -329,7 +329,7 @@ public class MappingWindowController implements Initializable, IController {
         if (inputFile == null) {
             Styling.redOutline(lvInput);
             Styling.redOutline(btnInput);
-            Window.openSnack("Please choose an input file", bPane);
+            Window.openSnack("Please choose an input file", bPane, "red");
             return true;
         } else {
             Styling.clearRedOutline(lvInput);
@@ -337,21 +337,21 @@ public class MappingWindowController implements Initializable, IController {
         }
         if (JSONmap.isEmpty()) {
             Styling.redOutline(lvMapOverview);
-            Window.openSnack("Please make a link or load a config", bPane);
+            Window.openSnack("Please make a link or load a config", bPane, "red");
             return true;
         } else {
             Styling.clearRedOutline(lvMapOverview);
         }
         if (txtFileName.getText().equals("")) {
             Styling.redOutline(txtFileName);
-            Window.openSnack("Please enter a file name", bPane);
+            Window.openSnack("Please enter a file name", bPane, "red");
             return true;
         } else {
             Styling.clearRedOutline(txtFileName);
         }
         if (targetPath == null) {
             Styling.redOutline(btnTarget);
-            Window.openSnack("Please choose a target folder", bPane);
+            Window.openSnack("Please choose a target folder", bPane, "red");
             return true;
         } else {
             Styling.clearRedOutline(btnTarget);
@@ -398,14 +398,14 @@ public class MappingWindowController implements Initializable, IController {
             item.setOnAction((event) -> {
                 if (inputFile == null) {
                     Styling.redOutline(lvInput);
-                    Window.openSnack("Please select a import file", bPane);
+                    Window.openSnack("Please select a import file", bPane, "red");
                     return;
                 }
                 mappingList.clear();
                 JSONmap.clear();
                 JSONmap.putAll(config.getMap());
                 setInfoInlvMap(JSONmap);
-                Window.openSnack("Config " + config.getName() + " was loaded", bPane);
+                Window.openSnack("Config " + config.getName() + " was loaded", bPane, "blue");
             });
             configMenu.getItems().add(item);
         });
@@ -536,7 +536,7 @@ public class MappingWindowController implements Initializable, IController {
         } else {
             openCreateConfigWindow("Do you want to save this map, if yes please enter name blow", temp, inputFile, true);
         }
-        Window.openSnack("Config created", bPane);
+        Window.openSnack("Config created", bPane, "blue");
     }
 
 }

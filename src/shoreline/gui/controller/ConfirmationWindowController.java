@@ -110,12 +110,12 @@ public class ConfirmationWindowController implements Initializable, IController 
     private void handleYes(ActionEvent event) {
         if (txtField) {
             if (txtInput.getText().isEmpty()) {
-                Window.openSnack("Please enter config name", bPane);
+                Window.openSnack("Please enter config name", bPane, "red");
             } else {
                 String name = txtInput.getText();
                 for (Config config : model.getConfigList()) {
                     if (config.getName().equals(name)) {
-                        Window.openSnack("The name already exists", bPane);
+                        Window.openSnack("The name already exists", bPane, "red");
                         return;
                     }
                 }
