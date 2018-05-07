@@ -48,7 +48,7 @@ public class MenuBarFactory {
      * @return MenuBar
      */
     private MenuBar defaultMenuBar() {
-        Menu options = new Menu("Options");
+        Menu options = new Menu("View");
         options.getItems().add(openTaskView());
         options.getItems().add(openLogView());
         MenuBar menuBar = new MenuBar(options);

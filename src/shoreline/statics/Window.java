@@ -1,5 +1,6 @@
 package shoreline.statics;
 
+import com.jfoenix.controls.JFXSnackbar;
 import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -180,4 +181,12 @@ public class Window {
                 break;
         }
     }
+    
+    public static void openSnack(String msg, BorderPane bPane){
+        JFXSnackbar bar = new JFXSnackbar(bPane);
+        
+        bar.show(msg, 2500);
+        
+    }
+    
 }

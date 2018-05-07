@@ -5,7 +5,9 @@
  */
 package shoreline.gui.controller;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXSnackbar;
 import com.jfoenix.controls.JFXTextField;
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +41,7 @@ import shoreline.be.ConvTask;
 import shoreline.bll.ThreadPool;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.MainModel;
+import shoreline.statics.Styling;
 import shoreline.statics.Window;
 
 /**
@@ -58,7 +61,7 @@ public class MappingWindowController implements Initializable, IController {
     File inputFile;
 
     private HashMap<String, Integer> cellIndexMap;
-
+    
     @FXML
     private JFXListView<String> lvInput;
     @FXML
@@ -75,6 +78,10 @@ public class MappingWindowController implements Initializable, IController {
     private Menu configMenu;
     @FXML
     private MenuItem Delete1;
+    @FXML
+    private JFXButton btnInput;
+    @FXML
+    private JFXButton btnTarget;
 
     /**
      * Initializes the controller class.
@@ -92,9 +99,9 @@ public class MappingWindowController implements Initializable, IController {
         lvMapOverview.setItems(mappingList);
         lvMapOverview.setOnMouseClicked((event) -> {
             if (lvMapOverview.getSelectionModel().getSelectedItems().size() == 1) {
-                Delete.setText("Delete");
+                Delete.setText("Remove");
             } else if (lvMapOverview.getSelectionModel().getSelectedItems().size() > 1) {
-                Delete.setText("Delete all");
+                Delete.setText("Remove all");
             }
         });
         if (!model.getConfigList().isEmpty()) {
@@ -125,8 +132,17 @@ public class MappingWindowController implements Initializable, IController {
         SelectionModel<String> inputSelection = lvInput.getSelectionModel();
         SelectionModel<String> templateSelection = lvTemplate.getSelectionModel();
 
-        String temp = inputSelection.getSelectedItem() + " -> " + templateSelection.getSelectedItem();
+        if (inputSelection.getSelectedItem() == null) {
+            return;
+        }
 
+        if (templateSelection.getSelectedItem() == null) {
+            return;
+        }
+
+        if (inputSelection.getSelectedItem() == null && templateSelection.getSelectedItem() == null) {
+            return;
+        }
         if (JSONmap.containsKey(templateSelection.getSelectedItem())) {
             Window.openExceptionWindow(templateSelection.getSelectedItem() + " is already mapped");
             return;
@@ -136,8 +152,11 @@ public class MappingWindowController implements Initializable, IController {
             return;
         }
 
+        String temp = inputSelection.getSelectedItem() + " -> " + templateSelection.getSelectedItem();
+
         JSONmap.put(templateSelection.getSelectedItem(), inputSelection.getSelectedItem());
         mappingList.add(temp);
+        Styling.clearRedOutline(lvMapOverview);
     }
 
     @FXML
@@ -146,6 +165,7 @@ public class MappingWindowController implements Initializable, IController {
         File tempFile = dirChooser.showDialog(bPane.getScene().getWindow());
         if (tempFile != null) {
             targetPath = tempFile.getAbsolutePath();
+            Styling.clearRedOutline(btnTarget);
         } else {
             return;
         }
@@ -153,7 +173,6 @@ public class MappingWindowController implements Initializable, IController {
 
     @FXML
     private void handelInputFile(ActionEvent event) {
-        mappingList.clear();
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("All supported types", "*.xlsx"),
@@ -165,28 +184,32 @@ public class MappingWindowController implements Initializable, IController {
         if (tempFile != null) {
             try {
                 JSONmap.clear();
+                inputList.clear();
                 inputFile = tempFile;
                 cellIndexMap = model.getTitles(inputFile);
                 getCellData();
+                Styling.clearRedOutline(lvInput);
+                Styling.clearRedOutline(btnInput);
             } catch (GUIException ex) {
                 Window.openExceptionWindow("Whoops");
             }
-
         }
     }
 
     @FXML
     private void handleDelMap(ActionEvent event) {
-        List<String> tempList;
-        tempList = lvMapOverview.getItems();
+        if (openConfirmWindow("Are you sure, you want to delete the entire map", null, null, false)) {
+            List<String> tempList;
+            tempList = lvMapOverview.getItems();
 
-        //Show confirm box before deleting
-        tempList.forEach((string) -> {
-            JSONmap.remove(string.split(" -> ")[1]);
-        });
+            //Show confirm box before deleting
+            tempList.forEach((string) -> {
+                JSONmap.remove(string.split(" -> ")[1]);
+            });
 
-        System.out.println(JSONmap);
-        mappingList.removeAll(tempList);
+            System.out.println(JSONmap);
+            mappingList.removeAll(tempList);
+        }
     }
 
     private void getCellData() {
@@ -199,37 +222,61 @@ public class MappingWindowController implements Initializable, IController {
     @FXML
     private void handleCreateTask(ActionEvent event) {
         try {
-            if (JSONmap.isEmpty()) {
-                Window.openExceptionWindow("There is no maps set");
-                return;
-            }
-
-            if (txtFileName.getText().equals("")) {
-                Window.openExceptionWindow("Enter target filename");
+            if (checkRequired()) {
                 return;
             }
 
             String targetName = txtFileName.getText();
             String name = inputFile.getName() + " -> " + targetName + ".json";
 
-            if (targetPath == null) {
-                Window.openExceptionWindow("Choose a target path.");
-                return;
-            }
-
             HashMap temp = new HashMap(JSONmap);
             HashMap cellTemp = new HashMap(cellIndexMap);
             ConvTask task = new ConvTask(cellTemp, temp, name, inputFile, new File(targetPath + "\\" + targetName + ".json"));
-//        System.out.println(task.getMapper());
+
             model.addToTaskList(task);
             model.addCallableToTask(task);
 
+            Window.openSnack("Task " + task.getName() + " was created", bPane);
             if (task == null) {
                 model.addLog(model.getUser().getId(), Alert.AlertType.ERROR, model.getUser().getfName() + "Tried to create a task and it failed");
             }
         } catch (GUIException ex) {
             Window.openExceptionWindow("There was truble making a task", ex.getStackTrace());
         }
+    }
+
+    private boolean checkRequired() {
+        if (inputFile == null) {
+            Styling.redOutline(lvInput);
+            Styling.redOutline(btnInput);
+            Window.openSnack("Please choose an input file", bPane);
+            return true;
+        } else {
+            Styling.clearRedOutline(lvInput);
+            Styling.clearRedOutline(btnInput);
+        }
+        if (JSONmap.isEmpty()) {
+            Styling.redOutline(lvMapOverview);
+            Window.openSnack("Please make a link or load a config", bPane);
+            return true;
+        } else {
+            Styling.clearRedOutline(lvMapOverview);
+        }
+        if (txtFileName.getText().equals("")) {
+            Styling.redOutline(txtFileName);
+            Window.openSnack("Please enter a file name", bPane);
+            return true;
+        } else {
+            Styling.clearRedOutline(txtFileName);
+        }
+        if (targetPath == null) {
+            Styling.redOutline(btnTarget);
+            Window.openSnack("Please choose a target folder", bPane);
+            return true;
+        } else {
+            Styling.clearRedOutline(btnTarget);
+        }
+        return false;
     }
 
     @FXML
@@ -247,19 +294,23 @@ public class MappingWindowController implements Initializable, IController {
     private void generateRightclickMenu() {
         configMenu.getItems().clear();
         model.getConfigList().forEach((config) -> {
-            System.out.println("loading config... \n \n");
             MenuItem item = new MenuItem(config.getName());
             item.setOnAction((event) -> {
+                if (inputFile == null) {
+                    Styling.redOutline(lvInput);
+                    return;
+                }
                 mappingList.clear();
                 JSONmap.clear();
                 JSONmap.putAll(config.getMap());
                 setInfoInlvMap(JSONmap);
+                Window.openSnack("Config " + config.getName() + " was loaded", bPane);
             });
             configMenu.getItems().add(item);
         });
     }
 
-    private void openConfirmWindow(String msg, HashMap map, File file) {
+    private boolean openConfirmWindow(String msg, HashMap map, File file, boolean txtField) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(Window.View.Confirm.getView()));
@@ -267,7 +318,7 @@ public class MappingWindowController implements Initializable, IController {
 
             ConfirmationWindowController cwc = fxmlLoader.getController();
             cwc.postInit(model);
-            cwc.setInfo(msg, map, file);
+            cwc.setInfo(msg, map, file, txtField);
 
             Scene scene = new Scene(root);
             Stage stage = new Stage();
@@ -275,9 +326,11 @@ public class MappingWindowController implements Initializable, IController {
             stage.setScene(scene);
             stage.setAlwaysOnTop(true);
             stage.showAndWait();
+            return cwc.getConfirmation();
         } catch (IOException ex) {
-            Logger.getLogger(MappingWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            Window.openExceptionWindow("Couldn't open confirmation window.");
         }
+        return false;
     }
 
     private void setInfoInlvMap(HashMap map) {
@@ -305,17 +358,17 @@ public class MappingWindowController implements Initializable, IController {
 
         if (!model.getConfigList().isEmpty()) {
             for (Config config : model.getConfigList()) {
-                System.out.println(config.getMap().toString() + "\n" + temp.toString());
                 if (config.getMap() == temp) {
                     return;
                 } else {
-                    openConfirmWindow("Do you want to save this map, if yes please enter name blow", temp, inputFile);
+                    openConfirmWindow("Do you want to save this map, if yes please enter name blow", temp, inputFile, true);
                     return;
                 }
             }
         } else {
-            openConfirmWindow("Do you want to save this map, if yes please enter name blow", temp, inputFile);
+            openConfirmWindow("Do you want to save this map, if yes please enter name blow", temp, inputFile, true);
         }
+        Window.openSnack("Config created", bPane);
     }
 
 }
