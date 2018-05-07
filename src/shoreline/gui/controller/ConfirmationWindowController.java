@@ -32,6 +32,7 @@ public class ConfirmationWindowController implements Initializable, IController 
     Stage stage;
     File file;
     private boolean confirmation = false;
+    private boolean txtField = false;
 
     @FXML
     private JFXTextField txtInput;
@@ -52,20 +53,22 @@ public class ConfirmationWindowController implements Initializable, IController 
         this.model = model;
     }
 
-    public void setInfo(String msg, HashMap map, File file) {
+    public void setInfo(String msg, HashMap map, File file, boolean txtField) {
         this.map = map;
         this.file = file;
+        this.txtField = txtField;
         lblInfo.setText(msg);
-        if (map != null) {
+        if (txtField) {
             txtInput.requestFocus();
         } else {
+            txtInput.setDisable(true);
             btnYes.requestFocus();
         }
     }
 
     @FXML
     private void handleYes(ActionEvent event) {
-        if (map != null) {
+        if (txtField) {
             if (txtInput.getText().isEmpty()) {
                 Window.openExceptionWindow("Please enter config name");
             } else {
@@ -86,10 +89,8 @@ public class ConfirmationWindowController implements Initializable, IController 
                     Config config = new Config(name, extension, map);
                     model.addToConfigList(config);
                 }
-
             }
         } else {
-            txtInput.setDisable(true);
             confirmation = true;
             stage = (Stage) lblInfo.getScene().getWindow();
             stage.close();
@@ -98,6 +99,7 @@ public class ConfirmationWindowController implements Initializable, IController 
 
     @FXML
     private void handleNo(ActionEvent event) {
+        confirmation = false;
         stage = (Stage) lblInfo.getScene().getWindow();
         stage.close();
     }

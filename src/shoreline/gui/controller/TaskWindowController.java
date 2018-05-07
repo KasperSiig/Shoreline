@@ -93,7 +93,7 @@ public class TaskWindowController implements Initializable, IController {
     private boolean pauseTask() {
         ThreadPool tp = ThreadPool.getInstance();
         if (selectedTasks.size() > 1) {
-            if (openConfirmWindow("Are you sure you want to pause " + selectedTasks.size() + " tasks?", null, null)) {
+            if (openConfirmWindow("Are you sure you want to pause " + selectedTasks.size() + " tasks?", null, null, false)) {
                 selectedTasks.forEach((task) -> {
                     tp.pauseTask(task.getTask());
                     try {
@@ -134,7 +134,7 @@ public class TaskWindowController implements Initializable, IController {
     private boolean stopTask() {
         ThreadPool tp = ThreadPool.getInstance();
         if (selectedTasks.size() > 1) {
-            if (openConfirmWindow("Are you sure you want to stop " + selectedTasks.size() + " tasks?", null, null)) {
+            if (openConfirmWindow("Are you sure you want to stop " + selectedTasks.size() + " tasks?", null, null, false)) {
                 selectedTasks.forEach((task) -> {
                     tp.cancelTask(task.getTask());
                     model.getTaskList().remove(task.getTask());
@@ -251,7 +251,7 @@ public class TaskWindowController implements Initializable, IController {
         MenuItem delItem = new MenuItem("Delete selected task");
         delItem.setOnAction((event) -> {
             if (selectedTasks.size() > 1) {
-                if (openConfirmWindow("Are you sure you want to delete " + selectedTasks.size() + " tasks?", null, null)) {
+                if (openConfirmWindow("Are you sure you want to delete " + selectedTasks.size() + " tasks?", null, null, false)) {
                     selectedTasks.forEach((task) -> {
                         model.getTaskList().remove(task.getTask());
                         try {
@@ -318,7 +318,7 @@ public class TaskWindowController implements Initializable, IController {
      * @param map
      * @return 
      */
-    private boolean openConfirmWindow(String msg, HashMap map, File file) {
+    private boolean openConfirmWindow(String msg, HashMap map, File file, boolean txtField) {
 
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
@@ -327,7 +327,7 @@ public class TaskWindowController implements Initializable, IController {
 
             ConfirmationWindowController cwc = fxmlLoader.getController();
             cwc.postInit(model);
-            cwc.setInfo(msg, map, file);
+            cwc.setInfo(msg, map, file, txtField);
 
             Scene scene = new Scene(root);
             Stage stage = new Stage();

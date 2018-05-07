@@ -22,8 +22,8 @@
          <children>
             <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
                <children>
-                  <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onAction="#handelInputFile" text="Choose input file" />
-                  <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleTargetDir" text="Target" />
+                  <JFXButton fx:id="btnInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onAction="#handelInputFile" text="Choose input file" />
+                  <JFXButton fx:id="btnTarget" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleTargetDir" text="Target" />
                </children>
             </HBox>
             <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -81,7 +81,7 @@
             </VBox>
             <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" HBox.hgrow="ALWAYS">
                <children>
-                  <JFXTextField fx:id="txtFileName" alignment="CENTER" labelFloat="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="150.0" prefHeight="31.0" promptText="Enter file name">
+                  <JFXTextField fx:id="txtFileName" alignment="CENTER" labelFloat="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="150.0" prefHeight="31.0" promptText="Enter file name here...">
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
