@@ -61,7 +61,7 @@ public class ConfirmationWindowController implements Initializable, IController 
         if (txtField) {
             txtInput.requestFocus();
         } else {
-            txtInput.setDisable(true);
+            txtInput.setDisable(true); 
             btnYes.requestFocus();
         }
     }

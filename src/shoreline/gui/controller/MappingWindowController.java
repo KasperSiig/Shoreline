@@ -7,6 +7,7 @@ package shoreline.gui.controller;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXSnackbar;
 import com.jfoenix.controls.JFXTextField;
 import java.io.File;
 import java.io.IOException;
@@ -60,6 +61,7 @@ public class MappingWindowController implements Initializable, IController {
     File inputFile;
 
     private HashMap<String, Integer> cellIndexMap;
+    JFXSnackbar snack;
 
     @FXML
     private JFXListView<String> lvInput;
@@ -122,6 +124,9 @@ public class MappingWindowController implements Initializable, IController {
             tPool.closeThreadPool();
             model.getTimer().cancel();
         });
+
+        snack = new JFXSnackbar(bPane);
+
     }
 
     @FXML
@@ -130,6 +135,17 @@ public class MappingWindowController implements Initializable, IController {
         SelectionModel<String> inputSelection = lvInput.getSelectionModel();
         SelectionModel<String> templateSelection = lvTemplate.getSelectionModel();
 
+        if (inputSelection.getSelectedItem() == null) {
+            return;
+        }
+
+        if (templateSelection.getSelectedItem() == null) {
+            return;
+        }
+
+        if (inputSelection.getSelectedItem() == null && templateSelection.getSelectedItem() == null) {
+            return;
+        }
         if (JSONmap.containsKey(templateSelection.getSelectedItem())) {
             Window.openExceptionWindow(templateSelection.getSelectedItem() + " is already mapped");
             return;
@@ -140,7 +156,7 @@ public class MappingWindowController implements Initializable, IController {
         }
 
         String temp = inputSelection.getSelectedItem() + " -> " + templateSelection.getSelectedItem();
-        
+
         JSONmap.put(templateSelection.getSelectedItem(), inputSelection.getSelectedItem());
         mappingList.add(temp);
         Styling.clearRedOutline(lvMapOverview);
@@ -160,7 +176,6 @@ public class MappingWindowController implements Initializable, IController {
 
     @FXML
     private void handelInputFile(ActionEvent event) {
-        mappingList.clear();
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("All supported types", "*.xlsx"),
@@ -172,6 +187,7 @@ public class MappingWindowController implements Initializable, IController {
         if (tempFile != null) {
             try {
                 JSONmap.clear();
+                inputList.clear();
                 inputFile = tempFile;
                 cellIndexMap = model.getTitles(inputFile);
                 getCellData();
@@ -185,7 +201,7 @@ public class MappingWindowController implements Initializable, IController {
 
     @FXML
     private void handleDelMap(ActionEvent event) {
-        if (openConfirmWindow("Are you sure, you want to delete this map", null, null, false)) {
+        if (openConfirmWindow("Are you sure, you want to delete the entire map", null, null, false)) {
             List<String> tempList;
             tempList = lvMapOverview.getItems();
 
@@ -223,6 +239,7 @@ public class MappingWindowController implements Initializable, IController {
             model.addToTaskList(task);
             model.addCallableToTask(task);
 
+            snack.show("Task " + task.getName() + " was created", 2500);
             if (task == null) {
                 model.addLog(model.getUser().getId(), Alert.AlertType.ERROR, model.getUser().getfName() + "Tried to create a task and it failed");
             }
@@ -287,6 +304,7 @@ public class MappingWindowController implements Initializable, IController {
                 JSONmap.clear();
                 JSONmap.putAll(config.getMap());
                 setInfoInlvMap(JSONmap);
+                snack.show("Config " + config.getName() + "was loaded", 2500);
             });
             configMenu.getItems().add(item);
         });
@@ -351,6 +369,7 @@ public class MappingWindowController implements Initializable, IController {
         } else {
             openConfirmWindow("Do you want to save this map, if yes please enter name blow", temp, inputFile, true);
         }
+        snack.show("Config created", 2500);
     }
 
 }
