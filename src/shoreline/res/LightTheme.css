@@ -227,7 +227,17 @@ and open the template in the editor.
 
 /* Menus */
 .menu-bar {
-    -fx-background-color: derive(white,20%);
+    /*-fx-padding: 100px;*/
+    -fx-background-color: transparent;
+    -fx-padding: 5px 0px 0px 10px;
+
+}
+
+.menu-menu {
+    -fx-background-color: transparent;
+    -fx-border-width: 0px 0px 2px 0px;
+    -fx-border-color: #2e6da4;
+    -fx-text-fill: white;
 }
 
 .context-menu {
@@ -237,7 +247,7 @@ and open the template in the editor.
 .menu-bar .label {
     -fx-font-size: 14pt;
     -fx-font-family: "Segoe UI Light";
-    -fx-text-fill: black;
+    -fx-text-fill: white;
     -fx-opacity: 0.9;
 }
 
@@ -286,7 +296,7 @@ and open the template in the editor.
 .tab-pane .tab:selected
 {
     -fx-background-color: #337ab7;
-    
+
 }
 
 .tab .tab-label { 
