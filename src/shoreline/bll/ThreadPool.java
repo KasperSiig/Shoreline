@@ -110,7 +110,7 @@ public class ThreadPool {
      * @return Whether the cancellation was successful or not
      */
     public boolean cancelTask(ConvTask task) {
-        task.setStatus(ConvTask.Status.Canceled);
+        task.setStatus(ConvTask.Status.Cancelled);
         if (running.contains(task)) {
             running.remove(task);
             return task.getFuture().cancel(true);

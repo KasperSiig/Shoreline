@@ -174,7 +174,7 @@ public class TaskWindowController implements Initializable, IController {
 //        addTaskViews(selectedCanTasks, vBoxCan);
         setTasks(selectedPenTasks, model.getPendingTasks(), vBoxPen);
         setTasks(selectedFinTasks, model.getFinishedTasks(), vBoxFin);
-        setTasks(selectedCanTasks, model.getCanceledTasks(), vBoxCan);
+        setTasks(selectedCanTasks, model.getCancelledTasks(), vBoxCan);
 
         genRightClickStart();
         genRightClickDel();

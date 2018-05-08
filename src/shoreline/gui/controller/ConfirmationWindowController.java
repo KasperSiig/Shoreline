@@ -15,6 +15,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import shoreline.be.Config;
 import shoreline.gui.model.MainModel;
@@ -27,10 +28,10 @@ import shoreline.statics.Window;
  */
 public class ConfirmationWindowController implements Initializable, IController {
 
-    MainModel model;
-    HashMap map;
-    Stage stage;
-    File file;
+    private MainModel model;
+    private HashMap map;
+    private Stage stage;
+    private File file;
     private boolean confirmation = false;
     private boolean txtField = false;
 
@@ -40,6 +41,8 @@ public class ConfirmationWindowController implements Initializable, IController 
     private Label lblInfo;
     @FXML
     private JFXButton btnYes;
+    @FXML
+    private BorderPane bPane;
 
     /**
      * Initializes the controller class.
@@ -48,15 +51,42 @@ public class ConfirmationWindowController implements Initializable, IController 
     public void initialize(URL url, ResourceBundle rb) {
     }
 
+    /**
+     * Runs before the rest of the class
+     * 
+     * @param model 
+     */
     @Override
     public void postInit(MainModel model) {
         this.model = model;
     }
 
+    /**
+     * Sets the label information.
+     * if this window are used to make configs
+     * it gets the data it needs to make them.
+     * 
+     * @param msg
+     * @param map
+     * @param file
+     * @param txtField 
+     */
     public void setInfo(String msg, HashMap map, File file, boolean txtField) {
         this.map = map;
         this.file = file;
         this.txtField = txtField;
+        lblInfo.setText(msg);
+    }
+    
+    /**
+     * Sets the label information
+     * if the window is used as confirmation
+     * it disables the textfield.
+     * 
+     * @param msg
+     * @param txtField 
+     */
+    public void setInfo(String msg, boolean txtField) {
         lblInfo.setText(msg);
         if (txtField) {
             txtInput.requestFocus();
@@ -66,16 +96,26 @@ public class ConfirmationWindowController implements Initializable, IController 
         }
     }
 
+    /**
+     * Handles the yes button
+     * checks if it needs the textfield if it does
+     * it asks for a name and creates a config and 
+     * sets a boolean to true
+     * otherwise it just sets the boolean, then
+     * closes the window.
+     * 
+     * @param event 
+     */
     @FXML
     private void handleYes(ActionEvent event) {
         if (txtField) {
             if (txtInput.getText().isEmpty()) {
-                Window.openExceptionWindow("Please enter config name");
+                Window.openSnack("Please enter config name", bPane, "red");
             } else {
                 String name = txtInput.getText();
                 for (Config config : model.getConfigList()) {
                     if (config.getName().equals(name)) {
-                        Window.openExceptionWindow("The name aleardy exists");
+                        Window.openSnack("The name already exists", bPane, "red");
                         return;
                     }
                 }
@@ -97,6 +137,14 @@ public class ConfirmationWindowController implements Initializable, IController 
         }
     }
 
+    /**
+     * Handles the no button
+     * sets the boolean to false
+     * closes the window.
+     * 
+     * 
+     * @param event 
+     */
     @FXML
     private void handleNo(ActionEvent event) {
         confirmation = false;
@@ -104,6 +152,11 @@ public class ConfirmationWindowController implements Initializable, IController 
         stage.close();
     }
 
+    /**
+     * returns the confirmation boolean
+     * 
+     * @return Confirmation
+     */
     public boolean getConfirmation() {
         return confirmation;
     }

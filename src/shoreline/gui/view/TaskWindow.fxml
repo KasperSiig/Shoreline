@@ -59,7 +59,7 @@
             </BorderPane>
          </content>
       </Tab>
-      <Tab closable="false" text="Canceled">
+      <Tab closable="false" text="Cancelled">
          <content>
             <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0">
                <top>

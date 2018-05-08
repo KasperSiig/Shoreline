@@ -42,7 +42,7 @@ public class MainModel {
     private ObservableList<LogItem> logList;
     private ObservableList<ConvTask> pendingTasks;
     private ObservableList<ConvTask> finishedTasks;
-    private ObservableList<ConvTask> canceledTasks;
+    private ObservableList<ConvTask> cancelledTasks;
     private ObservableList<Config> configList;
 
     /**
@@ -58,7 +58,7 @@ public class MainModel {
             this.logic = new LogicManager();
             this.pendingTasks = FXCollections.observableArrayList();
             this.finishedTasks = FXCollections.observableArrayList();
-            this.canceledTasks = FXCollections.observableArrayList();
+            this.cancelledTasks = FXCollections.observableArrayList();
             this.logList = FXCollections.observableArrayList(getAllLogs());
             this.templateList = FXCollections.observableArrayList("siteName", "assetSerialNumber",
                     "type", "externalWorkOrderId", "systemStatus", "userStatus", "name", "priority",
@@ -274,24 +274,24 @@ public class MainModel {
      *
      * @param task Task to be added
      */
-    public void addToCanceledTasks(ConvTask task) {
-        canceledTasks.add(task);
+    public void addToCancelledTasks(ConvTask task) {
+        cancelledTasks.add(task);
     }
 
     /**
-     * Removes task from List of canceled tasks
+     * Removes task from List of cancelled tasks
      *
      * @param task Task to be removed
      */
-    public void removeFromCanceledTasks(ConvTask task) {
-        canceledTasks.remove(task);
+    public void removeFromCancelledTasks(ConvTask task) {
+        cancelledTasks.remove(task);
     }
 
     /**
      * @return ObersableList containing ConvTasks
      */
-    public ObservableList<ConvTask> getCanceledTasks() {
-        return canceledTasks;
+    public ObservableList<ConvTask> getCancelledTasks() {
+        return cancelledTasks;
     }
 
     /**
@@ -313,9 +313,9 @@ public class MainModel {
                     } else if (newValue.equals(ConvTask.Status.Finished.getValue()) && !finishedTasks.contains(task)) {
                         removeFromPendingTasks(task);
                         addToFinishedTasks(task);
-                    } else if (newValue.equals(ConvTask.Status.Canceled.getValue()) && !canceledTasks.contains(task)) {
+                    } else if (newValue.equals(ConvTask.Status.Cancelled.getValue()) && !cancelledTasks.contains(task)) {
                         removeFromPendingTasks(task);
-                        addToCanceledTasks(task);
+                        addToCancelledTasks(task);
                     }
                 });
                 }

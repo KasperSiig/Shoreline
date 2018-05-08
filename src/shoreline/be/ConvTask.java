@@ -29,7 +29,7 @@ public class ConvTask {
         Running("Running"),
         Paused("Paused"),
         Finished("Finished"),
-        Canceled("Canceled");
+        Cancelled("Cancelled");
         
         String status;
 
