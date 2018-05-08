@@ -191,7 +191,7 @@ public class Window {
             color = "#ff3333";
         }
         
-        bar.getChildren().get(0).setStyle("-fx-text-fill: white; -fx-background-color: " + color + ";");
+        bar.getChildren().get(0).setStyle("-fx-text-fill: white; -fx-background-color: " + color + "; -fx-background-radius: 4px;");
         bar.show(msg, 2500);
         
     }

@@ -24,6 +24,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
@@ -79,6 +80,8 @@ public class MappingWindowController implements Initializable, IController {
     private JFXButton btnInput;
     @FXML
     private JFXButton btnTarget;
+    @FXML
+    private Label lblInfo;
 
     /**
      * Initializes the controller class.
@@ -231,6 +234,7 @@ public class MappingWindowController implements Initializable, IController {
 
         if (tempFile != null) {
             try {
+                lblInfo.setVisible(false);
                 JSONmap.clear();
                 inputList.clear();
                 inputFile = tempFile;

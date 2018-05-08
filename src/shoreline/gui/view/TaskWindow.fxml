@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<TabPane xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="shoreline.gui.controller.TaskWindowController">
+<TabPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="shoreline.gui.controller.TaskWindowController">
    <tabs>
       <Tab closable="false" text="Pending">
          <content>
@@ -27,9 +27,12 @@
                   </HBox>
                </top>
                <center>
-                  <ScrollPane fx:id="scrlPanePen" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-border-color: red;" vbarPolicy="ALWAYS" BorderPane.alignment="CENTER">
+                  <ScrollPane fx:id="scrlPanePen" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vbarPolicy="ALWAYS" BorderPane.alignment="CENTER">
                      <content>
-                        <VBox fx:id="vBoxPen" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" />
+                        <VBox fx:id="vBoxPen" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
+                           <padding>
+                              <Insets top="10.0" />
+                           </padding></VBox>
                      </content>
                   </ScrollPane>
                </center>
@@ -50,7 +53,7 @@
                   </HBox>
                </top>
                <center>
-                  <ScrollPane fx:id="scrlPaneFin" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-border-color: red;" vbarPolicy="ALWAYS" BorderPane.alignment="CENTER">
+                  <ScrollPane fx:id="scrlPaneFin" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vbarPolicy="ALWAYS" BorderPane.alignment="CENTER">
                      <content>
                         <VBox fx:id="vBoxFin" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" />
                      </content>
@@ -73,7 +76,7 @@
                   </HBox>
                </top>
                <center>
-                  <ScrollPane fx:id="scrlPaneCan" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-border-color: red;" vbarPolicy="ALWAYS" BorderPane.alignment="CENTER">
+                  <ScrollPane fx:id="scrlPaneCan" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vbarPolicy="ALWAYS" BorderPane.alignment="CENTER">
                      <content>
                         <VBox fx:id="vBoxCan" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" />
                      </content>

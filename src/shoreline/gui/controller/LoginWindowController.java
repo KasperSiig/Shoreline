@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import shoreline.exceptions.GUIException;
+import shoreline.gui.MenuBarFactory;
 import shoreline.gui.model.MainModel;
 import shoreline.statics.Window;
 
@@ -71,7 +72,7 @@ public class LoginWindowController implements Initializable, IController {
         try {
             if (model.validateLogin(txtUserName.getText(), txtPassword.getText())) {
                 model.setUser(model.getUser(txtUserName.getText(), txtPassword.getText()));
-                Window.openView(model, model.getBorderPane(), Window.View.Mapping, "center");
+                Window.openView(model, model.getBorderPane(), Window.View.Mapping, "center", MenuBarFactory.MenuType.Default);
                 model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has logged in");
             } else {
                 lblError.setText("there was a problem with the log in");
