@@ -85,6 +85,8 @@ public class TaskWindowController implements Initializable, IController {
                 Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
             }
         });
+        selectedPenTasks.clear();
+        clearSelected(selectedPenTasks);
     }
 
     /**
@@ -213,24 +215,14 @@ public class TaskWindowController implements Initializable, IController {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
                 cMenu.hide();
                 if (selectedTasks.contains(taskView)) {
-//                    selectedTasks.remove(taskView);
-//                    taskView.setStyle("-fx-border-color: transparent");
                     toggleSelected(taskView, selectedTasks, false);
                 } else {
-//                    selectedTasks.add(taskView);
-//                    taskView.setStyle("-fx-border-color: #2e6da4; -fx-border-radius: 4px; "
-//                            + "-fx-background-color: derive(#337ab7, 80%); "
-//                            + "-fx-background-radius: 4px; -fx-text-fill: white");
                     toggleSelected(taskView, selectedTasks, true);
                 }
             }
             if (event.getButton().equals(MouseButton.SECONDARY)) {
                 cMenu.show(vBox, event.getScreenX(), event.getScreenY());
                 if (!selectedTasks.contains(taskView)) {
-//                    selectedTasks.add(taskView);
-//                    taskView.setStyle("-fx-border-color: #2e6da4; -fx-border-radius: 4px; "
-//                            + "-fx-background-color: derive(#337ab7, 80%); "
-//                            + "-fx-background-radius: 4px; -fx-text-fill: white");
                     toggleSelected(taskView, selectedTasks, true);
                 }
             }
@@ -249,6 +241,13 @@ public class TaskWindowController implements Initializable, IController {
             taskView.setStyle("-fx-border-color: transparent");
         }
     }
+    
+    private void clearSelected(List<TaskView> taskViews) {
+        taskViews.forEach((taskView) -> {
+            taskView.setStyle("-fx-border-color: transparent");
+        });
+    }
+
 
     /**
      * Generates MenuItem for starting task
