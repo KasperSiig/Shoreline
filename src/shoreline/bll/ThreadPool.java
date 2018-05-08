@@ -41,7 +41,7 @@ public class ThreadPool {
         pending = new ArrayList();
         running = new ArrayList();
         finished = new ArrayList();
-        this.threadPool = Executors.newFixedThreadPool(3);
+        this.threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     }
 
     /**

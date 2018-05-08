@@ -543,4 +543,11 @@ public class MappingWindowController implements Initializable, IController {
         Window.openSnack("Config created", bPane, "blue");
     }
 
+    @FXML
+    private void doubleClickMap(MouseEvent event) {
+        if (event.getClickCount()%2 == 0) {
+            handleMap(new ActionEvent());
+        }
+    }
+
 }
