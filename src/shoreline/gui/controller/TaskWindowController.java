@@ -213,26 +213,41 @@ public class TaskWindowController implements Initializable, IController {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
                 cMenu.hide();
                 if (selectedTasks.contains(taskView)) {
-                    selectedTasks.remove(taskView);
-                    taskView.setStyle("-fx-border-color: transparent");
+//                    selectedTasks.remove(taskView);
+//                    taskView.setStyle("-fx-border-color: transparent");
+                    toggleSelected(taskView, selectedTasks, false);
                 } else {
-                    selectedTasks.add(taskView);
-                    taskView.setStyle("-fx-border-color: #2e6da4; -fx-border-radius: 4px; "
-                            + "-fx-background-color: derive(#337ab7, 80%); "
-                            + "-fx-background-radius: 4px; -fx-text-fill: white");
+//                    selectedTasks.add(taskView);
+//                    taskView.setStyle("-fx-border-color: #2e6da4; -fx-border-radius: 4px; "
+//                            + "-fx-background-color: derive(#337ab7, 80%); "
+//                            + "-fx-background-radius: 4px; -fx-text-fill: white");
+                    toggleSelected(taskView, selectedTasks, true);
                 }
             }
             if (event.getButton().equals(MouseButton.SECONDARY)) {
                 cMenu.show(vBox, event.getScreenX(), event.getScreenY());
                 if (!selectedTasks.contains(taskView)) {
-                    selectedTasks.add(taskView);
-                    taskView.setStyle("-fx-border-color: #2e6da4; -fx-border-radius: 4px; "
-                            + "-fx-background-color: derive(#337ab7, 80%); "
-                            + "-fx-background-radius: 4px; -fx-text-fill: white");
+//                    selectedTasks.add(taskView);
+//                    taskView.setStyle("-fx-border-color: #2e6da4; -fx-border-radius: 4px; "
+//                            + "-fx-background-color: derive(#337ab7, 80%); "
+//                            + "-fx-background-radius: 4px; -fx-text-fill: white");
+                    toggleSelected(taskView, selectedTasks, true);
                 }
             }
         });
         return taskView;
+    }
+
+    private void toggleSelected(TaskView taskView, List<TaskView> selectedTasks, boolean selected) {
+        if (selected) {
+            selectedTasks.add(taskView);
+            taskView.setStyle("-fx-border-color: #2e6da4; -fx-border-radius: 4px; "
+                    + "-fx-background-color: derive(#337ab7, 80%); "
+                    + "-fx-background-radius: 4px; -fx-text-fill: white");
+        } else {
+            selectedTasks.remove(taskView);
+            taskView.setStyle("-fx-border-color: transparent");
+        }
     }
 
     /**

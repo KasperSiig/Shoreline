@@ -1,5 +1,6 @@
 package shoreline.gui.model;
 
+import com.jfoenix.controls.JFXSpinner;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -9,6 +10,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -47,22 +50,21 @@ public class MainModel {
      *
      * @throws GUIException
      */
-
     User user;
-
 
     public MainModel() throws GUIException {
         try {
-            
+
             this.logic = new LogicManager();
             this.pendingTasks = FXCollections.observableArrayList();
             this.finishedTasks = FXCollections.observableArrayList();
             this.canceledTasks = FXCollections.observableArrayList();
             this.logList = FXCollections.observableArrayList(getAllLogs());
-            this.templateList = FXCollections.observableArrayList("siteName", "assetSerialNumber", 
-                    "type", "externalWorkOrderId", "systemStatus", "userStatus", "name", "priority", 
+            this.templateList = FXCollections.observableArrayList("siteName", "assetSerialNumber",
+                    "type", "externalWorkOrderId", "systemStatus", "userStatus", "name", "priority",
                     "latestFinishDate", "earliestStartDate", "latestStartDate", "estimatedTime");
             this.configList = FXCollections.observableArrayList(getAllConfigs());
+            addListeners();
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
@@ -148,7 +150,6 @@ public class MainModel {
      * @return Boolean whether the user is valid
      * @throws GUIException
      */
-
     public User getUser(String username, String password) throws GUIException {
         try {
             return logic.getUser(username, hashString(password).toString());
@@ -156,7 +157,6 @@ public class MainModel {
             throw new GUIException(ex);
         }
     }
-
 
     public boolean validateLogin(String username, String pass) throws GUIException {
         try {
@@ -222,10 +222,10 @@ public class MainModel {
     public void addToPendingTasks(ConvTask task) {
         pendingTasks.add(task);
     }
-    
+
     /**
      * Removes task from List of pending tasks
-     * 
+     *
      * @param task Task to be removed
      */
     public void removeFromPendingTasks(ConvTask task) {
@@ -238,7 +238,6 @@ public class MainModel {
 //    public ObservableList<ConvTask> getTaskList() {
 //        return pendingTasks;
 //    }
-
     public ObservableList<ConvTask> getPendingTasks() {
         return pendingTasks;
     }
@@ -253,10 +252,10 @@ public class MainModel {
         System.out.println("shoreline.gui.model.MainModel.addToFinishedTasks()");
         System.out.println("finishedTasks = " + finishedTasks.size() + "\n");
     }
-    
+
     /**
      * Removes task from List of pending tasks
-     * 
+     *
      * @param task Task to be removed
      */
     public void removeFromFinishedTasks(ConvTask task) {
@@ -278,10 +277,10 @@ public class MainModel {
     public void addToCanceledTasks(ConvTask task) {
         canceledTasks.add(task);
     }
-    
+
     /**
      * Removes task from List of canceled tasks
-     * 
+     *
      * @param task Task to be removed
      */
     public void removeFromCanceledTasks(ConvTask task) {
@@ -302,6 +301,26 @@ public class MainModel {
      */
     public void startTask(ConvTask task) {
         logic.startTask(task);
+    }
+
+    private void addListeners() {
+        pendingTasks.addListener((ListChangeListener.Change<? extends ConvTask> c) -> {
+            while (c.next()) {
+                if (c.wasAdded()) {
+                ConvTask task = pendingTasks.get(pendingTasks.size() - 1);
+                task.getStatus().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+                    if (newValue.equals(ConvTask.Status.Running.getValue())) {
+                    } else if (newValue.equals(ConvTask.Status.Finished.getValue()) && !finishedTasks.contains(task)) {
+                        removeFromPendingTasks(task);
+                        addToFinishedTasks(task);
+                    } else if (newValue.equals(ConvTask.Status.Canceled.getValue()) && !canceledTasks.contains(task)) {
+                        removeFromPendingTasks(task);
+                        addToCanceledTasks(task);
+                    }
+                });
+                }
+            }
+        });
     }
 
     /**
@@ -346,10 +365,9 @@ public class MainModel {
         }
     }
 
-
     /**
      * Adds log to database
-     * 
+     *
      * @param userId The user who made an action
      * @param type Type of log to be logged
      * @param message Log message
@@ -371,7 +389,7 @@ public class MainModel {
             throw new GUIException(ex);
         }
     }
-    
+
     /**
      * Starts timer to get new logs
      *
@@ -384,7 +402,7 @@ public class MainModel {
 
     /**
      * @return New LogItems
-     * @throws BLLException 
+     * @throws BLLException
      */
     public List<LogItem> getNewLogs() throws BLLException {
         return logic.getNewLogs();
@@ -392,7 +410,7 @@ public class MainModel {
 
     /**
      * @return List of all Configurations
-     * @throws BLLException 
+     * @throws BLLException
      */
     public List<Config> getAllConfigs() throws BLLException {
         return logic.getAllConfigs();
@@ -400,11 +418,11 @@ public class MainModel {
 
     /**
      * Save new configruation
-     * 
+     *
      * @param name Name of configuration
      * @param extension Extension of the file, fit to config
      * @param map Mapping of the configuration
-     * @throws BLLException 
+     * @throws BLLException
      */
     public void saveConfig(String name, String extension, HashMap map) throws BLLException {
         logic.saveConfig(name, extension, map);
@@ -412,12 +430,12 @@ public class MainModel {
 
     /**
      * Gets the timer from logic layer
-     * @return 
+     *
+     * @return
      */
     public Timer getTimer() {
         return logic.getTimer();
     }
-
 
     /**
      * Adds listener to Log List in BLL

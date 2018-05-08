@@ -60,12 +60,6 @@ public class TaskView extends BorderPane implements IController {
             if (newValue.equals(ConvTask.Status.Running.getValue())) {
                 JFXSpinner spin = new JFXSpinner();
                 vBox.getChildren().set(0, spin);
-            } else if (newValue.equals(ConvTask.Status.Finished.getValue()) && !model.getFinishedTasks().contains(task)) {
-                model.removeFromPendingTasks(task);
-                model.addToFinishedTasks(task);
-            } else if (newValue.equals(ConvTask.Status.Canceled.getValue()) && !model.getCanceledTasks().contains(task)) {
-                model.removeFromPendingTasks(task);
-                model.addToCanceledTasks(task);
             } else {
                 vBox.getChildren().set(0, lblStatus);
                 lblStatus.setText(task.getStatus().getValue());
