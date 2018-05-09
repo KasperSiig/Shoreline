@@ -17,7 +17,8 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/shoreline/gui/view/RootWindow.fxml"));
         
         Scene scene = new Scene(root);
-        
+        stage.setMinHeight(750);
+        stage.setMinWidth(1050);
         stage.setScene(scene);
         stage.show();
     }

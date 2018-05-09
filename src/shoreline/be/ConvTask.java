@@ -55,7 +55,7 @@ public class ConvTask {
 
     public ConvTask(HashMap<String, Integer> cellIndexMap, HashMap<String, String> mapper, String name, File source, File target) {
         this.jAr = new JSONArray();
-        this.progress = 1;
+        this.progress = 0;
         this.cellIndexMap = cellIndexMap;
         this.mapper = mapper;
         this.name = name;

@@ -95,8 +95,8 @@ public class TaskWindowController implements Initializable, IController {
                 Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
             }
         });
-        selectedPenTasks.clear();
         clearSelected(selectedPenTasks);
+        selectedPenTasks.clear();
     }
 
     /**
@@ -144,7 +144,8 @@ public class TaskWindowController implements Initializable, IController {
         ThreadPool tp = ThreadPool.getInstance();
         if (tasks.size() > 1) {
             if (openConfirmWindow("Are you sure you want to stop " + tasks.size() + " tasks?", null, null, false)) {
-                tasks.forEach((task) -> {
+                List<TaskView> temp = new ArrayList<>(tasks);
+                temp.forEach((task) -> {
                     tp.cancelTask(task.getTask());
                     try {
                         model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has stopped task " + task.getTask().getName());

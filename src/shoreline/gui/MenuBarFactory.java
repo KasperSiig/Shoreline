@@ -83,7 +83,7 @@ public class MenuBarFactory {
      * @return MenuItem to open/close Log View
      */
     private MenuItem openLogView() {
-        MenuItem openLogView = new MenuItem("Open Log view");
+        MenuItem openLogView = new MenuItem("Open Log View");
         openLogView.setOnAction((event) -> {
             try {
                 if (!logIsOpen) {

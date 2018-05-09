@@ -15,6 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -57,13 +59,14 @@ public class XLXSConvStrat implements ConvStrategy {
                 // XLSX files can contain more sheets, this gets the one at index 0
                 sheet1 = wb.getSheetAt(0);
                 writeJson(task);
-                Platform.runLater(() -> {
-                    task.setStatus(ConvTask.Status.Finished);
-                });
-                threadPool.removeFromRunning(task);
+                if (task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
+                    Platform.runLater(() -> {
+                        task.setStatus(ConvTask.Status.Finished);
+                    });
+                    threadPool.removeFromRunning(task);
 
-                threadPool.addToFinished(task);
-
+                    threadPool.addToFinished(task);
+                }
             } catch (FileNotFoundException ex) {
                 throw new DALException("File was not found.", ex);
             } catch (IOException ex) {
@@ -104,8 +107,8 @@ public class XLXSConvStrat implements ConvStrategy {
         JSONArray jAr = task.getjAr();
 
         // Is being used to keep track of what row to pull data from
-        int i = task.getProgress();
-        while (sheet1.getRow(i) != null) {
+        int i = task.getProgress() + 1;
+        while (sheet1.getRow(i) != null && task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
             JSONObject jOb = createJSONObject(i, task);
             jAr.put(jOb);
             task.setProgress(i);
@@ -124,9 +127,9 @@ public class XLXSConvStrat implements ConvStrategy {
                 fileWriter.write(jAr.toString(4));
                 fileWriter.flush();
                 fileWriter.close();
-                Thread.sleep(10);
+                Thread.sleep(100);
             } catch (InterruptedException ex) {
-                Logger.getLogger(XLXSConvStrat.class.getName()).log(Level.SEVERE, null, ex);
+                return;
             }
         } catch (IOException ex) {
             throw new DALException("Error writing JSON File", ex);
