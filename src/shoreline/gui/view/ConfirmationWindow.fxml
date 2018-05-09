@@ -22,7 +22,7 @@
             </HBox>
          </center>
          <top>
-            <JFXTextField fx:id="txtInput" onAction="#handleYes" BorderPane.alignment="CENTER">
+            <JFXTextField fx:id="txtInput" onAction="#handleYes" promptText="Enter config name" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets bottom="5.0" left="20.0" right="20.0" />
                </BorderPane.margin>
