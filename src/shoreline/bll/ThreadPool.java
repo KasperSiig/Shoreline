@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import org.omg.SendingContext.RunTime;
 import shoreline.be.ConvTask;
 
 /**
@@ -41,7 +42,7 @@ public class ThreadPool {
         pending = new ArrayList();
         running = new ArrayList();
         finished = new ArrayList();
-        this.threadPool = Executors.newFixedThreadPool(3);
+        this.threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     }
 
     /**

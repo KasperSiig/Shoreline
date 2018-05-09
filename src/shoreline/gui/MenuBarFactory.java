@@ -51,10 +51,7 @@ public class MenuBarFactory {
         Menu options = new Menu("View");
         options.getItems().add(openTaskView());
         options.getItems().add(openLogView());
-        Menu Configs = new Menu("Configs");
-        Configs.getItems().add(openTaskView());
-        Configs.getItems().add(openLogView());
-        MenuBar menuBar = new MenuBar(options, Configs);
+        MenuBar menuBar = new MenuBar(options);
         menuBar.getStyleClass().clear();
         menuBar.getStyleClass().add("menu-menu");
         return menuBar;
