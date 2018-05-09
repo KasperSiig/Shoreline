@@ -1,18 +1,27 @@
 package shoreline.gui.controller;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import static java.util.Collections.list;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -21,6 +30,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import shoreline.be.ConvTask;
@@ -199,11 +209,15 @@ public class TaskWindowController implements Initializable, IController {
      * @param model
      */
     private void setTaskView(List<TaskView> selectedTasks, ObservableList<ConvTask> tasks, VBox vBox) {
+        int i = 0;
         vBox.getChildren().clear();
-        tasks.forEach((convTask) -> {
+        selectedTasks.clear();
+        for (ConvTask convTask : tasks) {
             TaskView taskView = makeTaskView(selectedTasks, vBox, convTask);
+            taskView.setId(String.valueOf(i));
             vBox.getChildren().add(taskView);
-        });
+            i++;
+        }
     }
 
     private TaskView makeTaskView(List<TaskView> selectedTasks, VBox vBox, ConvTask convTask) {
@@ -211,22 +225,74 @@ public class TaskWindowController implements Initializable, IController {
         taskView.postInit(model);
         Tooltip tt = new Tooltip(convTask.getTarget().toString());
         Tooltip.install(taskView, tt);
-        taskView.setOnMouseClicked((event) -> {
-            if (event.getButton().equals(MouseButton.PRIMARY)) {
-                cMenu.hide();
-                if (selectedTasks.contains(taskView)) {
-                    toggleSelected(taskView, selectedTasks, false);
-                } else {
-                    toggleSelected(taskView, selectedTasks, true);
+        taskView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getButton().equals(MouseButton.PRIMARY)) {
+                    cMenu.hide();
+                    if (event.isControlDown()) {
+                        if (selectedTasks.contains(taskView)) {
+                            toggleSelected(taskView, selectedTasks, false);
+                        } else {
+                            toggleSelected(taskView, selectedTasks, true);
+                        }
+                    } else if (event.isShiftDown()) {
+                        toggleSelected(taskView, selectedTasks, true);
+                        int id1 = Integer.valueOf(selectedTasks.get(0).getId());
+
+                        if (selectedTasks.size() > 1) {
+                            int id2 = Integer.valueOf(selectedTasks.get(selectedTasks.size() - 1).getId());
+
+                            //TO BE DONE!
+                            List<TaskView> allTasks = new ArrayList();
+
+                            vBox.getChildren().forEach((node) -> {
+                                allTasks.add((TaskView) node);
+                            });
+
+                            for (TaskView task : allTasks) {
+                                if (Integer.valueOf(task.getId()) > id1 && Integer.valueOf(task.getId()) < id2) {
+                                    toggleSelected(task, selectedTasks, true);
+                                } else if (Integer.valueOf(task.getId()) < id1 && Integer.valueOf(task.getId()) > id2) {
+                                    toggleSelected(task, selectedTasks, true);
+                                }
+                            }
+                        }
+
+                    } else {
+                        if (selectedTasks.contains(taskView)) {
+                            clearSelected(selectedTasks);
+                            selectedTasks.clear();
+                            toggleSelected(taskView, selectedTasks, false);
+
+                        } else {
+                            clearSelected(selectedTasks);
+                            selectedTasks.clear();
+                            toggleSelected(taskView, selectedTasks, true);
+                        }
+                    }
+
+                    System.out.println(selectedTasks);
+
+                    if (event.getClickCount() % 2 == 0) {
+                        try {
+                            String temp = convTask.getTarget().getParentFile().getPath();
+                            temp = temp.replaceAll("\\\\", "/");
+                            Desktop.getDesktop().browse(new URI(temp));
+                        } catch (URISyntaxException | IOException ex) {
+                            Logger.getLogger(TaskWindowController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+                if (event.getButton().equals(MouseButton.SECONDARY)) {
+                    cMenu.show(vBox, event.getScreenX(), event.getScreenY());
+                    if (!selectedTasks.contains(taskView)) {
+                        toggleSelected(taskView, selectedTasks, true);
+                    }
                 }
             }
-            if (event.getButton().equals(MouseButton.SECONDARY)) {
-                cMenu.show(vBox, event.getScreenX(), event.getScreenY());
-                if (!selectedTasks.contains(taskView)) {
-                    toggleSelected(taskView, selectedTasks, true);
-                }
-            }
-        });
+        }
+        );
         return taskView;
     }
 
@@ -241,13 +307,12 @@ public class TaskWindowController implements Initializable, IController {
             taskView.setStyle("-fx-border-color: transparent");
         }
     }
-    
+
     private void clearSelected(List<TaskView> taskViews) {
         taskViews.forEach((taskView) -> {
             taskView.setStyle("-fx-border-color: transparent");
         });
     }
-
 
     /**
      * Generates MenuItem for starting task

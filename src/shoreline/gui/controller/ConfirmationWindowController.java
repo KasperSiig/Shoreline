@@ -53,8 +53,8 @@ public class ConfirmationWindowController implements Initializable, IController 
 
     /**
      * Runs before the rest of the class
-     * 
-     * @param model 
+     *
+     * @param model
      */
     @Override
     public void postInit(MainModel model) {
@@ -62,14 +62,13 @@ public class ConfirmationWindowController implements Initializable, IController 
     }
 
     /**
-     * Sets the label information.
-     * if this window are used to make configs
-     * it gets the data it needs to make them.
-     * 
+     * Sets the label information. if this window are used to make configs it
+     * gets the data it needs to make them.
+     *
      * @param msg
      * @param map
      * @param file
-     * @param txtField 
+     * @param txtField
      */
     public void setInfo(String msg, HashMap map, File file, boolean txtField) {
         this.map = map;
@@ -77,34 +76,30 @@ public class ConfirmationWindowController implements Initializable, IController 
         this.txtField = txtField;
         lblInfo.setText(msg);
     }
-    
+
     /**
-     * Sets the label information
-     * if the window is used as confirmation
-     * it disables the textfield.
-     * 
+     * Sets the label information if the window is used as confirmation it
+     * disables the textfield.
+     *
      * @param msg
-     * @param txtField 
+     * @param txtField
      */
     public void setInfo(String msg, boolean txtField) {
         lblInfo.setText(msg);
         if (txtField) {
             txtInput.requestFocus();
         } else {
-            txtInput.setDisable(true); 
+            txtInput.setDisable(true);
             btnYes.requestFocus();
         }
     }
 
     /**
-     * Handles the yes button
-     * checks if it needs the textfield if it does
-     * it asks for a name and creates a config and 
-     * sets a boolean to true
-     * otherwise it just sets the boolean, then
-     * closes the window.
-     * 
-     * @param event 
+     * Handles the yes button checks if it needs the textfield if it does it
+     * asks for a name and creates a config and sets a boolean to true otherwise
+     * it just sets the boolean, then closes the window.
+     *
+     * @param event
      */
     @FXML
     private void handleYes(ActionEvent event) {
@@ -128,6 +123,8 @@ public class ConfirmationWindowController implements Initializable, IController 
                     }
                     Config config = new Config(name, extension, map);
                     model.addToConfigList(config);
+                    stage = (Stage) lblInfo.getScene().getWindow();
+                    stage.close();
                 }
             }
         } else {
@@ -138,12 +135,10 @@ public class ConfirmationWindowController implements Initializable, IController 
     }
 
     /**
-     * Handles the no button
-     * sets the boolean to false
-     * closes the window.
-     * 
-     * 
-     * @param event 
+     * Handles the no button sets the boolean to false closes the window.
+     *
+     *
+     * @param event
      */
     @FXML
     private void handleNo(ActionEvent event) {
@@ -154,7 +149,7 @@ public class ConfirmationWindowController implements Initializable, IController 
 
     /**
      * returns the confirmation boolean
-     * 
+     *
      * @return Confirmation
      */
     public boolean getConfirmation() {

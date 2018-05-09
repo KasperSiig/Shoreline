@@ -55,7 +55,10 @@
                <center>
                   <ScrollPane fx:id="scrlPaneFin" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vbarPolicy="ALWAYS" BorderPane.alignment="CENTER">
                      <content>
-                        <VBox fx:id="vBoxFin" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" />
+                        <VBox fx:id="vBoxFin" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
+                           <padding>
+                              <Insets top="10.0" />
+                           </padding></VBox>
                      </content>
                   </ScrollPane>
                </center>
@@ -78,7 +81,10 @@
                <center>
                   <ScrollPane fx:id="scrlPaneCan" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vbarPolicy="ALWAYS" BorderPane.alignment="CENTER">
                      <content>
-                        <VBox fx:id="vBoxCan" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" />
+                        <VBox fx:id="vBoxCan" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
+                           <padding>
+                              <Insets top="10.0" />
+                           </padding></VBox>
                      </content>
                   </ScrollPane>
                </center>
