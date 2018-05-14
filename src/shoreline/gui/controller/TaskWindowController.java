@@ -7,8 +7,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
-import static java.util.Collections.list;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -21,7 +19,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -87,16 +84,16 @@ public class TaskWindowController implements Initializable, IController {
      */
     @FXML
     private void handleTaskPlay(ActionEvent event) {
-        selectedPenTasks.forEach((taskView) -> {
+        List<TaskView> temp = new ArrayList(selectedPenTasks);
+        temp.forEach((taskView) -> {
             model.startTask(taskView.getTask());
+            toggleSelected(taskView, selectedPenTasks, false);
             try {
                 model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has started task " + taskView.getTask().getName());
             } catch (GUIException ex) {
                 Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
             }
         });
-        clearSelected(selectedPenTasks);
-        selectedPenTasks.clear();
     }
 
     /**
@@ -106,47 +103,27 @@ public class TaskWindowController implements Initializable, IController {
      */
     @FXML
     private void handleTaskPause(ActionEvent event) {
-        if (pauseTask(selectedPenTasks)) {
-            return;
-        }
+        pauseOrCancelTask(selectedPenTasks, false);
     }
 
-    private boolean pauseTask(List<TaskView> tasks) {
-        ThreadPool tp = ThreadPool.getInstance();
-        if (tasks.size() > 1) {
-            if (openConfirmWindow("Are you sure you want to pause " + tasks.size() + " tasks?", null, null, false)) {
-                tasks.forEach((task) -> {
-                    tp.pauseTask(task.getTask());
-                    try {
-                        model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has paused task " + task.getTask().getName());
-                    } catch (GUIException ex) {
-                        Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
-                    }
-                });
-            } else {
-                return true;
-            }
-        } else if (tasks.isEmpty()) {
-            Window.openExceptionWindow("No tasks are selected.");
-        } else {
-            ConvTask task = tasks.get(0).getTask();
-            tp.pauseTask(task);
-            try {
-                model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has paused task " + task.getName());
-            } catch (GUIException ex) {
-                Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
-            }
-        }
-        return false;
-    }
-
-    private boolean cancelTask(List<TaskView> tasks) {
+    /**
+     * Stops or cancels the task, based on cancel parameter
+     * 
+     * @param tasks List of tasks to be paused or canceled
+     * @param cancel true for cancel, false for pause
+     * @return 
+     */
+    private boolean pauseOrCancelTask(List<TaskView> tasks, boolean cancel) {
         ThreadPool tp = ThreadPool.getInstance();
         if (tasks.size() > 1) {
             if (openConfirmWindow("Are you sure you want to stop " + tasks.size() + " tasks?", null, null, false)) {
                 List<TaskView> temp = new ArrayList<>(tasks);
                 temp.forEach((task) -> {
-                    tp.cancelTask(task.getTask());
+                    if (cancel) {
+                        tp.cancelTask(task.getTask());
+                    } else {
+                        tp.pauseTask(task.getTask());
+                    }
                     try {
                         model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has stopped task " + task.getTask().getName());
                     } catch (GUIException ex) {
@@ -161,7 +138,11 @@ public class TaskWindowController implements Initializable, IController {
             Window.openExceptionWindow("No tasks are selected.");
         } else {
             ConvTask task = tasks.get(0).getTask();
-            tp.cancelTask(task);
+            if (cancel) {
+                tp.cancelTask(task);
+            } else {
+                tp.pauseTask(task);
+            }
             tasks.clear();
             try {
                 model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has paused task " + task.getName());
@@ -179,10 +160,7 @@ public class TaskWindowController implements Initializable, IController {
         if (model.getPendingTasks().isEmpty()) {
             return;
         }
-
-//        addTaskViews(selectedPenTasks, vBoxPen);
-//        addTaskViews(selectedFinTasks, vBoxFin);
-//        addTaskViews(selectedCanTasks, vBoxCan);
+        
         setTasks(selectedPenTasks, model.getPendingTasks(), vBoxPen);
         setTasks(selectedFinTasks, model.getFinishedTasks(), vBoxFin);
         setTasks(selectedCanTasks, model.getCancelledTasks(), vBoxCan);
@@ -263,17 +241,13 @@ public class TaskWindowController implements Initializable, IController {
                     } else {
                         if (selectedTasks.contains(taskView)) {
                             clearSelected(selectedTasks);
-                            selectedTasks.clear();
-                            toggleSelected(taskView, selectedTasks, false);
 
                         } else {
                             clearSelected(selectedTasks);
-                            selectedTasks.clear();
                             toggleSelected(taskView, selectedTasks, true);
                         }
                     }
 
-                    System.out.println(selectedTasks);
 
                     if (event.getClickCount() % 2 == 0) {
                         try {
@@ -310,8 +284,9 @@ public class TaskWindowController implements Initializable, IController {
     }
 
     private void clearSelected(List<TaskView> taskViews) {
-        taskViews.forEach((taskView) -> {
-            taskView.setStyle("-fx-border-color: transparent");
+        List<TaskView> temp = new ArrayList(taskViews);
+        temp.forEach((taskView) -> {
+            toggleSelected(taskView, taskViews, false);
         });
     }
 
@@ -332,7 +307,6 @@ public class TaskWindowController implements Initializable, IController {
      * Generates MenuItem for delete task
      */
     private void genRightClickDel() {
-//        cMenu.getItems().remove(0);
         MenuItem delItem = new MenuItem("Delete selected task");
         delItem.setOnAction((event) -> {
             if (selectedPenTasks.size() > 1) {
@@ -371,7 +345,7 @@ public class TaskWindowController implements Initializable, IController {
     private void genRightClickPause() {
         MenuItem item = new MenuItem("Pause selected task");
         item.setOnAction((event) -> {
-            pauseTask(selectedPenTasks);
+            pauseOrCancelTask(selectedPenTasks, false);
         });
         cMenu.getItems().add(item);
     }
@@ -379,7 +353,7 @@ public class TaskWindowController implements Initializable, IController {
     private void genRightClickStop() {
         MenuItem item = new MenuItem("Stop selected task");
         item.setOnAction((event) -> {
-            cancelTask(selectedPenTasks);
+            pauseOrCancelTask(selectedPenTasks, true);
         });
         cMenu.getItems().add(item);
     }
@@ -417,9 +391,7 @@ public class TaskWindowController implements Initializable, IController {
 
     @FXML
     private void handleTaskCancel(ActionEvent event) {
-        if (cancelTask(selectedPenTasks)) {
-            return;
-        }
+        pauseOrCancelTask(selectedPenTasks, true);
     }
 
     @FXML
