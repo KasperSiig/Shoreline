@@ -15,7 +15,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.MenuBarFactory;
-import shoreline.gui.model.MainModel;
+import shoreline.gui.model.ModelManager;
 import shoreline.statics.Window;
 
 /**
@@ -24,7 +24,7 @@ import shoreline.statics.Window;
  */
 public class RootWindowController implements Initializable, IController {
 
-    private MainModel model;
+    private ModelManager model;
     @FXML
     private BorderPane borderPane;
     @FXML
@@ -34,7 +34,7 @@ public class RootWindowController implements Initializable, IController {
     public void initialize(URL url, ResourceBundle rb) {
 
         try {
-            model = new MainModel();
+            model = new ModelManager();
             model.setBorderPane(borderPane);
             Window.openView(model, borderPane, Window.View.Login, "center");
         } catch (GUIException ex) {
@@ -44,7 +44,7 @@ public class RootWindowController implements Initializable, IController {
     }
 
     @Override
-    public void postInit(MainModel model) {
+    public void postInit(ModelManager model) {
         this.model = model;
         this.borderPane = model.getBorderPane();
 

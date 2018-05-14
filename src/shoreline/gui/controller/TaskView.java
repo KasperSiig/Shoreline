@@ -15,7 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import shoreline.be.ConvTask;
-import shoreline.gui.model.MainModel;
+import shoreline.gui.model.ModelManager;
 
 /**
  *
@@ -23,7 +23,7 @@ import shoreline.gui.model.MainModel;
  */
 public class TaskView extends BorderPane implements IController {
 
-    MainModel model;
+    ModelManager model;
     ConvTask task;
 
     @FXML
@@ -49,7 +49,7 @@ public class TaskView extends BorderPane implements IController {
     }
 
     @Override
-    public void postInit(MainModel model) {
+    public void postInit(ModelManager model) {
         this.model = model;
     }
 

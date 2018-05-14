@@ -13,7 +13,7 @@ import shoreline.Main;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.MenuBarFactory;
 import shoreline.gui.controller.IController;
-import shoreline.gui.model.MainModel;
+import shoreline.gui.model.ModelManager;
 
 /**
  *
@@ -56,7 +56,7 @@ public class Window {
      * @return an IController object
      * @throws GUIException
      */
-    public static IController openView(MainModel model, BorderPane borderpane, View view, String pos) throws GUIException {
+    public static IController openView(ModelManager model, BorderPane borderpane, View view, String pos) throws GUIException {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource(view.getView()));
@@ -88,7 +88,7 @@ public class Window {
         }
     }
 
-    public static IController openView(MainModel model, BorderPane borderpane, View view, String pos, MenuBarFactory.MenuType menuType) throws GUIException {
+    public static IController openView(ModelManager model, BorderPane borderpane, View view, String pos, MenuBarFactory.MenuType menuType) throws GUIException {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource(view.getView()));

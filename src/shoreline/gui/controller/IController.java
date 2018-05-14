@@ -1,6 +1,6 @@
 package shoreline.gui.controller;
 
-import shoreline.gui.model.MainModel;
+import shoreline.gui.model.ModelManager;
 
 /**
  *
@@ -14,5 +14,5 @@ public interface IController {
      * 
      * @param model 
      */    
-    public void postInit(MainModel model);
+    public void postInit(ModelManager model);
 }

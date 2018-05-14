@@ -4,7 +4,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import shoreline.exceptions.GUIException;
-import shoreline.gui.model.MainModel;
+import shoreline.gui.model.ModelManager;
 import shoreline.statics.Window;
 
 /**
@@ -14,7 +14,7 @@ import shoreline.statics.Window;
  */
 public class MenuBarFactory {
 
-    private MainModel model;
+    private ModelManager model;
     private boolean taskIsOpen = false;
     private boolean logIsOpen = false;
 
@@ -32,7 +32,7 @@ public class MenuBarFactory {
      * @param model Makes it possible to call methods in model from MenuBar
      * @return MenuBar
      */
-    public MenuBar createMenuBar(MenuType menuType, MainModel model) {
+    public MenuBar createMenuBar(MenuType menuType, ModelManager model) {
         this.model = model;
         switch (menuType) {
             case Default:

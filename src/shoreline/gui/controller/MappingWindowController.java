@@ -38,7 +38,7 @@ import shoreline.be.Config;
 import shoreline.be.ConvTask;
 import shoreline.bll.ThreadPool;
 import shoreline.exceptions.GUIException;
-import shoreline.gui.model.MainModel;
+import shoreline.gui.model.ModelManager;
 import shoreline.statics.Styling;
 import shoreline.statics.Window;
 
@@ -54,7 +54,7 @@ public class MappingWindowController implements Initializable, IController {
     ObservableList<String> mappingList = FXCollections.observableArrayList();
     HashMap<String, String> JSONmap = new HashMap<>();
 
-    MainModel model;
+    ModelManager model;
     String targetPath;
     File inputFile;
 
@@ -96,10 +96,10 @@ public class MappingWindowController implements Initializable, IController {
      * @param model 
      */
     @Override
-    public void postInit(MainModel model) {
+    public void postInit(ModelManager model) {
         this.model = model;
         lvInput.setItems(inputList);
-        lvTemplate.setItems(model.getTemplateList());
+        lvTemplate.setItems(model.getConfigModel().getTemplateList());
         generateRightclickMenu();
         lvMappingSetup();
         makeConfigListener();
@@ -136,7 +136,7 @@ public class MappingWindowController implements Initializable, IController {
         model.getBorderPane().getScene().getWindow().setOnCloseRequest((event) -> {
             ThreadPool tPool = ThreadPool.getInstance();
             tPool.closeThreadPool();
-            model.getTimer().cancel();
+            model.getLogModel().getTimer().cancel();
         });
     }
 
@@ -145,7 +145,7 @@ public class MappingWindowController implements Initializable, IController {
      * 
      */
     private void makeConfigListener() {
-        model.getConfigList().addListener(new ListChangeListener<Config>() {
+        model.getConfigModel().getConfigList().addListener(new ListChangeListener<Config>() {
             @Override
             public void onChanged(ListChangeListener.Change<? extends Config> c) {
                 c.next();
@@ -238,7 +238,7 @@ public class MappingWindowController implements Initializable, IController {
                 JSONmap.clear();
                 inputList.clear();
                 inputFile = tempFile;
-                cellIndexMap = model.getTitles(inputFile);
+                cellIndexMap = model.getConfigModel().getTitles(inputFile);
                 getCellData();
                 Styling.clearRedOutline(lvInput);
                 Styling.clearRedOutline(btnInput);
@@ -309,12 +309,12 @@ public class MappingWindowController implements Initializable, IController {
             HashMap cellTemp = new HashMap(cellIndexMap);
             ConvTask task = new ConvTask(cellTemp, temp, name, inputFile, new File(targetPath + "\\" + targetName + ".json"));
 
-            model.addToPendingTasks(task);
-            model.addCallableToTask(task);
+            model.getTaskModel().addToPendingTasks(task);
+            model.getTaskModel().addCallable(task);
 
             Window.openSnack("Task " + task.getName() + " was created", bPane, "blue");
             if (task == null) {
-                model.addLog(model.getUser().getId(), Alert.AlertType.ERROR, model.getUser().getfName() + "Tried to create a task and it failed");
+                model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.ERROR, model.getUserModel().getUser().getfName() + "Tried to create a task and it failed");
             }
         } catch (GUIException ex) {
             Window.openExceptionWindow("There was truble making a task", ex.getStackTrace());
@@ -393,11 +393,11 @@ public class MappingWindowController implements Initializable, IController {
      * 
      */
     private void generateRightclickMenu() {
-        if (model.getConfigList().isEmpty()) {
+        if (model.getConfigModel().getConfigList().isEmpty()) {
             return;
         }
         configMenu.getItems().clear();
-        model.getConfigList().forEach((config) -> {
+        model.getConfigModel().getConfigList().forEach((config) -> {
             MenuItem item = new MenuItem(config.getName());
             item.setOnAction((event) -> {
                 if (inputFile == null) {
@@ -528,8 +528,8 @@ public class MappingWindowController implements Initializable, IController {
     private void HandleCreateConfig(ActionEvent event) {
         HashMap<String, String> temp = new HashMap<>(JSONmap);
 
-        if (!model.getConfigList().isEmpty()) {
-            for (Config config : model.getConfigList()) {
+        if (!model.getConfigModel().getConfigList().isEmpty()) {
+            for (Config config : model.getConfigModel().getConfigList()) {
                 if (config.getMap() == temp) {
                     return;
                 } else {

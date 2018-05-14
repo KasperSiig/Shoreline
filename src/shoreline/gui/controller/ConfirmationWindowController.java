@@ -18,7 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import shoreline.be.Config;
-import shoreline.gui.model.MainModel;
+import shoreline.gui.model.ModelManager;
 import shoreline.statics.Window;
 
 /**
@@ -28,7 +28,7 @@ import shoreline.statics.Window;
  */
 public class ConfirmationWindowController implements Initializable, IController {
 
-    private MainModel model;
+    private ModelManager model;
     private HashMap map;
     private Stage stage;
     private File file;
@@ -57,7 +57,7 @@ public class ConfirmationWindowController implements Initializable, IController 
      * @param model
      */
     @Override
-    public void postInit(MainModel model) {
+    public void postInit(ModelManager model) {
         this.model = model;
     }
 
@@ -109,7 +109,7 @@ public class ConfirmationWindowController implements Initializable, IController 
                 Window.openSnack("Please enter config name", bPane, "red");
             } else {
                 String name = txtInput.getText();
-                for (Config config : model.getConfigList()) {
+                for (Config config : model.getConfigModel().getConfigList()) {
                     if (config.getName().equals(name)) {
                         Window.openSnack("The name already exists", bPane, "red");
                         return;
@@ -123,7 +123,7 @@ public class ConfirmationWindowController implements Initializable, IController 
                         extension = file.getAbsolutePath().substring(i + 1);
                     }
                     Config config = new Config(name, extension, map);
-                    model.addToConfigList(config);
+                    model.getConfigModel().addToConfigList(config);
                     stage = (Stage) lblInfo.getScene().getWindow();
                     stage.close();
                 }

@@ -15,7 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import shoreline.exceptions.GUIException;
-import shoreline.gui.model.MainModel;
+import shoreline.gui.model.ModelManager;
 import shoreline.statics.Window;
 
 /**
@@ -25,7 +25,7 @@ import shoreline.statics.Window;
  */
 public class CreateUserWindowController implements Initializable, IController {
 
-    MainModel model;
+    ModelManager model;
 
     @FXML
     private JFXTextField txtFirstname;
@@ -55,10 +55,10 @@ public class CreateUserWindowController implements Initializable, IController {
     private void onCreateAction(ActionEvent event) throws InterruptedException {
         if (checkEmptyFields()) {
             try {
-                int id = model.createUser(txtUsername.getText(), txtPassword.getText(), txtFirstname.getText(), txtLastname.getText());
+                int id = model.getUserModel().create(txtUsername.getText(), txtPassword.getText(), txtFirstname.getText(), txtLastname.getText());
                 Window.openView(model, model.getBorderPane(), Window.View.Login, "center");
                 Window.openSnack("User " + txtUsername.getText() + " was created", model.getBorderPane(), "blue");
-                model.addLog(id, Alert.AlertType.INFORMATION, "A new user was created with ID: " + id);
+                model.getLogModel().add(id, Alert.AlertType.INFORMATION, "A new user was created with ID: " + id);
             } catch (GUIException ex) {
                 Window.openExceptionWindow("Error creating user", ex.getStackTrace());
             }
@@ -86,7 +86,7 @@ public class CreateUserWindowController implements Initializable, IController {
      * @param model
      */
     @Override
-    public void postInit(MainModel model) {
+    public void postInit(ModelManager model) {
         this.model = model;
     }
 

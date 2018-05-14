@@ -13,7 +13,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.MenuBarFactory;
-import shoreline.gui.model.MainModel;
+import shoreline.gui.model.ModelManager;
 import shoreline.statics.Window;
 
 /**
@@ -24,7 +24,7 @@ import shoreline.statics.Window;
 public class LoginWindowController implements Initializable, IController {
 
     /* Java Variables */
-    private MainModel model;
+    private ModelManager model;
 
     /* JavaFX Variables*/
     @FXML
@@ -43,7 +43,7 @@ public class LoginWindowController implements Initializable, IController {
     }
 
     @Override
-    public void postInit(MainModel model) {
+    public void postInit(ModelManager model) {
         this.model = model;
     }
 
@@ -70,10 +70,10 @@ public class LoginWindowController implements Initializable, IController {
     @FXML
     private void loginValidation(ActionEvent event) {
         try {
-            if (model.validateLogin(txtUserName.getText(), txtPassword.getText())) {
-                model.setUser(model.getUser(txtUserName.getText(), txtPassword.getText()));
+            if (model.getUserModel().validatePassword(txtUserName.getText(), txtPassword.getText())) {
+                model.getUserModel().setUser(model.getUserModel().getUserOnLogin(txtUserName.getText(), txtPassword.getText()));
                 Window.openView(model, model.getBorderPane(), Window.View.Mapping, "center", MenuBarFactory.MenuType.Default);
-                model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has logged in");
+                model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has logged in");
             } else {
                 lblError.setText("there was a problem with the log in");
                 txtUserName.requestFocus();

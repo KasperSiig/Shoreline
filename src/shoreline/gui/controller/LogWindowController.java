@@ -18,7 +18,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import shoreline.be.LogItem;
-import shoreline.gui.model.MainModel;
+import shoreline.gui.model.ModelManager;
 
 /**
  * FXML Controller class
@@ -27,7 +27,7 @@ import shoreline.gui.model.MainModel;
  */
 public class LogWindowController implements Initializable, IController {
 
-    MainModel model;
+    ModelManager model;
 
     @FXML
     private TableView<LogItem> tv;
@@ -46,7 +46,7 @@ public class LogWindowController implements Initializable, IController {
      * @param model 
      */
     @Override
-    public void postInit(MainModel model) {
+    public void postInit(ModelManager model) {
         this.model = model;
         makeTable();
         setTable();
@@ -87,7 +87,7 @@ public class LogWindowController implements Initializable, IController {
      * 
      */
     private void setTable() {
-        ObservableList temp = FXCollections.observableArrayList(model.getLogList());
+        ObservableList temp = FXCollections.observableArrayList(model.getLogModel().getList());
 
         FXCollections.sort(temp, (LogItem t, LogItem t1) -> {
             if (t.getId() < t1.getId()) {
@@ -108,7 +108,7 @@ public class LogWindowController implements Initializable, IController {
      * 
      */
     private void logListListener() {
-        model.getLogList().addListener(new ListChangeListener<LogItem>() {
+        model.getLogModel().getList().addListener(new ListChangeListener<LogItem>() {
             @Override
             public void onChanged(ListChangeListener.Change<? extends LogItem> c) {
                 c.next();

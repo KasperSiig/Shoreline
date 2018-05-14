@@ -33,7 +33,7 @@ import javafx.stage.Stage;
 import shoreline.be.ConvTask;
 import shoreline.bll.ThreadPool;
 import shoreline.exceptions.GUIException;
-import shoreline.gui.model.MainModel;
+import shoreline.gui.model.ModelManager;
 import shoreline.statics.Window;
 
 /**
@@ -50,7 +50,7 @@ public class TaskWindowController implements Initializable, IController {
 
     private ContextMenu cMenu;
 
-    private MainModel model;
+    private ModelManager model;
 
     /* JavaFX Variables */
     @FXML
@@ -86,10 +86,10 @@ public class TaskWindowController implements Initializable, IController {
     private void handleTaskPlay(ActionEvent event) {
         List<TaskView> temp = new ArrayList(selectedPenTasks);
         temp.forEach((taskView) -> {
-            model.startTask(taskView.getTask());
+            model.getTaskModel().start(taskView.getTask());
             toggleSelected(taskView, selectedPenTasks, false);
             try {
-                model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has started task " + taskView.getTask().getName());
+                model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has started task " + taskView.getTask().getName());
             } catch (GUIException ex) {
                 Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
             }
@@ -125,7 +125,7 @@ public class TaskWindowController implements Initializable, IController {
                         tp.pauseTask(task.getTask());
                     }
                     try {
-                        model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has stopped task " + task.getTask().getName());
+                        model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has stopped task " + task.getTask().getName());
                     } catch (GUIException ex) {
                         Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
                     }
@@ -145,7 +145,7 @@ public class TaskWindowController implements Initializable, IController {
             }
             tasks.clear();
             try {
-                model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has paused task " + task.getName());
+                model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has paused task " + task.getName());
             } catch (GUIException ex) {
                 Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
             }
@@ -154,16 +154,16 @@ public class TaskWindowController implements Initializable, IController {
     }
 
     @Override
-    public void postInit(MainModel model) {
+    public void postInit(ModelManager model) {
         this.model = model;
 
-        if (model.getPendingTasks().isEmpty()) {
+        if (model.getTaskModel().getPendingTasks().isEmpty()) {
             return;
         }
         
-        setTasks(selectedPenTasks, model.getPendingTasks(), vBoxPen);
-        setTasks(selectedFinTasks, model.getFinishedTasks(), vBoxFin);
-        setTasks(selectedCanTasks, model.getCancelledTasks(), vBoxCan);
+        setTasks(selectedPenTasks, model.getTaskModel().getPendingTasks(), vBoxPen);
+        setTasks(selectedFinTasks, model.getTaskModel().getFinishedTasks(), vBoxFin);
+        setTasks(selectedCanTasks, model.getTaskModel().getCancelledTasks(), vBoxCan);
 
         genRightClickStart();
         genRightClickDel();
@@ -297,7 +297,7 @@ public class TaskWindowController implements Initializable, IController {
         MenuItem startItem = new MenuItem("Start selected tasks");
         startItem.setOnAction((event) -> {
             selectedPenTasks.forEach((selectedTask) -> {
-                model.startTask(selectedTask.getTask());
+                model.getTaskModel().start(selectedTask.getTask());
             });
         });
         cMenu.getItems().addAll(startItem);
@@ -312,9 +312,9 @@ public class TaskWindowController implements Initializable, IController {
             if (selectedPenTasks.size() > 1) {
                 if (openConfirmWindow("Are you sure you want to delete " + selectedPenTasks.size() + " tasks?", null, null, false)) {
                     selectedPenTasks.forEach((task) -> {
-                        model.getPendingTasks().remove(task.getTask());
+                        model.getTaskModel().getPendingTasks().remove(task.getTask());
                         try {
-                            model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has deleted task " + task.getTask().getName());
+                            model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has deleted task " + task.getTask().getName());
                         } catch (GUIException ex) {
                             Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
                         }
@@ -326,9 +326,9 @@ public class TaskWindowController implements Initializable, IController {
                 }
             } else {
                 selectedPenTasks.forEach((selectedTask) -> {
-                    model.getPendingTasks().remove(selectedTask.getTask());
+                    model.getTaskModel().getPendingTasks().remove(selectedTask.getTask());
                     try {
-                        model.addLog(model.getUser().getId(), Alert.AlertType.INFORMATION, model.getUser().getfName() + " has deleted task " + selectedTask.getTask().getName());
+                        model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has deleted task " + selectedTask.getTask().getName());
                     } catch (GUIException ex) {
                         Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
                     }
