@@ -276,27 +276,25 @@ and open the template in the editor.
 
 /* tabs */
 .tab-pane .tab-header-area .tab-header-background {
-    -fx-opacity: 0;
+    /*-fx-opacity: 0;*/
 }
 
-.tab-pane
-{
+.tab-pane {
     -fx-tab-min-width:90px;
 }
 
-.tab{
+.tab {
     -fx-background-insets: 0 1 0 1,0,0;
+    -fx-shape: "M300,290 L310,168 L410,168 L421,290 L300,290 z";
 }
-.tab-pane .tab
-{
-    -fx-background-color: #e6e6e6;
-
+.tab-pane .tab {
+    -fx-background-color: derive(gray, 50%);
 }
 
-.tab-pane .tab:selected
-{
-    -fx-background-color: #337ab7;
-
+.tab-pane .tab:selected {
+    -fx-background-color: white;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 .tab .tab-label { 
@@ -304,9 +302,10 @@ and open the template in the editor.
     -fx-text-fill: #828282;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
+    -fx-text-fill: black;
 }
 
 .tab:selected .tab-label { 
     -fx-alignment: CENTER;
-    -fx-text-fill: white;
+    -fx-text-fill: black;
 }

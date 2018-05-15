@@ -117,7 +117,7 @@ public class Window {
             MenuBarFactory mbf = new MenuBarFactory();
             MenuBar mBar = mbf.createMenuBar(menuType, model);
             AnchorPane aPane = (AnchorPane) model.getBorderPane().getTop();
-            aPane.getChildren().remove(0);
+//            aPane.getChildren().remove(0);
             aPane.getChildren().add(0, mBar);
             return cont;
         } catch (IOException e) {
