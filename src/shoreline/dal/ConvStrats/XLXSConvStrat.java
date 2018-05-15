@@ -48,7 +48,6 @@ public class XLXSConvStrat implements ConvStrategy {
                 Platform.runLater(() -> {
                     task.setStatus(ConvTask.Status.Running);
                 });
-                threadPool.removeFromPending(task);
                 fin = new FileInputStream(task.getSource());
                 wb = new XSSFWorkbook(fin);
                 // XLSX files can contain more sheets, this gets the one at index 0
@@ -103,7 +102,8 @@ public class XLXSConvStrat implements ConvStrategy {
 
         // Is being used to keep track of what row to pull data from
         int i = task.getProgress() + 1;
-        while (sheet1.getRow(i) != null && task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
+        while (sheet1.getRow(i) != null 
+                && task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
             JSONObject jOb = createJSONObject(i, task);
             jAr.put(jOb);
             task.setProgress(i);
@@ -113,7 +113,7 @@ public class XLXSConvStrat implements ConvStrategy {
         }
     }
 
-    private void writeToFile(ConvTask task, JSONArray jAr) throws JSONException, DALException {
+    private void writeToFile(ConvTask task, JSONArray jAr) throws DALException {
         try {
             // Gets the destination to write to 
             File file = task.getTarget();
@@ -131,24 +131,22 @@ public class XLXSConvStrat implements ConvStrategy {
         }
     }
 
-    private JSONObject createJSONObject(int i, ConvTask task) throws JSONException {
+    private JSONObject createJSONObject(int i, ConvTask task) {
         JSONObject jOb = new JSONObject();
-        // Needs to be final, to be used inside lambda expression
-        final int pos = i;
         JSONObject planning = new JSONObject();
         task.getMapper().forEach((key, value) -> {
-            if (key.equals("name")) {
-                if (getSheetdata(value, pos, task).equals("")) {
-                    jOb.put("name", getSheetdata("Description2", pos, task));
-                } else {
-                    jOb.put(key, getSheetdata(value, pos, task));
-                }
-            } else if (key.equals("earliestStartDate") || key.equals("latestFinishDate") || key.equals("latestStartDate")) {
-                planning.put(key, getSheetdata(value, pos, task));
-            } else if (key.equals("estimatedTime")) {
-                planning.put("estimatedTime", getSheetdata(value, pos, task));
-            } else {
-                jOb.put(key, getSheetdata(value, pos, task));
+            switch (key) {
+                case "earliestStartDate":
+                case "latestFinishDate":
+                case "latestStartDate":
+                    planning.put(key, getSheetdata(value, i, task));
+                    break;
+                case "estimatedTime":
+                    planning.put("estimatedTime", getSheetdata(value, i, task));
+                    break;
+                default:
+                    jOb.put(key, getSheetdata(value, i, task));
+                    break;
             }
         });
         jOb.put("createdOn", Calendar.getInstance().getTime());

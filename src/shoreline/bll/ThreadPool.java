@@ -30,7 +30,7 @@ public class ThreadPool {
     }
     // End Singleton
     private ExecutorService threadPool;
-    private List<ConvTask> pending;
+    public List<ConvTask> pending;
     private List<ConvTask> running;
     private List<ConvTask> finished;
 
