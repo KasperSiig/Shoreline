@@ -225,26 +225,6 @@ public class MappingWindowController implements Initializable, IController {
     }
 
     /**
-     * Handles the target dir event
-     *
-     * makes a DirectoryChooser and opens it. checks if there is a folder
-     * selected if there is is get the string and clears the red outline if any.
-     *
-     * @param event
-     */
-    @FXML
-    private void handleTargetDir(ActionEvent event) {
-        DirectoryChooser dirChooser = new DirectoryChooser();
-        File tempFile = dirChooser.showDialog(bPane.getScene().getWindow());
-        if (tempFile != null) {
-            targetPath = tempFile.getAbsolutePath();
-            Styling.clearRedOutline(btnTarget);
-        } else {
-            return;
-        }
-    }
-
-    /**
      * Handles the input file event
      *
      * Makes a new file chooser with some filters and opens it if there is a
@@ -328,34 +308,8 @@ public class MappingWindowController implements Initializable, IController {
      * @param event
      */
     @FXML
-    private void handleCreateTask(ActionEvent event) {
-        try {
-            if (checkRequired()) {
-                return;
-            }
-
-            String targetName = txtFileName.getText();
-            String name = inputFile.getName() + " -> " + targetName + ".json";
-
-            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-            Calendar cal = Calendar.getInstance();
-            String date = dateFormat.format(cal.getTime());
-
-            HashMap temp = new HashMap(JSONmap);
-            HashMap cellTemp = new HashMap(cellIndexMap);
-            ConvTask task = new ConvTask(cellTemp, temp, name, inputFile,
-                    new File(targetPath + "\\" + date + " - " + targetName + ".json"));
-
-            model.getTaskModel().addToPendingTasks(task);
-            model.getTaskModel().addCallable(task);
-
-            Window.openSnack("Task " + task.getName() + " was created", bPane, "blue");
-            if (task == null) {
-                model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.ERROR, model.getUserModel().getUser().getfName() + "Tried to create a task and it failed");
-            }
-        } catch (GUIException ex) {
-            Window.openExceptionWindow("There was truble making a task", ex.getStackTrace());
-        }
+    private void handleCreateConfig(ActionEvent event) {
+        validateCreateConfig();
     }
 
     /**
@@ -450,38 +404,6 @@ public class MappingWindowController implements Initializable, IController {
     }
 
     /**
-     * opens the create config
-     *
-     * @param msg
-     * @param map
-     * @param file
-     * @param txtField
-     * @return
-     */
-    private boolean openCreateConfigWindow(String msg, HashMap map, File file, boolean txtField) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource(Window.View.Confirm.getView()));
-            Parent root = fxmlLoader.load();
-
-            ConfirmationWindowController cwc = fxmlLoader.getController();
-            cwc.postInit(model);
-            cwc.setInfo(msg, map, file, txtField);
-
-            Scene scene = new Scene(root);
-            Stage stage = new Stage();
-            stage.setTitle("Confirmation");
-            stage.setScene(scene);
-            stage.setAlwaysOnTop(true);
-            stage.showAndWait();
-            return cwc.getConfirmation();
-        } catch (IOException ex) {
-            Window.openExceptionWindow("Couldn't open confirmation window.");
-        }
-        return false;
-    }
-
-    /**
      * Open confirm window
      *
      * @param msg
@@ -556,21 +478,26 @@ public class MappingWindowController implements Initializable, IController {
      */
     @FXML
     private void HandleCreateConfig(ActionEvent event) {
-        HashMap<String, String> temp = new HashMap<>(JSONmap);
+        validateCreateConfig();
+    }
 
-        if (!model.getConfigModel().getConfigList().isEmpty()) {
+    private void validateCreateConfig() {
+        HashMap<String, String> temp = new HashMap<>(JSONmap);
+        String name = txtFileName.getText();
+
+        if (name.isEmpty()) {
+            Window.openSnack("Please enter config name", bPane, "red");
+            return;
+        } else {
+
             for (Config config : model.getConfigModel().getConfigList()) {
-                if (config.getMap() == temp) {
-                    return;
-                } else {
-                    openCreateConfigWindow("Do you want to save this map, if yes please enter name blow", temp, inputFile, true);
+                if (config.getName().equals(name)) {
+                    Window.openSnack("The name already exists", bPane, "red");
                     return;
                 }
             }
-        } else {
-            openCreateConfigWindow("Do you want to save this map, if yes please enter name blow", temp, inputFile, true);
         }
-        Window.openSnack("Config created", bPane, "blue");
+        createConfig(inputFile, temp, name);
     }
 
     @FXML
@@ -580,4 +507,14 @@ public class MappingWindowController implements Initializable, IController {
         }
     }
 
+    private void createConfig(File file, HashMap map, String name) {
+        String extension = "";
+
+        int i = file.getAbsolutePath().lastIndexOf('.');
+        if (i > 0) {
+            extension = file.getAbsolutePath().substring(i + 1);
+        }
+        Config config = new Config(name, extension, map);
+        model.getConfigModel().addToConfigList(config);
+    }
 }
