@@ -157,10 +157,6 @@ public class XLXSConvStrat implements ConvStrategy {
         return jOb;
     }
 
-    private void writeToFile(JSONArray jAr) {
-
-    }
-
     private Date getDate(String sheetdata) throws DALException {
         try {
             DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
