@@ -157,9 +157,9 @@ public class TaskWindowController implements Initializable, IController {
     public void postInit(ModelManager model) {
         this.model = model;
 
-        if (model.getTaskModel().getPendingTasks().isEmpty()) {
-            return;
-        }
+//        if (model.getTaskModel().getPendingTasks().isEmpty()) {
+//            return;
+//        }
         
         setTasks(selectedPenTasks, model.getTaskModel().getPendingTasks(), vBoxPen);
         setTasks(selectedFinTasks, model.getTaskModel().getFinishedTasks(), vBoxFin);

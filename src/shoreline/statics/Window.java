@@ -30,10 +30,11 @@ public class Window {
         Main("MainWindow.fxml"),
         Login("LoginWindow.fxml"),
         CreateUser("CreateUserWindow.fxml"),
-        Mapping("MappingWindow.fxml"),
+        Config("ConfigWindow.fxml"),
         TaskView("TaskWindow.fxml"),
         logView("LogWindow.fxml"),
-        Confirm("ConfirmationWindow.fxml");
+        Confirm("ConfirmationWindow.fxml"),
+        SingleTask("SingleTaskWindow.fxml");
 
         String view;
 

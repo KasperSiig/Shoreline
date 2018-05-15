@@ -57,7 +57,7 @@ import shoreline.statics.Window;
  *
  * @author madst
  */
-public class MappingWindowController implements Initializable, IController {
+public class ConfigWindowController implements Initializable, IController {
 
     ObservableList<String> templateList = FXCollections.observableArrayList();
     ObservableList<String> inputList = FXCollections.observableArrayList();
@@ -88,7 +88,6 @@ public class MappingWindowController implements Initializable, IController {
     private MenuItem Delete1;
     @FXML
     private JFXButton btnInput;
-    @FXML
     private JFXButton btnTarget;
     @FXML
     private Label lblInfo;
@@ -116,14 +115,14 @@ public class MappingWindowController implements Initializable, IController {
         lvMappingSetup();
         makeConfigListener();
         onCloseRequest();
-
         try {
+            tabPane.getTabs().add(makeTab(model, Window.View.SingleTask, "Single task"));
             tabPane.getTabs().add(makeTab(model, Window.View.logView, "Log"));
         } catch (GUIException ex) {
-            Logger.getLogger(MappingWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ConfigWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        TabPaneDetacher.create().makeTabsDetachable(tabPane);
+//        TabPaneDetacher.create().makeTabsDetachable(tabPane);
 
     }
 
@@ -140,6 +139,8 @@ public class MappingWindowController implements Initializable, IController {
 
             tab.setContent(node);
 
+            System.out.println("shoreline.gui.controller.ConfigWindowController.makeTab()");
+            System.out.println("tab = " + tab.getText() + "\n");
             return tab;
         } catch (IOException e) {
             throw new GUIException(e);
@@ -310,46 +311,6 @@ public class MappingWindowController implements Initializable, IController {
     @FXML
     private void handleCreateConfig(ActionEvent event) {
         validateCreateConfig();
-    }
-
-    /**
-     * Checks if there is an input file. Checks if the JSONmap is empty. Checks
-     * if there is a file name. Checks if there is a target path.
-     *
-     * @return
-     */
-    private boolean checkRequired() {
-        if (inputFile == null) {
-            Styling.redOutline(lvInput);
-            Styling.redOutline(btnInput);
-            Window.openSnack("Please choose an input file", bPane, "red");
-            return true;
-        } else {
-            Styling.clearRedOutline(lvInput);
-            Styling.clearRedOutline(btnInput);
-        }
-        if (JSONmap.isEmpty()) {
-            Styling.redOutline(lvMapOverview);
-            Window.openSnack("Please make a link or load a config", bPane, "red");
-            return true;
-        } else {
-            Styling.clearRedOutline(lvMapOverview);
-        }
-        if (txtFileName.getText().equals("")) {
-            Styling.redOutline(txtFileName);
-            Window.openSnack("Please enter a file name", bPane, "red");
-            return true;
-        } else {
-            Styling.clearRedOutline(txtFileName);
-        }
-        if (targetPath == null) {
-            Styling.redOutline(btnTarget);
-            Window.openSnack("Please choose a target folder", bPane, "red");
-            return true;
-        } else {
-            Styling.clearRedOutline(btnTarget);
-        }
-        return false;
     }
 
     /**
