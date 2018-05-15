@@ -25,6 +25,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -65,6 +66,8 @@ public class TaskWindowController implements Initializable, IController {
     private ScrollPane scrlPaneFin;
     @FXML
     private ScrollPane scrlPaneCan;
+    @FXML
+    private TabPane tabPane;
 
     public TaskWindowController() {
         this.cMenu = new ContextMenu();
@@ -168,7 +171,7 @@ public class TaskWindowController implements Initializable, IController {
         genRightClickStart();
         genRightClickDel();
         genRightClickPause();
-        genRightClickStop();
+        genRightClickStop(); 
     }
 
     private void setTasks(List<TaskView> selectedTasks, ObservableList<ConvTask> tasks, VBox vBox) {

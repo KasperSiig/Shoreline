@@ -52,6 +52,8 @@ public class SingleTaskWindowController implements Initializable, IController {
     private TextField txtImportPath;
     @FXML
     private TextField txtTargetPath;
+    @FXML
+    private BorderPane bPaneSplit;
 
     /**
      * Initializes the controller class.
@@ -69,7 +71,7 @@ public class SingleTaskWindowController implements Initializable, IController {
         
         
         try {
-            Window.openView(model, bPane, Window.View.TaskView, "right");
+            Window.openView(model, bPaneSplit, Window.View.TaskView, "center");
         } catch (GUIException ex) {
             Logger.getLogger(SingleTaskWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
