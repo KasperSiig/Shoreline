@@ -55,7 +55,6 @@ public class RootWindowController implements Initializable, IController {
      *
      * @param event
      */
-    @FXML
     private void openShorlineLInk(MouseEvent event) {
         try {
             Desktop.getDesktop().browse(new URI("http://www.shoreline.no/home"));
