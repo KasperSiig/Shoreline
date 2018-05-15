@@ -128,11 +128,11 @@ public class SingleTaskWindowController implements Initializable, IController {
 
         Config config = cbbConfig.getSelectionModel().getSelectedItem();
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();
         String date = dateFormat.format(cal.getTime());
 
-        name = date + name;
+        File tempFile = new File(targetFile + "\\" + date + " - " + name + ".json");
 
         try {
             cellIndexMap = model.getConfigModel().getTitles(importFile);
@@ -140,7 +140,7 @@ public class SingleTaskWindowController implements Initializable, IController {
             HashMap temp = new HashMap(config.getMap());
             HashMap cellTemp = new HashMap(cellIndexMap);
 
-            ConvTask task = new ConvTask(cellTemp, temp, name, importFile, targetFile);
+            ConvTask task = new ConvTask(cellTemp, temp, name, importFile, tempFile);
 
             model.getTaskModel().addToPendingTasks(task);
             model.getTaskModel().addCallable(task);
