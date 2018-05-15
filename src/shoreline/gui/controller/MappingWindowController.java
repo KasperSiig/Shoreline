@@ -10,9 +10,14 @@ import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 import com.sun.deploy.util.FXLoader;
 import de.jensd.shichimifx.utils.TabPaneDetacher;
+import com.sun.org.apache.xalan.internal.lib.ExsltDatetime;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -124,7 +129,7 @@ public class MappingWindowController implements Initializable, IController {
         }
 
         TabPaneDetacher.create().makeTabsDetachable(tabPane);
-        
+
     }
 
     public Tab makeTab(ModelManager model, Window.View view, String name) throws GUIException {
@@ -265,6 +270,10 @@ public class MappingWindowController implements Initializable, IController {
 
         if (tempFile != null) {
             try {
+                int i = tempFile.getName().lastIndexOf('.');
+                if (i > 0) {
+                    txtFileName.setText(tempFile.getName().substring(0, i));
+                }
                 lblInfo.setVisible(false);
                 JSONmap.clear();
                 inputList.clear();
@@ -333,9 +342,14 @@ public class MappingWindowController implements Initializable, IController {
             String targetName = txtFileName.getText();
             String name = inputFile.getName() + " -> " + targetName + ".json";
 
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            Calendar cal = Calendar.getInstance();
+            String date = dateFormat.format(cal.getTime());
+
             HashMap temp = new HashMap(JSONmap);
             HashMap cellTemp = new HashMap(cellIndexMap);
-            ConvTask task = new ConvTask(cellTemp, temp, name, inputFile, new File(targetPath + "\\" + targetName + ".json"));
+            ConvTask task = new ConvTask(cellTemp, temp, name, inputFile,
+                    new File(targetPath + "\\" + date + " - " + targetName + ".json"));
 
             model.getTaskModel().addToPendingTasks(task);
             model.getTaskModel().addCallable(task);
