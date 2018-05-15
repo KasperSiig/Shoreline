@@ -84,10 +84,14 @@ public class TaskWindowController implements Initializable, IController {
      */
     @FXML
     private void handleTaskPlay(ActionEvent event) {
-        List<TaskView> temp = new ArrayList(selectedPenTasks);
+        startTask(selectedPenTasks);
+    }
+
+    private void startTask(List<TaskView> selectedTasks) {
+        List<TaskView> temp = new ArrayList(selectedTasks);
         temp.forEach((taskView) -> {
             model.getTaskModel().start(taskView.getTask());
-            toggleSelected(taskView, selectedPenTasks, false);
+            toggleSelected(taskView, selectedTasks, false);
             try {
                 model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has started task " + taskView.getTask().getName());
             } catch (GUIException ex) {
@@ -396,9 +400,11 @@ public class TaskWindowController implements Initializable, IController {
 
     @FXML
     private void handleStartAgainFin(ActionEvent event) {
+        startTask(selectedFinTasks);
     }
 
     @FXML
     private void handleStartAgainCan(ActionEvent event) {
+        startTask(selectedCanTasks);
     }
 }

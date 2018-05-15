@@ -25,6 +25,9 @@ import shoreline.exceptions.DALException;
 public class LogicManager {
 
     private ObservableList<LogItem> tempLog = FXCollections.observableArrayList();
+    private List<ConvTask> pendingTasks;
+    private List<ConvTask> finishedTasks;
+    private List<ConvTask> cancelledTasks;
     private Timer t;
 
     private DataManager dm;
@@ -92,7 +95,6 @@ public class LogicManager {
 
     public void startTask(ConvTask task) {
         ThreadPool threadPool = ThreadPool.getInstance();
-        System.out.println(threadPool);
         threadPool.startTask(task);
     }
 
@@ -170,5 +172,19 @@ public class LogicManager {
             return null;
         }
     }
+
+    public List<ConvTask> getPendingTasks() {
+        return pendingTasks;
+    }
+
+    public List<ConvTask> getFinishedTasks() {
+        return finishedTasks;
+    }
+
+    public List<ConvTask> getCancelledTasks() {
+        return cancelledTasks;
+    }
+    
+    
 
 }
