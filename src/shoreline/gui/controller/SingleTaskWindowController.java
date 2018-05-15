@@ -11,8 +11,10 @@ import java.io.File;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +30,7 @@ import shoreline.exceptions.GUIException;
 import shoreline.gui.model.ModelManager;
 import shoreline.statics.Window;
 import shoreline.be.Config;
+import shoreline.exceptions.BLLException;
 import shoreline.statics.Styling;
 
 /**
@@ -66,10 +69,9 @@ public class SingleTaskWindowController implements Initializable, IController {
     @Override
     public void postInit(ModelManager model) {
         this.model = model;
-
+        
         cbbConfig.setItems(model.getConfigModel().getConfigList());
-        
-        
+
         try {
             Window.openView(model, bPaneSplit, Window.View.TaskView, "center");
         } catch (GUIException ex) {
@@ -80,8 +82,9 @@ public class SingleTaskWindowController implements Initializable, IController {
     private void chooseFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("All supported types", "*.xlsx"),
-                new FileChooser.ExtensionFilter("XLSX files (.xlsx)", ".xlsx")
+                new FileChooser.ExtensionFilter("All supported types", "*.xlsx", "*.csv"),
+                new FileChooser.ExtensionFilter("XLSX files (.xlsx)", "*.xlsx"),
+                new FileChooser.ExtensionFilter("CSV files (.cvs)", "*.csv")
         // ADD NEW EXTENSIONS HERE, Seperate with comma (,)
         );
         File tempFile = fileChooser.showOpenDialog(bPane.getScene().getWindow());
@@ -89,6 +92,26 @@ public class SingleTaskWindowController implements Initializable, IController {
         if (tempFile != null) {
             importFile = tempFile;
             txtImportPath.setText(importFile.getAbsolutePath());
+
+            List temp = new ArrayList();
+            try {
+                for (Config config : model.getConfigModel().getAllConfigs()) {
+                    String extension = "";
+
+                    int i = importFile.getAbsolutePath().lastIndexOf('.');
+                    if (i > 0) {
+                        extension = importFile.getAbsolutePath().substring(i + 1);
+                    }
+                    if (config.getExtension().equals(extension)) {
+                        temp.add(config);
+                    }
+                    cbbConfig.getItems().clear();
+                    cbbConfig.getItems().addAll(temp);
+                }
+            } catch (BLLException ex) {
+                Logger.getLogger(SingleTaskWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         } else {
             Window.openSnack("No valid file selected", model.getBorderPane(), "red");
         }
@@ -125,7 +148,7 @@ public class SingleTaskWindowController implements Initializable, IController {
         if (checkRequired()) {
             return;
         }
-        
+
         String name = txtFileName.getText();
 
         Config config = cbbConfig.getSelectionModel().getSelectedItem();
@@ -180,5 +203,5 @@ public class SingleTaskWindowController implements Initializable, IController {
         }
         return false;
     }
-    
+
 }

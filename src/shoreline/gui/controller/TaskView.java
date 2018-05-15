@@ -69,7 +69,7 @@ public class TaskView extends BorderPane implements IController {
         String temp2 = temp.substring(0, 3);
         temp = temp.substring(temp.length() - 20, temp.length());
 
-        lblTargetDir.setText(temp2 + "..." + temp);
+        lblTargetDir.setText(temp);
         lblTaskName.setText(task.getName());
 
     }

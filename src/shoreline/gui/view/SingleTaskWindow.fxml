@@ -17,81 +17,96 @@
    <center>
       <SplitPane dividerPositions="0.4" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
         <items>
-            <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="400.0" spacing="25.0">
-               <children>
-                  <HBox alignment="CENTER" spacing="20.0">
+            <BorderPane>
+               <center>
+                  <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="400.0" spacing="25.0">
                      <children>
-                        <JFXTextField fx:id="txtFileName" labelFloat="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" promptText="Enter File Name here.." />
-                        <JFXComboBox fx:id="cbbConfig" labelFloat="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" promptText="Choose a config" />
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" spacing="5.0">
-                     <children>
-                        <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" text="Input path">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </Label>
-                        <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0">
+                        <HBox alignment="CENTER" spacing="20.0">
                            <children>
-                              <TextField fx:id="txtImportPath" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" promptText="Import File path">
-                                 <cursor>
-                                    <Cursor fx:constant="DEFAULT" />
-                                 </cursor>
-                                 <HBox.margin>
-                                    <Insets />
-                                 </HBox.margin>
-                              </TextField>
-                              <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" onAction="#handleImportFileBtn" text="📁" />
+                              <JFXTextField fx:id="txtFileName" labelFloat="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" promptText="Enter File Name here.." />
+                              <JFXComboBox fx:id="cbbConfig" labelFloat="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" promptText="Choose a config" />
                            </children>
-                           <styleClass>
-                              <String fx:value="hBox-custom-border" />
-                              <String fx:value="txtfield-custom" />
-                           </styleClass>
+                        </HBox>
+                        <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" spacing="20.0">
+                           <children>
+                              <HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" spacing="5.0">
+                                 <children>
+                                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" text="Input path">
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </Label>
+                                    <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0">
+                                       <children>
+                                          <TextField fx:id="txtImportPath" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" promptText="Import File path">
+                                             <cursor>
+                                                <Cursor fx:constant="DEFAULT" />
+                                             </cursor>
+                                             <HBox.margin>
+                                                <Insets />
+                                             </HBox.margin>
+                                          </TextField>
+                                          <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" onAction="#handleImportFileBtn" text="📁" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="hBox-custom-border" />
+                                          <String fx:value="txtfield-custom" />
+                                       </styleClass>
+                                    </HBox>
+                                 </children>
+                                 <styleClass>
+                                    <String fx:value="button-icon" />
+                                    <String fx:value="button-icon-hover" />
+                                 </styleClass>
+                              </HBox>
+                              <HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" spacing="5.0">
+                                 <children>
+                                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" text="Target path">
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </Label>
+                                    <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0">
+                                       <children>
+                                          <TextField fx:id="txtTargetPath" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" promptText="Target folder path">
+                                             <cursor>
+                                                <Cursor fx:constant="DEFAULT" />
+                                             </cursor>
+                                             <HBox.margin>
+                                                <Insets />
+                                             </HBox.margin>
+                                          </TextField>
+                                          <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" onAction="#handleTargetFolderBtn" text="📁" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="hBox-custom-border" />
+                                          <String fx:value="txtfield-custom" />
+                                       </styleClass>
+                                    </HBox>
+                                 </children>
+                                 <styleClass>
+                                    <String fx:value="button-icon" />
+                                    <String fx:value="button-icon-hover" />
+                                 </styleClass>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
+                           <children>
+                              <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" onAction="#handleCreateTask" text="Create task" />
+                           </children>
                         </HBox>
                      </children>
-                     <styleClass>
-                        <String fx:value="button-icon" />
-                        <String fx:value="button-icon-hover" />
-                     </styleClass>
-                  </HBox>
-                  <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" spacing="5.0">
-                     <children>
-                        <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" text="Target path">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </Label>
-                        <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0">
-                           <children>
-                              <TextField fx:id="txtTargetPath" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" promptText="Target folder path">
-                                 <cursor>
-                                    <Cursor fx:constant="DEFAULT" />
-                                 </cursor>
-                                 <HBox.margin>
-                                    <Insets />
-                                 </HBox.margin>
-                              </TextField>
-                              <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" onAction="#handleTargetFolderBtn" text="📁" />
-                           </children>
-                           <styleClass>
-                              <String fx:value="hBox-custom-border" />
-                              <String fx:value="txtfield-custom" />
-                           </styleClass>
-                        </HBox>
-                     </children>
-                     <styleClass>
-                        <String fx:value="button-icon" />
-                        <String fx:value="button-icon-hover" />
-                     </styleClass>
-                  </HBox>
-                  <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
-                     <children>
-                        <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" onAction="#handleCreateTask" text="Create task" />
-                     </children>
-                  </HBox>
-               </children>
-            </VBox>
+                  </VBox>
+               </center>
+               <top>
+                  <Label maxHeight="-Infinity" maxWidth="-Infinity" styleClass="label-bright" text="Single file conversion" BorderPane.alignment="TOP_LEFT">
+                     <BorderPane.margin>
+                        <Insets left="10.0" top="10.0" />
+                     </BorderPane.margin>
+                  </Label>
+               </top>
+            </BorderPane>
             <BorderPane fx:id="bPaneSplit" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="350.0" />
         </items>
       </SplitPane>
