@@ -8,9 +8,14 @@ package shoreline.gui.controller;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
+import com.sun.org.apache.xalan.internal.lib.ExsltDatetime;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -92,8 +97,8 @@ public class MappingWindowController implements Initializable, IController {
 
     /**
      * Runs before the rest of the class.
-     * 
-     * @param model 
+     *
+     * @param model
      */
     @Override
     public void postInit(ModelManager model) {
@@ -108,11 +113,10 @@ public class MappingWindowController implements Initializable, IController {
     }
 
     /**
-     * Sets the mapping listview to be multiple selection.
-     * sets the content of the listview to be the mapping list
-     * makes a on click to check what the name of the 
-     * rightclick delete button needs to be.
-     * 
+     * Sets the mapping listview to be multiple selection. sets the content of
+     * the listview to be the mapping list makes a on click to check what the
+     * name of the rightclick delete button needs to be.
+     *
      */
     private void lvMappingSetup() {
         lvMapOverview.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -127,10 +131,8 @@ public class MappingWindowController implements Initializable, IController {
     }
 
     /**
-     * Makes a onCloseRequest event
-     * closes the thread pool and 
-     * stops the timer.
-     * 
+     * Makes a onCloseRequest event closes the thread pool and stops the timer.
+     *
      */
     private void onCloseRequest() {
         model.getBorderPane().getScene().getWindow().setOnCloseRequest((event) -> {
@@ -142,7 +144,7 @@ public class MappingWindowController implements Initializable, IController {
 
     /**
      * Adds a listener on the list of configs in model
-     * 
+     *
      */
     private void makeConfigListener() {
         model.getConfigModel().getConfigList().addListener(new ListChangeListener<Config>() {
@@ -157,14 +159,11 @@ public class MappingWindowController implements Initializable, IController {
     }
 
     /**
-     * handles the map event
-     * makes checks for null and if the 
-     * item selected already is linked.
-     * makes a temp string based on selected item
-     * adds the item to a JSON array 
-     * and adds the temp string to the observable list
-     * 
-     * @param event 
+     * handles the map event makes checks for null and if the item selected
+     * already is linked. makes a temp string based on selected item adds the
+     * item to a JSON array and adds the temp string to the observable list
+     *
+     * @param event
      */
     @FXML
     private void handleMap(ActionEvent event) {
@@ -193,13 +192,11 @@ public class MappingWindowController implements Initializable, IController {
 
     /**
      * Handles the target dir event
-     * 
-     * makes a DirectoryChooser and opens it.
-     * checks if there is a folder selected
-     * if there is is get the string and clears
-     * the red outline if any.
-     * 
-     * @param event 
+     *
+     * makes a DirectoryChooser and opens it. checks if there is a folder
+     * selected if there is is get the string and clears the red outline if any.
+     *
+     * @param event
      */
     @FXML
     private void handleTargetDir(ActionEvent event) {
@@ -215,12 +212,12 @@ public class MappingWindowController implements Initializable, IController {
 
     /**
      * Handles the input file event
-     * 
-     * Makes a new file chooser with some filters and opens it
-     * if there is a file selected it clears the JSON array and
-     * observable list and sets the data.
-     * 
-     * @param event 
+     *
+     * Makes a new file chooser with some filters and opens it if there is a
+     * file selected it clears the JSON array and observable list and sets the
+     * data.
+     *
+     * @param event
      */
     @FXML
     private void handelInputFile(ActionEvent event) {
@@ -234,6 +231,10 @@ public class MappingWindowController implements Initializable, IController {
 
         if (tempFile != null) {
             try {
+                int i = tempFile.getName().lastIndexOf('.');
+                if (i > 0) {
+                    txtFileName.setText(tempFile.getName().substring(0,i));
+                }
                 lblInfo.setVisible(false);
                 JSONmap.clear();
                 inputList.clear();
@@ -250,13 +251,11 @@ public class MappingWindowController implements Initializable, IController {
 
     /**
      * Handle delete map event
-     * 
-     * opens a confirmation window if it returns yes
-     * make a temp list from the listviews content
-     * then removes them from the JSON array
-     * and the map.
-     * 
-     * @param event 
+     *
+     * opens a confirmation window if it returns yes make a temp list from the
+     * listviews content then removes them from the JSON array and the map.
+     *
+     * @param event
      */
     @FXML
     private void handleDelMap(ActionEvent event) {
@@ -273,10 +272,9 @@ public class MappingWindowController implements Initializable, IController {
     }
 
     /**
-     * Runs a for each on a hashmap 
-     * and adds the key to the inputlist
-     * then sorts it.
-     * 
+     * Runs a for each on a hashmap and adds the key to the inputlist then sorts
+     * it.
+     *
      */
     private void getCellData() {
         cellIndexMap.forEach((key, value) -> {
@@ -284,16 +282,16 @@ public class MappingWindowController implements Initializable, IController {
         });
         FXCollections.sort(inputList);
     }
-    
+
     /**
      * Handles create task event
-     * 
-     * if check required is false, make a name of the file,
-     * name for the task. then creates a temp hashmap of the links
-     * and for the cellindexmap, then make a task based on the info.
-     * add the task to the task list and the callabletotask list.
-     * 
-     * @param event 
+     *
+     * if check required is false, make a name of the file, name for the task.
+     * then creates a temp hashmap of the links and for the cellindexmap, then
+     * make a task based on the info. add the task to the task list and the
+     * callabletotask list.
+     *
+     * @param event
      */
     @FXML
     private void handleCreateTask(ActionEvent event) {
@@ -305,9 +303,14 @@ public class MappingWindowController implements Initializable, IController {
             String targetName = txtFileName.getText();
             String name = inputFile.getName() + " -> " + targetName + ".json";
 
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            Calendar cal = Calendar.getInstance();
+            String date = dateFormat.format(cal.getTime());
+
             HashMap temp = new HashMap(JSONmap);
             HashMap cellTemp = new HashMap(cellIndexMap);
-            ConvTask task = new ConvTask(cellTemp, temp, name, inputFile, new File(targetPath + "\\" + targetName + ".json"));
+            ConvTask task = new ConvTask(cellTemp, temp, name, inputFile,
+                    new File(targetPath + "\\" + date + " - " + targetName + ".json"));
 
             model.getTaskModel().addToPendingTasks(task);
             model.getTaskModel().addCallable(task);
@@ -322,12 +325,10 @@ public class MappingWindowController implements Initializable, IController {
     }
 
     /**
-     * Checks if there is an input file.
-     * Checks if the JSONmap is empty.
-     * Checks if there is a file name.
-     * Checks if there is a target path.
-     * 
-     * @return 
+     * Checks if there is an input file. Checks if the JSONmap is empty. Checks
+     * if there is a file name. Checks if there is a target path.
+     *
+     * @return
      */
     private boolean checkRequired() {
         if (inputFile == null) {
@@ -365,10 +366,10 @@ public class MappingWindowController implements Initializable, IController {
 
     /**
      * Handles the input file event on the input listview.
-     * 
+     *
      * runs the handleInputFile from the button.
-     * 
-     * @param event 
+     *
+     * @param event
      */
     @FXML
     private void handleInputFile(MouseEvent event) {
@@ -379,8 +380,8 @@ public class MappingWindowController implements Initializable, IController {
 
     /**
      * Runs the delete selcetion method
-     * 
-     * @param event 
+     *
+     * @param event
      */
     @FXML
     private void delMap(ActionEvent event) {
@@ -388,9 +389,8 @@ public class MappingWindowController implements Initializable, IController {
     }
 
     /**
-     * Generates a menuitem for each of the configs in
-     * the config list in model.
-     * 
+     * Generates a menuitem for each of the configs in the config list in model.
+     *
      */
     private void generateRightclickMenu() {
         if (model.getConfigModel().getConfigList().isEmpty()) {
@@ -417,12 +417,12 @@ public class MappingWindowController implements Initializable, IController {
 
     /**
      * opens the create config
-     * 
+     *
      * @param msg
      * @param map
      * @param file
      * @param txtField
-     * @return 
+     * @return
      */
     private boolean openCreateConfigWindow(String msg, HashMap map, File file, boolean txtField) {
         try {
@@ -446,13 +446,13 @@ public class MappingWindowController implements Initializable, IController {
         }
         return false;
     }
-    
+
     /**
      * Open confirm window
-     * 
+     *
      * @param msg
      * @param txtField
-     * @return 
+     * @return
      */
     private boolean openConfirmWindow(String msg, boolean txtField) {
         try {
@@ -478,11 +478,10 @@ public class MappingWindowController implements Initializable, IController {
     }
 
     /**
-     * pulls the key and value from a hashmap 
-     * and makes a temp string out of them then
-     * adds it to the mapping list.
-     * 
-     * @param map 
+     * pulls the key and value from a hashmap and makes a temp string out of
+     * them then adds it to the mapping list.
+     *
+     * @param map
      */
     private void setInfoInlvMap(HashMap map) {
         map.forEach((k, v) -> {
@@ -492,13 +491,11 @@ public class MappingWindowController implements Initializable, IController {
     }
 
     /**
-     * Makes a temp list from the selected items
-     * if the list of selected is larger then 1 it 
-     * opens the confirmation window
-     * then runs a foreach on the JSON map and deletes
-     * the item that fits the key and removes all 
-     * elements that exists in the mapping list
-     * 
+     * Makes a temp list from the selected items if the list of selected is
+     * larger then 1 it opens the confirmation window then runs a foreach on the
+     * JSON map and deletes the item that fits the key and removes all elements
+     * that exists in the mapping list
+     *
      */
     private void DelSelection() {
         List<String> tempList;
@@ -516,13 +513,12 @@ public class MappingWindowController implements Initializable, IController {
     }
 
     /**
-     * Makes a temp map of the JSONmap then checks of the
-     * list of configs in the model is empty.
-     * if it's empty is opens the create config window
-     * if it's not empty it checks to see of the list already exists
-     * if it does it returns if not it opens the create config window
-     * 
-     * @param event 
+     * Makes a temp map of the JSONmap then checks of the list of configs in the
+     * model is empty. if it's empty is opens the create config window if it's
+     * not empty it checks to see of the list already exists if it does it
+     * returns if not it opens the create config window
+     *
+     * @param event
      */
     @FXML
     private void HandleCreateConfig(ActionEvent event) {
@@ -545,7 +541,7 @@ public class MappingWindowController implements Initializable, IController {
 
     @FXML
     private void doubleClickMap(MouseEvent event) {
-        if (event.getClickCount()%2 == 0) {
+        if (event.getClickCount() % 2 == 0) {
             handleMap(new ActionEvent());
         }
     }
