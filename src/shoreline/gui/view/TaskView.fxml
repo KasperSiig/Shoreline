@@ -13,6 +13,9 @@
             <Label fx:id="lblTaskName" alignment="CENTER" maxWidth="560.0" text="Task Name" wrapText="true" />
             <Label fx:id="lblTargetDir" alignment="CENTER" maxWidth="560.0" text="target dir" />
          </children>
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
       </VBox>
    </center>
    <bottom>
