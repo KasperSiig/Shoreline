@@ -304,6 +304,14 @@ and open the template in the editor.
     -fx-alignment: CENTER_RIGHT;
 }
 
+.tab-down-button {
+    -fx-padding: 0;
+}
+
+.tab-down-button .arrow {
+    -fx-padding: 0;
+}
+
 .tab-costum .tab{
     -fx-background-color: lightgray;
     -fx-shape: "M300,290 L300,170 L410,170 L410,290 L300,290 z";
