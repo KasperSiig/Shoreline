@@ -115,10 +115,10 @@ public class TaskWindowController implements Initializable, IController {
 
     /**
      * Stops or cancels the task, based on cancel parameter
-     * 
+     *
      * @param tasks List of tasks to be paused or canceled
      * @param cancel true for cancel, false for pause
-     * @return 
+     * @return
      */
     private boolean pauseOrCancelTask(List<TaskView> tasks, boolean cancel) {
         ThreadPool tp = ThreadPool.getInstance();
@@ -163,11 +163,8 @@ public class TaskWindowController implements Initializable, IController {
     @Override
     public void postInit(ModelManager model) {
         this.model = model;
+        tabPane.tabMinWidthProperty().bind(tabPane.widthProperty().divide(tabPane.getTabs().size()).subtract(20));
 
-//        if (model.getTaskModel().getPendingTasks().isEmpty()) {
-//            return;
-//        }
-        
         setTasks(selectedPenTasks, model.getTaskModel().getPendingTasks(), vBoxPen);
         setTasks(selectedFinTasks, model.getTaskModel().getFinishedTasks(), vBoxFin);
         setTasks(selectedCanTasks, model.getTaskModel().getCancelledTasks(), vBoxCan);
@@ -175,7 +172,8 @@ public class TaskWindowController implements Initializable, IController {
         genRightClickStart();
         genRightClickDel();
         genRightClickPause();
-        genRightClickStop(); 
+        genRightClickStop();
+
     }
 
     private void setTasks(List<TaskView> selectedTasks, ObservableList<ConvTask> tasks, VBox vBox) {
@@ -254,7 +252,6 @@ public class TaskWindowController implements Initializable, IController {
                             toggleSelected(taskView, selectedTasks, true);
                         }
                     }
-
 
                     if (event.getClickCount() % 2 == 0) {
                         try {

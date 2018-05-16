@@ -74,7 +74,7 @@ public class SingleTaskWindowController implements Initializable, IController {
     @Override
     public void postInit(ModelManager model) {
         this.model = model;
-        
+
         comboConfig.setItems(model.getConfigModel().getConfigList());
 
         try {
@@ -110,15 +110,17 @@ public class SingleTaskWindowController implements Initializable, IController {
                     if (config.getExtension().equals(extension)) {
                         temp.add(config);
                     }
-                    comboConfig.getItems().clear();
-                    comboConfig.getItems().addAll(temp);
+
                 }
+                comboConfig.getItems().clear();
+                comboConfig.getItems().addAll(temp);
+
+                txtFileName.setText(importFile.getName());
+
             } catch (BLLException ex) {
                 Logger.getLogger(SingleTaskWindowController.class.getName()).log(Level.SEVERE, null, ex);
             }
-
         }
-
     }
 
     @FXML
@@ -187,7 +189,7 @@ public class SingleTaskWindowController implements Initializable, IController {
     private boolean checkRequired() {
         boolean hasFailed = false;
         if (importFile == null) {
-           // Window.openSnack("Please choose an input file", bPane, "red");
+            // Window.openSnack("Please choose an input file", bPane, "red");
             Styling.redOutline(hBoxImport);
             hasFailed = true;
         } else {
@@ -205,16 +207,16 @@ public class SingleTaskWindowController implements Initializable, IController {
             //Window.openSnack("Please choose a target folder", bPane, "red");
             hasFailed = true;
         } else {
-             Styling.clearRedOutline(hBoxTarget);
+            Styling.clearRedOutline(hBoxTarget);
         }
-        if (comboConfig.getSelectionModel().getSelectedItem() == null){
+        if (comboConfig.getSelectionModel().getSelectedItem() == null) {
             Styling.redOutline(comboConfig);
             //Window.openSnack("Please select a config", bPane, "red");
             hasFailed = true;
         } else {
             Styling.clearRedOutline(comboConfig);
         }
-        if(hasFailed){
+        if (hasFailed) {
             Window.openSnack("Could not create task. Missing input is highlighted.", bPane, "red", 4000);
         }
         return hasFailed;
