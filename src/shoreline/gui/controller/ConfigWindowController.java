@@ -139,8 +139,6 @@ public class ConfigWindowController implements Initializable, IController {
 
             tab.setContent(node);
 
-            System.out.println("shoreline.gui.controller.ConfigWindowController.makeTab()");
-            System.out.println("tab = " + tab.getText() + "\n");
             return tab;
         } catch (IOException e) {
             throw new GUIException(e);

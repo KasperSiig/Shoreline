@@ -19,19 +19,13 @@
         <items>
             <BorderPane>
                <center>
-                  <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="400.0" spacing="25.0">
+                  <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="400.0" spacing="35.0">
                      <children>
-                        <HBox alignment="CENTER" spacing="20.0">
-                           <children>
-                              <JFXTextField fx:id="txtFileName" labelFloat="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" promptText="Enter File Name here.." />
-                              <JFXComboBox fx:id="cbbConfig" labelFloat="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" promptText="Choose a config" />
-                           </children>
-                        </HBox>
                         <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" spacing="20.0">
                            <children>
                               <HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" spacing="5.0">
                                  <children>
-                                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" text="Input path">
+                                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" text="Input file path">
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
@@ -91,6 +85,12 @@
                               </HBox>
                            </children>
                         </VBox>
+                        <HBox alignment="CENTER" spacing="20.0">
+                           <children>
+                              <JFXTextField fx:id="txtFileName" labelFloat="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" promptText="Enter File Name here.." />
+                              <JFXComboBox fx:id="cbbConfig" labelFloat="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" promptText="Choose a config" />
+                           </children>
+                        </HBox>
                         <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
                            <children>
                               <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" onAction="#handleCreateTask" text="Create task" />

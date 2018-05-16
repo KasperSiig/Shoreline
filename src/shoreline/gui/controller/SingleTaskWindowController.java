@@ -69,7 +69,7 @@ public class SingleTaskWindowController implements Initializable, IController {
     @Override
     public void postInit(ModelManager model) {
         this.model = model;
-        
+
         cbbConfig.setItems(model.getConfigModel().getConfigList());
 
         try {
@@ -105,17 +105,16 @@ public class SingleTaskWindowController implements Initializable, IController {
                     if (config.getExtension().equals(extension)) {
                         temp.add(config);
                     }
-                    cbbConfig.getItems().clear();
-                    cbbConfig.getItems().addAll(temp);
                 }
+                cbbConfig.getItems().clear();
+                cbbConfig.getItems().addAll(temp);
+
+                txtFileName.setText(importFile.getName());
+                
             } catch (BLLException ex) {
                 Logger.getLogger(SingleTaskWindowController.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-        } else {
-            Window.openSnack("No valid file selected", model.getBorderPane(), "red");
         }
-
     }
 
     @FXML
