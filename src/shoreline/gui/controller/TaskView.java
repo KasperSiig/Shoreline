@@ -66,7 +66,6 @@ public class TaskView extends BorderPane implements IController {
                 lblStatus.setText(task.getStatus().getValue());
             }
         });
-        System.out.println(vBox.widthProperty().doubleValue());
         pathName(vBox.getWidth());
         lblTaskName.setText(task.getName());
 
