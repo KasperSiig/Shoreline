@@ -113,7 +113,7 @@ public class XLXSConvStrat implements ConvStrategy {
         }
     }
 
-    private void writeToFile(ConvTask task, JSONArray jAr) throws JSONException, DALException {
+    private void writeToFile(ConvTask task, JSONArray jAr) throws DALException {
         try {
             // Gets the destination to write to 
             File file = task.getTarget();
@@ -122,9 +122,6 @@ public class XLXSConvStrat implements ConvStrategy {
                 fileWriter.write(jAr.toString(4));
                 fileWriter.flush();
                 fileWriter.close();
-                Thread.sleep(10);
-            } catch (InterruptedException ex) {
-                return;
             }
         } catch (IOException ex) {
             throw new DALException("Error writing JSON File", ex);
