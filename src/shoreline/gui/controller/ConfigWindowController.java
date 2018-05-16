@@ -8,13 +8,10 @@ package shoreline.gui.controller;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
-import de.jensd.shichimifx.utils.TabPaneDetacher;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -30,7 +27,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -40,13 +36,12 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import shoreline.Main;
 import shoreline.be.Config;
-import shoreline.be.ConvTask;
 import shoreline.bll.ThreadPool;
+import shoreline.exceptions.BLLException;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.ModelManager;
 import shoreline.statics.Styling;
@@ -123,7 +118,6 @@ public class ConfigWindowController implements Initializable, IController {
         }
 
 //        TabPaneDetacher.create().makeTabsDetachable(tabPane);
-
     }
 
     public Tab makeTab(ModelManager model, Window.View view, String name) throws GUIException {
@@ -257,6 +251,7 @@ public class ConfigWindowController implements Initializable, IController {
                 getCellData();
                 Styling.clearRedOutline(lvInput);
                 Styling.clearRedOutline(btnInput);
+                generateRightclickMenu();
             } catch (GUIException ex) {
                 Window.openExceptionWindow("Whoops");
             }
@@ -344,8 +339,36 @@ public class ConfigWindowController implements Initializable, IController {
         if (model.getConfigModel().getConfigList().isEmpty()) {
             return;
         }
+
+        List<Config> temp = new ArrayList();
+
+        if (inputFile != null) {
+            try {
+                for (Config config : model.getConfigModel().getAllConfigs()) {
+                    String extension = "";
+                    
+                    int i = inputFile.getAbsolutePath().lastIndexOf('.');
+                    if (i > 0) {
+                        extension = inputFile.getAbsolutePath().substring(i + 1);
+                    }
+                    if (config.getExtension().equals(extension)) {
+                        temp.add(config);
+                    }
+                    
+                }
+            } catch (BLLException ex) {
+                Logger.getLogger(ConfigWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            try {
+                temp.addAll(model.getConfigModel().getAllConfigs());
+            } catch (BLLException ex) {
+                Logger.getLogger(ConfigWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
         configMenu.getItems().clear();
-        model.getConfigModel().getConfigList().forEach((config) -> {
+        temp.forEach((config) -> {
             MenuItem item = new MenuItem(config.getName());
             item.setOnAction((event) -> {
                 if (inputFile == null) {
@@ -442,6 +465,10 @@ public class ConfigWindowController implements Initializable, IController {
     }
 
     private void validateCreateConfig() {
+        if (checkRequired()) {
+            return;
+        }
+
         HashMap<String, String> temp = new HashMap<>(JSONmap);
         String name = txtFileName.getText();
 
@@ -477,4 +504,42 @@ public class ConfigWindowController implements Initializable, IController {
         Config config = new Config(name, extension, map);
         model.getConfigModel().addToConfigList(config);
     }
+
+    /**
+     * Checks if there is an input file. Checks if the JSONmap is empty. Checks
+     * if there is a file name. Checks if there is a target path.
+     *
+     * @return
+     */
+    private boolean checkRequired() {
+        boolean hasFailed = false;
+        if (inputFile == null) {
+            // Window.openSnack("Please choose an input file", bPane, "red");
+            Styling.redOutline(btnInput);
+            Styling.redOutline(lvInput);
+            hasFailed = true;
+        } else {
+            Styling.clearRedOutline(btnInput);
+            Styling.clearRedOutline(lvInput);
+        }
+        if (txtFileName.getText().equals("")) {
+            Styling.redOutline(txtFileName);
+            //Window.openSnack("Please enter a file name", bPane, "red");
+            hasFailed = true;
+        } else {
+            Styling.clearRedOutline(txtFileName);
+        }
+        if (JSONmap.isEmpty()) {
+            Styling.redOutline(lvMapOverview);
+            //Window.openSnack("Please select a config", bPane, "red");
+            hasFailed = true;
+        } else {
+            Styling.clearRedOutline(lvMapOverview);
+        }
+        if (hasFailed) {
+            Window.openSnack("Could not create task. Missing input is highlighted.", bPane, "red", 4000);
+        }
+        return hasFailed;
+    }
+
 }

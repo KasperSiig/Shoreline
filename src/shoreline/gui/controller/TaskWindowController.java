@@ -123,7 +123,7 @@ public class TaskWindowController implements Initializable, IController {
     private boolean pauseOrCancelTask(List<TaskView> tasks, boolean cancel) {
         ThreadPool tp = ThreadPool.getInstance();
         if (tasks.size() > 1) {
-            if (openConfirmWindow("Are you sure you want to stop " + tasks.size() + " tasks?", null, null, false)) {
+            if (openConfirmWindow("Are you sure you want to stop " + tasks.size() + " tasks?", false)) {
                 List<TaskView> temp = new ArrayList<>(tasks);
                 temp.forEach((task) -> {
                     if (cancel) {
@@ -314,7 +314,7 @@ public class TaskWindowController implements Initializable, IController {
         MenuItem delItem = new MenuItem("Delete selected task");
         delItem.setOnAction((event) -> {
             if (selectedPenTasks.size() > 1) {
-                if (openConfirmWindow("Are you sure you want to delete " + selectedPenTasks.size() + " tasks?", null, null, false)) {
+                if (openConfirmWindow("Are you sure you want to delete " + selectedPenTasks.size() + " tasks?", false)) {
                     selectedPenTasks.forEach((task) -> {
                         model.getTaskModel().getPendingTasks().remove(task.getTask());
                         try {
@@ -363,14 +363,13 @@ public class TaskWindowController implements Initializable, IController {
     }
 
     /**
-     * Opens window with yes and no buttons
+     * Open confirm window
      *
      * @param msg
-     * @param map
+     * @param txtField
      * @return
      */
-    private boolean openConfirmWindow(String msg, HashMap map, File file, boolean txtField) {
-
+    private boolean openConfirmWindow(String msg, boolean txtField) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(Window.View.Confirm.getView()));
@@ -378,7 +377,7 @@ public class TaskWindowController implements Initializable, IController {
 
             ConfirmationWindowController cwc = fxmlLoader.getController();
             cwc.postInit(model);
-            cwc.setInfo(msg, map, file, txtField);
+            cwc.setInfo(msg, txtField);
 
             Scene scene = new Scene(root);
             Stage stage = new Stage();
@@ -392,6 +391,7 @@ public class TaskWindowController implements Initializable, IController {
         }
         return false;
     }
+
 
     @FXML
     private void handleTaskCancel(ActionEvent event) {
