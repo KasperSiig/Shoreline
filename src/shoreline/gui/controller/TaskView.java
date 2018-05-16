@@ -52,6 +52,8 @@ public class TaskView extends BorderPane implements IController {
         this.model = model;
         setInfo(task);
         setWidthListener();
+//        lblTaskName.setWrapText(false);
+        lblTaskName.prefWidthProperty().bind(vBox.widthProperty());
     }
 
     private void setInfo(ConvTask task) {
@@ -80,7 +82,7 @@ public class TaskView extends BorderPane implements IController {
     private void pathName(Number size) {
         // 7 PIXELS PER BOGSTAV
         int iSize = size.intValue();
-        int characters = (iSize / 7);
+        int characters = (iSize / 9);
         String path = task.getTarget().getAbsolutePath();
         String root = path.substring(0, 3);
         if (path.length() > characters) {
