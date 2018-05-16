@@ -133,6 +133,13 @@ public class TaskModel {
                     ConvTask task = pendingTasks.get(pendingTasks.size() - 1);
                     task.getStatus().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
                         if (newValue.equals(ConvTask.Status.Running.getValue())) {
+                            if (finishedTasks.contains(task)) {
+                                removeFromFinishedTasks(task);
+                                addToPendingTasks(task);
+                            } else if (cancelledTasks.contains(task)) {
+                                removeFromCancelledTasks(task);
+                                addToPendingTasks(task);
+                            }
                         } else if (newValue.equals(ConvTask.Status.Finished.getValue()) && !finishedTasks.contains(task)) {
                             removeFromPendingTasks(task);
                             addToFinishedTasks(task);

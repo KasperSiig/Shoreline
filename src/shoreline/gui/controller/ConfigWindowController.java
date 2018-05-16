@@ -238,8 +238,9 @@ public class ConfigWindowController implements Initializable, IController {
     private void handelInputFile(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("All supported types", "*.xlsx"),
-                new FileChooser.ExtensionFilter("XLSX files (.xlsx)", ".xlsx")
+                new FileChooser.ExtensionFilter("All supported types", "*.xlsx", "*.csv"),
+                new FileChooser.ExtensionFilter("XLSX files (.xlsx)", "*.xlsx"),
+                new FileChooser.ExtensionFilter("CSV files (.CSV)", "*.CSV")
         // ADD NEW EXTENSIONS HERE, Seperate with comma (,)
         );
         File tempFile = fileChooser.showOpenDialog(bPane.getScene().getWindow());

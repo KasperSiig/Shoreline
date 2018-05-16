@@ -25,6 +25,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -65,6 +66,8 @@ public class TaskWindowController implements Initializable, IController {
     private ScrollPane scrlPaneFin;
     @FXML
     private ScrollPane scrlPaneCan;
+    @FXML
+    private TabPane tabPane;
 
     public TaskWindowController() {
         this.cMenu = new ContextMenu();
@@ -84,10 +87,14 @@ public class TaskWindowController implements Initializable, IController {
      */
     @FXML
     private void handleTaskPlay(ActionEvent event) {
-        List<TaskView> temp = new ArrayList(selectedPenTasks);
+        startTask(selectedPenTasks);
+    }
+
+    private void startTask(List<TaskView> selectedTasks) {
+        List<TaskView> temp = new ArrayList(selectedTasks);
         temp.forEach((taskView) -> {
             model.getTaskModel().start(taskView.getTask());
-            toggleSelected(taskView, selectedPenTasks, false);
+            toggleSelected(taskView, selectedTasks, false);
             try {
                 model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has started task " + taskView.getTask().getName());
             } catch (GUIException ex) {
@@ -168,7 +175,7 @@ public class TaskWindowController implements Initializable, IController {
         genRightClickStart();
         genRightClickDel();
         genRightClickPause();
-        genRightClickStop();
+        genRightClickStop(); 
     }
 
     private void setTasks(List<TaskView> selectedTasks, ObservableList<ConvTask> tasks, VBox vBox) {
@@ -396,9 +403,11 @@ public class TaskWindowController implements Initializable, IController {
 
     @FXML
     private void handleStartAgainFin(ActionEvent event) {
+        startTask(selectedFinTasks);
     }
 
     @FXML
     private void handleStartAgainCan(ActionEvent event) {
+        startTask(selectedCanTasks);
     }
 }
