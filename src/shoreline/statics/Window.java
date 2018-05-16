@@ -183,6 +183,19 @@ public class Window {
         }
     }
     
+    public static void openSnack(String msg, BorderPane bPane, String color, int time){
+        JFXSnackbar bar = new JFXSnackbar(bPane);
+        if (color.equals("blue")) {
+            color = "#337ab7";
+        }
+        if (color.equals("red")) {
+            color = "#ff3333";
+        }
+        
+        bar.getChildren().get(0).setStyle("-fx-text-fill: white; -fx-background-color: " + color + "; -fx-background-radius: 4px;");
+        bar.show(msg, time);
+        
+    }
     public static void openSnack(String msg, BorderPane bPane, String color){
         JFXSnackbar bar = new JFXSnackbar(bPane);
         if (color.equals("blue")) {

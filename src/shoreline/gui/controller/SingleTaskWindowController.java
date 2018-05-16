@@ -23,6 +23,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import shoreline.be.ConvTask;
@@ -50,13 +51,17 @@ public class SingleTaskWindowController implements Initializable, IController {
     @FXML
     private JFXTextField txtFileName;
     @FXML
-    private JFXComboBox<Config> cbbConfig;
+    private JFXComboBox<Config> comboConfig;
     @FXML
     private TextField txtImportPath;
     @FXML
     private TextField txtTargetPath;
     @FXML
     private BorderPane bPaneSplit;
+    @FXML
+    private HBox hBoxImport;
+    @FXML
+    private HBox hBoxTarget;
 
     /**
      * Initializes the controller class.
@@ -70,7 +75,7 @@ public class SingleTaskWindowController implements Initializable, IController {
     public void postInit(ModelManager model) {
         this.model = model;
         
-        cbbConfig.setItems(model.getConfigModel().getConfigList());
+        comboConfig.setItems(model.getConfigModel().getConfigList());
 
         try {
             Window.openView(model, bPaneSplit, Window.View.TaskView, "center");
@@ -84,7 +89,7 @@ public class SingleTaskWindowController implements Initializable, IController {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("All supported types", "*.xlsx", "*.csv"),
                 new FileChooser.ExtensionFilter("XLSX files (.xlsx)", "*.xlsx"),
-                new FileChooser.ExtensionFilter("CSV files (.cvs)", "*.csv")
+                new FileChooser.ExtensionFilter("CSV files (.csv)", "*.csv")
         // ADD NEW EXTENSIONS HERE, Seperate with comma (,)
         );
         File tempFile = fileChooser.showOpenDialog(bPane.getScene().getWindow());
@@ -105,15 +110,13 @@ public class SingleTaskWindowController implements Initializable, IController {
                     if (config.getExtension().equals(extension)) {
                         temp.add(config);
                     }
-                    cbbConfig.getItems().clear();
-                    cbbConfig.getItems().addAll(temp);
+                    comboConfig.getItems().clear();
+                    comboConfig.getItems().addAll(temp);
                 }
             } catch (BLLException ex) {
                 Logger.getLogger(SingleTaskWindowController.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-        } else {
-            Window.openSnack("No valid file selected", model.getBorderPane(), "red");
         }
 
     }
@@ -129,8 +132,8 @@ public class SingleTaskWindowController implements Initializable, IController {
     }
 
     private void chooseTarget() {
-        DirectoryChooser dirChoose = new DirectoryChooser();
-        File file = dirChoose.showDialog(null);
+        DirectoryChooser dirChooser = new DirectoryChooser();
+        File file = dirChooser.showDialog(null);
 
         if (file != null) {
             targetFile = file;
@@ -151,7 +154,7 @@ public class SingleTaskWindowController implements Initializable, IController {
 
         String name = txtFileName.getText();
 
-        Config config = cbbConfig.getSelectionModel().getSelectedItem();
+        Config config = comboConfig.getSelectionModel().getSelectedItem();
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();
@@ -182,26 +185,39 @@ public class SingleTaskWindowController implements Initializable, IController {
      * @return
      */
     private boolean checkRequired() {
+        boolean hasFailed = false;
         if (importFile == null) {
-            Window.openSnack("Please choose an input file", bPane, "red");
-            return true;
+           // Window.openSnack("Please choose an input file", bPane, "red");
+            Styling.redOutline(hBoxImport);
+            hasFailed = true;
         } else {
-            //to do 
+            Styling.clearRedOutline(hBoxImport);
         }
         if (txtFileName.getText().equals("")) {
             Styling.redOutline(txtFileName);
-            Window.openSnack("Please enter a file name", bPane, "red");
-            return true;
+            //Window.openSnack("Please enter a file name", bPane, "red");
+            hasFailed = true;
         } else {
             Styling.clearRedOutline(txtFileName);
         }
         if (targetFile == null) {
-            Window.openSnack("Please choose a target folder", bPane, "red");
-            return true;
+            Styling.redOutline(hBoxTarget);
+            //Window.openSnack("Please choose a target folder", bPane, "red");
+            hasFailed = true;
         } else {
-            //To do
+             Styling.clearRedOutline(hBoxTarget);
         }
-        return false;
+        if (comboConfig.getSelectionModel().getSelectedItem() == null){
+            Styling.redOutline(comboConfig);
+            //Window.openSnack("Please select a config", bPane, "red");
+            hasFailed = true;
+        } else {
+            Styling.clearRedOutline(comboConfig);
+        }
+        if(hasFailed){
+            Window.openSnack("Could not create task. Missing input is highlighted.", bPane, "red", 4000);
+        }
+        return hasFailed;
     }
 
 }
