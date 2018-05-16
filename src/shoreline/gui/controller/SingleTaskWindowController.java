@@ -114,9 +114,8 @@ public class SingleTaskWindowController implements Initializable, IController {
                 }
                 comboConfig.getItems().clear();
                 comboConfig.getItems().addAll(temp);
-
-                txtFileName.setText(importFile.getName());
-
+                txtFileName.setText(importFile.getName().substring(0,
+                        importFile.getName().lastIndexOf('.')));
             } catch (BLLException ex) {
                 Logger.getLogger(SingleTaskWindowController.class.getName()).log(Level.SEVERE, null, ex);
             }

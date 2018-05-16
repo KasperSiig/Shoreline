@@ -10,8 +10,8 @@
    <center>
       <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
          <children>
-            <Label fx:id="lblTaskName" text="Task Name" />
-            <Label fx:id="lblTargetDir" text="target dir" />
+            <Label fx:id="lblTaskName" maxWidth="560.0" text="Task Name" wrapText="true" />
+            <Label fx:id="lblTargetDir" maxWidth="560.0" text="target dir" />
          </children>
       </VBox>
    </center>
@@ -21,7 +21,7 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </BorderPane.margin>
          <children>
-            <Label fx:id="lblStatus" text="Status" />
+            <Label fx:id="lblStatus" maxWidth="560.0" text="Status" />
             <Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" />
          </children>
       </VBox>
