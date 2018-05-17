@@ -41,7 +41,9 @@ public class Batch {
     }
 
     private File getFailedDir(File targetDir) {
-        return new File(targetDir.getAbsolutePath() + "\\failed");
+        File file = new File(targetDir.getAbsolutePath() + "\\failed");
+        file.mkdir();
+        return file;
     }
 
     public File getSourceDir() {
