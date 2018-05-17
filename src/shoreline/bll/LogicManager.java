@@ -1,6 +1,8 @@
 package shoreline.bll;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
@@ -10,6 +12,7 @@ import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
+import shoreline.be.Batch;
 import shoreline.be.Config;
 import shoreline.be.ConvTask;
 import shoreline.be.LogItem;
@@ -28,6 +31,7 @@ public class LogicManager {
     private List<ConvTask> pendingTasks;
     private List<ConvTask> finishedTasks;
     private List<ConvTask> cancelledTasks;
+    private List<Batch> batches;
     private Timer t;
 
     private DataManager dm;
@@ -184,6 +188,46 @@ public class LogicManager {
     public List<ConvTask> getCancelledTasks() {
         return cancelledTasks;
     }
+
+    public List<Batch> getBatches() {
+        return batches;
+    }
+    
+    public void addToBatchList(Batch batch) throws BLLException {
+        batches.add(batch);
+        runBatch(batch);
+    }
+    
+    public void removeFromBatchList(Batch batch) {
+        batches.remove(batch);
+    }
+
+    private void runBatch(Batch batch) throws BLLException {
+        createTasks(batch);
+        List<ConvTask> tasks = batch.getPendingTasks();
+        for (ConvTask task : tasks) {
+            addCallableToTask(task);
+            startTask(task);
+        }
+    }
+
+    private void createTasks(Batch batch) {
+        List<File> filesInBatch = getFilesInBatch(batch);
+    }
+
+    public List<File> getFilesInBatch(Batch batch) {
+        File directory = batch.getSourceDir();
+
+        List<File> files = Arrays.asList(directory.listFiles());
+        List<File> returnList = new ArrayList();
+        for (File file : files) {
+            if (file.getAbsolutePath().endsWith(batch.getConfig().getExtension())) {
+                returnList.add(file);
+            }
+        }
+        return returnList;
+    }
+    
     
     
 
