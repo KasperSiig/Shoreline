@@ -122,9 +122,6 @@ public class XLXSConvStrat implements ConvStrategy {
                 fileWriter.write(jAr.toString(4));
                 fileWriter.flush();
                 fileWriter.close();
-                Thread.sleep(10);
-            } catch (InterruptedException ex) {
-                return;
             }
         } catch (IOException ex) {
             throw new DALException("Error writing JSON File", ex);
@@ -153,10 +150,6 @@ public class XLXSConvStrat implements ConvStrategy {
         jOb.put("createdBy", "SAP");
         jOb.put("planning", planning);
         return jOb;
-    }
-
-    private void writeToFile(JSONArray jAr) {
-
     }
 
     private Date getDate(String sheetdata) throws DALException {

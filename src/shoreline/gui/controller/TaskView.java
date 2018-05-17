@@ -42,7 +42,6 @@ public class TaskView extends BorderPane implements IController {
             loader.setController(this);
             loader.load();
             this.task = task;
-            setInfo(task);
         } catch (IOException ex) {
             //to be done 
         }
@@ -51,6 +50,10 @@ public class TaskView extends BorderPane implements IController {
     @Override
     public void postInit(ModelManager model) {
         this.model = model;
+        setInfo(task);
+        setWidthListener();
+//        lblTaskName.setWrapText(false);
+        lblTaskName.prefWidthProperty().bind(vBox.widthProperty());
     }
 
     private void setInfo(ConvTask task) {
@@ -65,13 +68,27 @@ public class TaskView extends BorderPane implements IController {
                 lblStatus.setText(task.getStatus().getValue());
             }
         });
-        String temp = task.getTarget().getAbsolutePath();
-        String temp2 = temp.substring(0, 3);
-        temp = temp.substring(temp.length() - 20, temp.length());
-
-        lblTargetDir.setText(temp2 + "..." + temp);
+        pathName(vBox.getWidth());
         lblTaskName.setText(task.getName());
 
+    }
+
+    private void setWidthListener() {
+        vBox.widthProperty().addListener((observable, oldValue, newValue) -> {
+            pathName(newValue);
+        });
+    }
+
+    private void pathName(Number size) {
+        // 7 PIXELS PER BOGSTAV
+        int iSize = size.intValue();
+        int characters = (iSize / 9);
+        String path = task.getTarget().getAbsolutePath();
+        String root = path.substring(0, 3);
+        if (path.length() > characters) {
+            path = root + ".." + path.substring(path.length() - characters);
+        }
+        lblTargetDir.setText(path);
     }
 
     public ConvTask getTask() {

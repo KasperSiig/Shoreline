@@ -21,37 +21,40 @@ import shoreline.exceptions.DALException;
  */
 public class XLSXTitleStrat implements TitleStrategy {
 
-    LinkedHashMap<String, Integer> cellIndexMap = new LinkedHashMap();
-    FileInputStream fin;
-    XSSFSheet sheet1;
-    
+    private LinkedHashMap<String, Integer> cellIndexMap;
+    private FileInputStream fin;
+    private XSSFWorkbook wb;
+    private XSSFSheet sheet1;
+
+    public XLSXTitleStrat() {
+        this.cellIndexMap = new LinkedHashMap();
+    }
+
     @Override
     public LinkedHashMap<String, Integer> getTitles(File file) throws DALException {
         try {
             fin = new FileInputStream(file);
-            XSSFWorkbook wb = new XSSFWorkbook(fin);
+            wb = new XSSFWorkbook(fin);
             sheet1 = wb.getSheetAt(0);
-            
+
             int i = 0;
             while (sheet1.getRow(0).getCell(i) != null) {
-            int j = 0;
-            String tempName = sheet1.getRow(0).getCell(i).getStringCellValue();
-            if (!cellIndexMap.containsKey(tempName)) {
-                cellIndexMap.put(tempName, i);
-            } else {
-                boolean done = false;
-                while (!done) {
-                    if (!cellIndexMap.containsKey(tempName + ++j)) {
-                        cellIndexMap.put(tempName + j, i);
-                        done = true;
+                String tempName = sheet1.getRow(0).getCell(i).getStringCellValue();
+                if (!cellIndexMap.containsKey(tempName)) {
+                    cellIndexMap.put(tempName, i);
+                } else {
+                    int j = 0;
+                    boolean done = false;
+                    while (!done) {
+                        if (!cellIndexMap.containsKey(tempName + ++j)) {
+                            cellIndexMap.put(tempName + j, i);
+                            done = true;
+                        }
                     }
                 }
+                i++;
             }
-            i++;
-        }
-            
-            
-            
+
             return cellIndexMap;
         } catch (FileNotFoundException ex) {
             throw new DALException(ex);
@@ -59,5 +62,5 @@ public class XLSXTitleStrat implements TitleStrategy {
             throw new DALException(ex);
         }
     }
-    
+
 }

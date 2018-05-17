@@ -30,10 +30,11 @@ public class Window {
         Main("MainWindow.fxml"),
         Login("LoginWindow.fxml"),
         CreateUser("CreateUserWindow.fxml"),
-        Mapping("MappingWindow.fxml"),
+        Config("ConfigWindow.fxml"),
         TaskView("TaskWindow.fxml"),
         logView("LogWindow.fxml"),
-        Confirm("ConfirmationWindow.fxml");
+        Confirm("ConfirmationWindow.fxml"),
+        SingleTask("SingleTaskWindow.fxml");
 
         String view;
 
@@ -117,7 +118,7 @@ public class Window {
             MenuBarFactory mbf = new MenuBarFactory();
             MenuBar mBar = mbf.createMenuBar(menuType, model);
             AnchorPane aPane = (AnchorPane) model.getBorderPane().getTop();
-            aPane.getChildren().remove(0);
+//            aPane.getChildren().remove(0);
             aPane.getChildren().add(0, mBar);
             return cont;
         } catch (IOException e) {
@@ -182,6 +183,19 @@ public class Window {
         }
     }
     
+    public static void openSnack(String msg, BorderPane bPane, String color, int time){
+        JFXSnackbar bar = new JFXSnackbar(bPane);
+        if (color.equals("blue")) {
+            color = "#337ab7";
+        }
+        if (color.equals("red")) {
+            color = "#ff3333";
+        }
+        
+        bar.getChildren().get(0).setStyle("-fx-text-fill: white; -fx-background-color: " + color + "; -fx-background-radius: 4px;");
+        bar.show(msg, time);
+        
+    }
     public static void openSnack(String msg, BorderPane bPane, String color){
         JFXSnackbar bar = new JFXSnackbar(bPane);
         if (color.equals("blue")) {

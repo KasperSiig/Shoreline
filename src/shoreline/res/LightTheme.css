@@ -68,32 +68,16 @@ and open the template in the editor.
     -fx-background-color: #2e6ea5;
 }
 
-.button:pressed, .button:default:hover:pressed {
-    /*-fx-background-color: lightgray;*/
-    -fx-text-fill: white;
-}
-
-.button:focused {
-    /*-fx-border-color: black, black;*/
-    -fx-border-width: 1, 1;
-    -fx-border-style: solid, segments(1, 1);
-    -fx-border-radius: 0, 0;
-    -fx-border-insets: 1 1 1 1, 0;
-}
-
-.button:disabled, .button:default:disabled {
-    -fx-opacity: 0.4;
-    -fx-background-color: white;
+.button-icon .button{
+    -fx-border-color: gray;
+    -fx-background-color: transparent;
     -fx-text-fill: black;
+    -fx-border-color: transparent;
+    -fx-padding: 10 10 10 10;
 }
 
-.button:default {
-    -fx-background-color: -fx-focus-color;
-    -fx-text-fill: black;
-}
-
-.button:default:hover {
-    -fx-background-color: derive(-fx-focus-color,30%);
+.button-icon-hover .button:hover {
+    -fx-background-color: lightgray;
 }
 
 /* Label */
@@ -133,9 +117,10 @@ and open the template in the editor.
 }
 
 .split-pane {
+    -fx-background-color: white;
     -fx-padding: 0 0 0 0;
     -fx-border-width: 4px 0px 0px 0px;
-    -fx-border-color: transparent, derive(lightgray, 20%);
+    -fx-border-color: transparent;
 }
 
 /* TabelView */
@@ -225,6 +210,17 @@ and open the template in the editor.
     -fx-font-family: "Segoe UI Semibold";
 }
 
+.jfx-text-field {
+    -fx-text-fill: black;
+    -fx-prompt-text-fill: #2e6da4;
+}
+
+.jfx-combo-box {
+    -fx-font-size: 12pt;
+    -fx-prompt-text-fill: #2e6da4;
+    -fx-font-family: "Segoe UI Semibold";
+}
+
 /* Menus */
 .menu-bar {
     /*-fx-padding: 100px;*/
@@ -267,46 +263,79 @@ and open the template in the editor.
     -fx-text-fill: black;
 }
 
-/* TextField */
-.jfx-text-field {
-    -fx-text-fill: black;
-    -fx-prompt-text-fill: #2e6da4;
-}
-
-
 /* tabs */
-.tab-pane .tab-header-area .tab-header-background {
-    -fx-opacity: 0;
-}
 
-.tab-pane
-{
+.tab-pane {
     -fx-tab-min-width:90px;
 }
 
-.tab{
+.tab {
     -fx-background-insets: 0 1 0 1,0,0;
+    -fx-shape: "M300,290 L310,168 L410,168 L421,290 L300,290 z";
 }
-.tab-pane .tab
-{
-    -fx-background-color: #e6e6e6;
-
+.tab-pane .tab {
+    -fx-background-color: derive(gray, 50%);
 }
 
-.tab-pane .tab:selected
-{
-    -fx-background-color: #337ab7;
-
+.tab-pane .tab:selected {
+    -fx-background-color: white;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 .tab .tab-label { 
     -fx-alignment: CENTER;
     -fx-text-fill: #828282;
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    /*-fx-font-weight: bold;*/
+    -fx-text-fill: black;
 }
 
 .tab:selected .tab-label { 
     -fx-alignment: CENTER;
-    -fx-text-fill: white;
+    -fx-text-fill: black;
+}
+
+.tab-pane-list .tab-header-area .tab-header-background {
+    -fx-opacity: 0;
+}
+
+.tab-pane-list .tab-header-area {
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.tab-down-button {
+    -fx-padding: 0;
+}
+
+.tab-down-button .arrow {
+    -fx-padding: 0;
+}
+
+.tab-costum .tab{
+    -fx-background-color: lightgray;
+    -fx-shape: "M300,290 L300,170 L410,170 L410,290 L300,290 z";
+
+}
+
+.tab-custom .tab:selected{
+    -fx-background-color: derive(lightgray, 75%);
+    -fx-shape: "M300,290 L300,170 L410,170 L410,290 L300,290 z";
+
+}
+
+.hBox-custom-border {
+    -fx-border-width: 1px;
+    -fx-border-color: black;
+}
+
+.txtfield-custom .text-field {
+    -fx-border-color: black;
+    -fx-background-color: transparent;
+    -fx-border-radius: 0px;
+    -fx-border-width: 0px 1px 0px 0px;
+}
+
+.VBox {
+    -fx-background-color: white;
 }

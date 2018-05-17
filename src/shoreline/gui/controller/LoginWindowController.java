@@ -72,7 +72,7 @@ public class LoginWindowController implements Initializable, IController {
         try {
             if (model.getUserModel().validatePassword(txtUserName.getText(), txtPassword.getText())) {
                 model.getUserModel().setUser(model.getUserModel().getUserOnLogin(txtUserName.getText(), txtPassword.getText()));
-                Window.openView(model, model.getBorderPane(), Window.View.Mapping, "center", MenuBarFactory.MenuType.Default);
+                Window.openView(model, model.getBorderPane(), Window.View.Config, "center");
                 model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has logged in");
             } else {
                 lblError.setText("there was a problem with the log in");

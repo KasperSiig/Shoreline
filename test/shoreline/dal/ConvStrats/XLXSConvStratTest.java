@@ -76,7 +76,7 @@ public class XLXSConvStratTest {
         mapper.put("latestStartDate", "Latest start");
         mapper.put("estimatedTime", "Work");
         
-        ConvTask task = new ConvTask(cellIndexMap, mapper, "", "", "", new File(testFile), new File("C:\\JavaProjects\\Shoreline\\test\\shoreline\\res\\XLSX\\Json.json"));
+        ConvTask task = new ConvTask(cellIndexMap, mapper, "", new File(testFile), new File("C:\\JavaProjects\\Shoreline\\test\\shoreline\\res\\XLSX\\Json.json"));
         XLXSConvStrat instance = new XLXSConvStrat();
         instance.addCallableToTask(task);
 //        // TODO review the generated test code and remove the default call to fail.

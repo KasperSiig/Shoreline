@@ -45,5 +45,10 @@ public class Config {
     public void setMap(HashMap map) {
         this.map = map;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
     
 }

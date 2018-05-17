@@ -25,6 +25,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -65,6 +66,8 @@ public class TaskWindowController implements Initializable, IController {
     private ScrollPane scrlPaneFin;
     @FXML
     private ScrollPane scrlPaneCan;
+    @FXML
+    private TabPane tabPane;
 
     public TaskWindowController() {
         this.cMenu = new ContextMenu();
@@ -112,15 +115,15 @@ public class TaskWindowController implements Initializable, IController {
 
     /**
      * Stops or cancels the task, based on cancel parameter
-     * 
+     *
      * @param tasks List of tasks to be paused or canceled
      * @param cancel true for cancel, false for pause
-     * @return 
+     * @return
      */
     private boolean pauseOrCancelTask(List<TaskView> tasks, boolean cancel) {
         ThreadPool tp = ThreadPool.getInstance();
         if (tasks.size() > 1) {
-            if (openConfirmWindow("Are you sure you want to stop " + tasks.size() + " tasks?", null, null, false)) {
+            if (openConfirmWindow("Are you sure you want to stop " + tasks.size() + " tasks?", false)) {
                 List<TaskView> temp = new ArrayList<>(tasks);
                 temp.forEach((task) -> {
                     if (cancel) {
@@ -160,11 +163,8 @@ public class TaskWindowController implements Initializable, IController {
     @Override
     public void postInit(ModelManager model) {
         this.model = model;
+        tabPane.tabMinWidthProperty().bind(tabPane.widthProperty().divide(tabPane.getTabs().size()).subtract(20));
 
-        if (model.getTaskModel().getPendingTasks().isEmpty()) {
-            return;
-        }
-        
         setTasks(selectedPenTasks, model.getTaskModel().getPendingTasks(), vBoxPen);
         setTasks(selectedFinTasks, model.getTaskModel().getFinishedTasks(), vBoxFin);
         setTasks(selectedCanTasks, model.getTaskModel().getCancelledTasks(), vBoxCan);
@@ -173,6 +173,7 @@ public class TaskWindowController implements Initializable, IController {
         genRightClickDel();
         genRightClickPause();
         genRightClickStop();
+
     }
 
     private void setTasks(List<TaskView> selectedTasks, ObservableList<ConvTask> tasks, VBox vBox) {
@@ -252,7 +253,6 @@ public class TaskWindowController implements Initializable, IController {
                         }
                     }
 
-
                     if (event.getClickCount() % 2 == 0) {
                         try {
                             String temp = convTask.getTarget().getParentFile().getPath();
@@ -314,7 +314,7 @@ public class TaskWindowController implements Initializable, IController {
         MenuItem delItem = new MenuItem("Delete selected task");
         delItem.setOnAction((event) -> {
             if (selectedPenTasks.size() > 1) {
-                if (openConfirmWindow("Are you sure you want to delete " + selectedPenTasks.size() + " tasks?", null, null, false)) {
+                if (openConfirmWindow("Are you sure you want to delete " + selectedPenTasks.size() + " tasks?", false)) {
                     selectedPenTasks.forEach((task) -> {
                         model.getTaskModel().getPendingTasks().remove(task.getTask());
                         try {
@@ -363,14 +363,13 @@ public class TaskWindowController implements Initializable, IController {
     }
 
     /**
-     * Opens window with yes and no buttons
+     * Open confirm window
      *
      * @param msg
-     * @param map
+     * @param txtField
      * @return
      */
-    private boolean openConfirmWindow(String msg, HashMap map, File file, boolean txtField) {
-
+    private boolean openConfirmWindow(String msg, boolean txtField) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(Window.View.Confirm.getView()));
@@ -378,7 +377,7 @@ public class TaskWindowController implements Initializable, IController {
 
             ConfirmationWindowController cwc = fxmlLoader.getController();
             cwc.postInit(model);
-            cwc.setInfo(msg, map, file, txtField);
+            cwc.setInfo(msg, txtField);
 
             Scene scene = new Scene(root);
             Stage stage = new Stage();
@@ -392,6 +391,7 @@ public class TaskWindowController implements Initializable, IController {
         }
         return false;
     }
+
 
     @FXML
     private void handleTaskCancel(ActionEvent event) {
