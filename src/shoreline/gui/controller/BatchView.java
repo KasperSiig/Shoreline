@@ -32,7 +32,11 @@ public class BatchView extends BorderPane implements IController {
     @FXML
     private Label lblTargetDir;
     @FXML
-    private Label lblStatus;
+    private Label lblPending;
+    @FXML
+    private Label lblHandled;
+    @FXML
+    private Label lblFailed;
     @FXML
     private VBox vBox;
 

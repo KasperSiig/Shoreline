@@ -21,9 +21,17 @@ and open the template in the editor.
     -fx-background-color: white;
 }
 
-/* BordeurPane */
+/* BorderPane */
 #borderPane {
     -fx-background-color: white; 
+}
+
+.selectedBorder {
+    -fx-border-color: #2e6da4; 
+    -fx-border-radius: 4px; 
+    -fx-background-color: derive(#337ab7, 80%);
+    -fx-background-radius: 4px;
+    -fx-text-fill: white;
 }
 
 /* DatePicker */
