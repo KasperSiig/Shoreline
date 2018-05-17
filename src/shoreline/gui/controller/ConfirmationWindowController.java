@@ -11,6 +11,8 @@ import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,13 +20,14 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import shoreline.be.Config;
+import shoreline.exceptions.GUIException;
 import shoreline.gui.model.ModelManager;
 import shoreline.statics.Window;
 
 /**
  * FXML Controller class
  *
- * @author madst
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class ConfirmationWindowController implements Initializable, IController {
 
@@ -116,16 +119,20 @@ public class ConfirmationWindowController implements Initializable, IController 
                     }
                 }
                 if (file != null) {
-                    String extension = "";
-
-                    int i = file.getAbsolutePath().lastIndexOf('.');
-                    if (i > 0) {
-                        extension = file.getAbsolutePath().substring(i + 1);
+                    try {
+                        String extension = "";
+                        
+                        int i = file.getAbsolutePath().lastIndexOf('.');
+                        if (i > 0) {
+                            extension = file.getAbsolutePath().substring(i + 1);
+                        }
+                        Config config = new Config(name, extension, map);
+                        model.getConfigModel().addToConfigList(config);
+                        stage = (Stage) lblInfo.getScene().getWindow();
+                        stage.close();
+                    } catch (GUIException ex) {
+                        Window.openExceptionWindow(ex.getMessage());
                     }
-                    Config config = new Config(name, extension, map);
-                    model.getConfigModel().addToConfigList(config);
-                    stage = (Stage) lblInfo.getScene().getWindow();
-                    stage.close();
                 }
             }
         } else {

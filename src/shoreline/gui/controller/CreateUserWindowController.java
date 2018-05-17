@@ -21,7 +21,7 @@ import shoreline.statics.Window;
 /**
  * FXML Controller class
  *
- * @author kenne
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class CreateUserWindowController implements Initializable, IController {
 
@@ -55,7 +55,8 @@ public class CreateUserWindowController implements Initializable, IController {
     private void onCreateAction(ActionEvent event) throws InterruptedException {
         if (checkEmptyFields()) {
             try {
-                int id = model.getUserModel().create(txtUsername.getText(), txtPassword.getText(), txtFirstname.getText(), txtLastname.getText());
+                int id = model.getUserModel().create(txtUsername.getText(), txtPassword.getText(),
+                        txtFirstname.getText(), txtLastname.getText());
                 Window.openView(model, model.getBorderPane(), Window.View.Login, "center");
                 Window.openSnack("User " + txtUsername.getText() + " was created", model.getBorderPane(), "blue");
                 model.getLogModel().add(id, Alert.AlertType.INFORMATION, "A new user was created with ID: " + id);

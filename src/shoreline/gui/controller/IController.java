@@ -4,7 +4,7 @@ import shoreline.gui.model.ModelManager;
 
 /**
  *
- * @author
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public interface IController {
     /**

@@ -37,7 +37,7 @@ import shoreline.statics.Styling;
 /**
  * FXML Controller class
  *
- * @author madst
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class SingleTaskWindowController implements Initializable, IController {
 
@@ -80,7 +80,7 @@ public class SingleTaskWindowController implements Initializable, IController {
         try {
             Window.openView(model, bPaneSplit, Window.View.TaskView, "center");
         } catch (GUIException ex) {
-            Logger.getLogger(SingleTaskWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            Window.openExceptionWindow(ex.getMessage());
         }
     }
 
@@ -114,11 +114,11 @@ public class SingleTaskWindowController implements Initializable, IController {
                 }
                 comboConfig.getItems().clear();
                 comboConfig.getItems().addAll(temp);
-                txtFileName.setText(importFile.getName().substring(0,
-                        importFile.getName().lastIndexOf('.')));
-            } catch (BLLException ex) {
-                Logger.getLogger(SingleTaskWindowController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                String name = importFile.getName();
+                txtFileName.setText(name.substring(0,name.lastIndexOf('.')));
+            } catch (GUIException ex) {
+                Window.openExceptionWindow(ex.getMessage());
+            } 
         }
     }
 
@@ -174,7 +174,7 @@ public class SingleTaskWindowController implements Initializable, IController {
             model.getTaskModel().addToPendingTasks(task);
             model.getTaskModel().addCallable(task);
         } catch (GUIException ex) {
-            Logger.getLogger(SingleTaskWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            Window.openExceptionWindow(ex.getMessage());
         }
 
     }
@@ -188,7 +188,6 @@ public class SingleTaskWindowController implements Initializable, IController {
     private boolean checkRequired() {
         boolean hasFailed = false;
         if (importFile == null) {
-            // Window.openSnack("Please choose an input file", bPane, "red");
             Styling.redOutline(hBoxImport);
             hasFailed = true;
         } else {
@@ -196,21 +195,18 @@ public class SingleTaskWindowController implements Initializable, IController {
         }
         if (txtFileName.getText().equals("")) {
             Styling.redOutline(txtFileName);
-            //Window.openSnack("Please enter a file name", bPane, "red");
             hasFailed = true;
         } else {
             Styling.clearRedOutline(txtFileName);
         }
         if (targetFile == null) {
             Styling.redOutline(hBoxTarget);
-            //Window.openSnack("Please choose a target folder", bPane, "red");
             hasFailed = true;
         } else {
             Styling.clearRedOutline(hBoxTarget);
         }
         if (comboConfig.getSelectionModel().getSelectedItem() == null) {
             Styling.redOutline(comboConfig);
-            //Window.openSnack("Please select a config", bPane, "red");
             hasFailed = true;
         } else {
             Styling.clearRedOutline(comboConfig);

@@ -20,15 +20,13 @@ import shoreline.statics.Window;
 
 /**
  *
- * @author
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class RootWindowController implements Initializable, IController {
 
     private ModelManager model;
     @FXML
     private BorderPane borderPane;
-    @FXML
-    private AnchorPane anchMenu;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -38,7 +36,7 @@ public class RootWindowController implements Initializable, IController {
             model.setBorderPane(borderPane);
             Window.openView(model, borderPane, Window.View.Login, "center");
         } catch (GUIException ex) {
-            Logger.getLogger(RootWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            Window.openExceptionWindow(ex.getMessage());
         }
 
     }

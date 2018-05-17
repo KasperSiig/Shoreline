@@ -23,7 +23,7 @@ import shoreline.gui.model.ModelManager;
 /**
  * FXML Controller class
  *
- * @author madst
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class LogWindowController implements Initializable, IController {
 
