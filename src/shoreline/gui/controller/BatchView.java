@@ -84,4 +84,5 @@ public class BatchView extends BorderPane implements IController {
     public Batch getBatch() {
         return batch;
     }
+
 }
