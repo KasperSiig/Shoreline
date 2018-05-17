@@ -34,7 +34,9 @@ public class Window {
         TaskView("TaskWindow.fxml"),
         logView("LogWindow.fxml"),
         Confirm("ConfirmationWindow.fxml"),
-        SingleTask("SingleTaskWindow.fxml");
+        SingleTask("SingleTaskWindow.fxml"),
+        Batch("BatchWindow.fxml"),
+        BatchTask("BatchTaskWindow.fxml");
 
         String view;
 

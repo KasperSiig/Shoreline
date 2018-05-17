@@ -112,6 +112,7 @@ public class ConfigWindowController implements Initializable, IController {
         onCloseRequest();
         try {
             tabPane.getTabs().add(makeTab(model, Window.View.SingleTask, "Single task"));
+            tabPane.getTabs().add(makeTab(model, Window.View.Batch, "Batch"));
             tabPane.getTabs().add(makeTab(model, Window.View.logView, "Log"));
         } catch (GUIException ex) {
             Logger.getLogger(ConfigWindowController.class.getName()).log(Level.SEVERE, null, ex);
