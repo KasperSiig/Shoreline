@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <fx:root maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" type="javafx.scene.layout.BorderPane" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
@@ -24,7 +25,12 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </BorderPane.margin>
          <children>
-            <Label fx:id="lblStatus" alignment="CENTER" maxWidth="560.0" text="Status" />
+            <HBox spacing="5.0">
+               <children>
+                  <Label fx:id="lblStatus" alignment="CENTER" maxWidth="560.0" text="Files found" />
+                  <Label fx:id="nrOfFilesFound" text="number of files found" />
+               </children>
+            </HBox>
             <Separator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" />
          </children>
       </VBox>
