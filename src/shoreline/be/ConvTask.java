@@ -38,8 +38,6 @@ public class ConvTask {
         }
     }
     
-    private HashMap<String, Integer> cellIndexMap;
-    private HashMap<String, String> mapper;
     private String name;
     private File source, target;
     private boolean isRunning;
@@ -48,23 +46,15 @@ public class ConvTask {
     private int progress;
     private JSONArray jAr;
     private StringProperty status = new SimpleStringProperty("Ready");
+    private Config config;
 
-    public ConvTask(HashMap<String, Integer> cellIndexMap, HashMap<String, String> mapper, String name, File source, File target) {
+    public ConvTask(String name, File source, File target, Config config) {
         this.jAr = new JSONArray();
         this.progress = 0;
-        this.cellIndexMap = cellIndexMap;
-        this.mapper = mapper;
         this.name = name;
         this.source = source;
         this.target = target;
-    }
-
-    public HashMap<String, Integer> getCellIndexMap() {
-        return cellIndexMap;
-    }
-
-    public HashMap<String, String> getMapper() {
-        return mapper;
+        this.config = config;
     }
 
     public String getName() {
@@ -118,6 +108,8 @@ public class ConvTask {
     public void setStatus(Status status) {
         this.status.setValue(status.getValue());
     }
-    
-    
+
+    public Config getConfig() {
+        return config;
+    }
 }

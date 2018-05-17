@@ -1,8 +1,11 @@
 package shoreline.bll;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
@@ -79,7 +82,7 @@ public class LogicManager {
             throw new BLLException(ex);
         }
     }
-    
+
     public User getUser(String username, String password) throws BLLException {
         try {
             return dm.getUser(username, password);
@@ -87,7 +90,6 @@ public class LogicManager {
             throw new BLLException(ex);
         }
     }
-    
 
     public HashMap<String, Integer> getTitles(File file) throws BLLException {
         try {
@@ -192,17 +194,17 @@ public class LogicManager {
     public List<Batch> getBatches() {
         return batches;
     }
-    
+
     public void addToBatchList(Batch batch) throws BLLException {
         batches.add(batch);
         runBatch(batch);
     }
-    
+
     public void removeFromBatchList(Batch batch) {
         batches.remove(batch);
     }
 
-    private void runBatch(Batch batch) throws BLLException {
+    public void runBatch(Batch batch) throws BLLException {
         createTasks(batch);
         List<ConvTask> tasks = batch.getPendingTasks();
         for (ConvTask task : tasks) {
@@ -213,6 +215,22 @@ public class LogicManager {
 
     private void createTasks(Batch batch) {
         List<File> filesInBatch = getFilesInBatch(batch);
+        filesInBatch.forEach((file) -> {
+            HashMap<String, Integer> cellIndexMap = batch.getConfig().getCellIndexMap();
+            HashMap<String, String> headerMap = batch.getConfig().getHeaderMap();
+            String name = file.getName();
+            File targetDir = batch.getTargetDir();
+
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Calendar cal = Calendar.getInstance();
+            String date = dateFormat.format(cal.getTime());
+
+            File tempFile = new File(targetDir + "\\" + date + " - " + name + ".json");
+
+            ConvTask task = new ConvTask(name, file, tempFile, batch.getConfig());
+            batch.addToPending(task);
+        });
+
     }
 
     public List<File> getFilesInBatch(Batch batch) {
@@ -227,8 +245,5 @@ public class LogicManager {
         }
         return returnList;
     }
-    
-    
-    
 
 }

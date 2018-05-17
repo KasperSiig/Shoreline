@@ -379,7 +379,7 @@ public class ConfigWindowController implements Initializable, IController {
                 }
                 mappingList.clear();
                 JSONmap.clear();
-                JSONmap.putAll(config.getMap());
+                JSONmap.putAll(config.getHeaderMap());
                 setInfoInlvMap(JSONmap);
                 Window.openSnack("Config " + config.getName() + " was loaded", bPane, "blue");
             });

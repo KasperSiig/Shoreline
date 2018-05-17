@@ -14,12 +14,14 @@ import java.util.HashMap;
 public class Config {
     
     private String name, extension;
-    private HashMap<String, String> map;
+    private HashMap<String, String> headerMap;
+    private HashMap<String, Integer> cellIndexMap;
 
-    public Config(String name, String extension, HashMap<String, String> map) {
+    public Config(String name, String extension, HashMap<String, String> headerMap) {
         this.name = name;
         this.extension = extension;
-        this.map = map;
+        this.headerMap = headerMap;
+        this.cellIndexMap = cellIndexMap;
     }
     
     public String getName() {
@@ -38,14 +40,22 @@ public class Config {
         this.extension = extension;
     }
 
-    public HashMap getMap() {
-        return map;
+    public HashMap<String, String> getHeaderMap() {
+        return headerMap;
     }
 
-    public void setMap(HashMap map) {
-        this.map = map;
+    public void setHeaderMap(HashMap map) {
+        this.headerMap = map;
     }
 
+    public HashMap<String, Integer> getCellIndexMap() {
+        return cellIndexMap;
+    }
+
+    public void setCellIndexMap(HashMap<String, Integer> cellIndexMap) {
+        this.cellIndexMap = cellIndexMap;
+    }
+    
     @Override
     public String toString() {
         return name;

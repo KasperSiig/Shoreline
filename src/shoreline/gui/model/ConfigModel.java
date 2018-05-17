@@ -61,7 +61,7 @@ public class ConfigModel {
     public void addToConfigList(Config config) {
         try {
             this.configList.add(config);
-            save(config.getName(), config.getExtension(), config.getMap());
+            save(config.getName(), config.getExtension(), config.getHeaderMap());
         } catch (BLLException ex) {
             Logger.getLogger(ModelManager.class.getName()).log(Level.SEVERE, null, ex);
         }

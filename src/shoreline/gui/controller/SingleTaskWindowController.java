@@ -166,10 +166,10 @@ public class SingleTaskWindowController implements Initializable, IController {
         try {
             cellIndexMap = model.getConfigModel().getTitles(importFile);
 
-            HashMap temp = new HashMap(config.getMap());
+            HashMap temp = new HashMap(config.getHeaderMap());
             HashMap cellTemp = new HashMap(cellIndexMap);
 
-            ConvTask task = new ConvTask(cellTemp, temp, name, importFile, tempFile);
+            ConvTask task = new ConvTask(name, importFile, tempFile, config);
 
             model.getTaskModel().addToPendingTasks(task);
             model.getTaskModel().addCallable(task);

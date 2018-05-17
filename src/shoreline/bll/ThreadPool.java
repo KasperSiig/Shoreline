@@ -88,6 +88,8 @@ public class ThreadPool {
      * @param task
      */
     public void startTask(ConvTask task) {
+        System.out.println("shoreline.bll.ThreadPool.startTask()");
+        System.out.println("task = " + task + "\n");
         task.setStatus(ConvTask.Status.Pending);
         Future future = threadPool.submit(task.getCallable());
         task.setFuture(future);

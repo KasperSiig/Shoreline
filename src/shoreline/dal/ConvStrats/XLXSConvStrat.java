@@ -86,7 +86,7 @@ public class XLXSConvStrat implements ConvStrategy {
         if (indexString.equals("")) {
             return "";
         }
-        return sheet1.getRow(rowNumber).getCell(task.getCellIndexMap().get(indexString), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).toString();
+        return sheet1.getRow(rowNumber).getCell(task.getConfig().getCellIndexMap().get(indexString), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).toString();
     }
 
     /**
@@ -131,7 +131,7 @@ public class XLXSConvStrat implements ConvStrategy {
     private JSONObject createJSONObject(int i, ConvTask task) {
         JSONObject jOb = new JSONObject();
         JSONObject planning = new JSONObject();
-        task.getMapper().forEach((key, value) -> {
+        task.getConfig().getHeaderMap().forEach((key, value) -> {
             switch (key) {
                 case "earliestStartDate":
                 case "latestFinishDate":
