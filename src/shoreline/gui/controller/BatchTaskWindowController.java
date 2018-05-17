@@ -74,6 +74,7 @@ public class BatchTaskWindowController implements Initializable, IController {
         this.model = model;
         setBatches(selectedBatches, model.getBatchModel().getBatches(), vBoxPen);
 
+        genRightClickDel();
     }
 
     private void setBatches(List<BatchView> selected, ObservableList<Batch> batches, VBox vBox) {
@@ -197,10 +198,10 @@ public class BatchTaskWindowController implements Initializable, IController {
      * Generates MenuItem for delete task
      */
     private void genRightClickDel() {
-        MenuItem delItem = new MenuItem("Delete selected task");
+        MenuItem delItem = new MenuItem("Delete selected batch");
         delItem.setOnAction((event) -> {
             if (selectedBatches.size() > 1) {
-                if (openConfirmWindow("Are you sure you want to delete " + selectedBatches.size() + " tasks?", false)) {
+                if (openConfirmWindow("Are you sure you want to delete " + selectedBatches.size() + " batches?", false)) {
                     selectedBatches.forEach((batch) -> {
                         try {
                             model.getBatchModel().getBatches().remove(batch.getBatch());
@@ -215,10 +216,10 @@ public class BatchTaskWindowController implements Initializable, IController {
                     return;
                 }
             } else {
-                selectedBatches.forEach((selectedBatch) -> {
-                    model.getTaskModel().getPendingTasks().remove(selectedBatch.getBatch());
+                selectedBatches.forEach((batch) -> {
                     try {
-                        model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has deleted task " + selectedBatch.getBatch().getName());
+                        model.getBatchModel().getBatches().remove(batch.getBatch());
+                        model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has deleted task " + batch.getBatch().getName());
                     } catch (GUIException ex) {
                         Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
                     }
