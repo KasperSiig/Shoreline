@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,6 +12,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import shoreline.bll.ThreadPool;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.MenuBarFactory;
 import shoreline.gui.model.ModelManager;
@@ -45,6 +47,7 @@ public class LoginWindowController implements Initializable, IController {
     @Override
     public void postInit(ModelManager model) {
         this.model = model;
+        onCloseRequest();
     }
 
     /**
@@ -73,15 +76,28 @@ public class LoginWindowController implements Initializable, IController {
             if (model.getUserModel().validatePassword(txtUserName.getText(), txtPassword.getText())) {
                 model.getUserModel().setUser(model.getUserModel().getUserOnLogin(txtUserName.getText(), txtPassword.getText()));
                 Window.openView(model, model.getBorderPane(), Window.View.Config, "center");
-                model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has logged in");
             } else {
-                lblError.setText("there was a problem with the log in");
+                lblError.setText("Incorrect credentials. Please try again.");
                 txtUserName.requestFocus();
             }
         } catch (GUIException ex) {
             Window.openExceptionWindow("There was a problem validating your login", ex.getStackTrace());
         }
 
+    }
+
+    /**
+     * Makes a onCloseRequest event closes the thread pool and stops the timer.
+     *
+     */
+    private void onCloseRequest() {
+        Platform.runLater(() -> {
+            model.getBorderPane().getScene().getWindow().setOnCloseRequest((event) -> {
+                ThreadPool tPool = ThreadPool.getInstance();
+                tPool.closeThreadPool();
+                model.getLogModel().getTimer().cancel();
+            });
+        });
     }
 
 }

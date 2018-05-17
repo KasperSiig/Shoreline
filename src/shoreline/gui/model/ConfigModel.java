@@ -25,8 +25,7 @@ public class ConfigModel {
     private ObservableList<Config> configList;
     private ObservableList<String> templateList;
 
-    public ConfigModel(BorderPane borderPane, LogicManager logic) {
-        try {
+    public ConfigModel(BorderPane borderPane, LogicManager logic) throws GUIException {
             this.borderPane = borderPane;
             this.logic = logic;
             
@@ -34,9 +33,6 @@ public class ConfigModel {
                     "type", "externalWorkOrderId", "systemStatus", "userStatus", "name", "priority",
                     "latestFinishDate", "earliestStartDate", "latestStartDate", "estimatedTime");
             this.configList = FXCollections.observableArrayList(getAllConfigs());
-        } catch (BLLException ex) {
-            Logger.getLogger(ConfigModel.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     /**
@@ -58,12 +54,12 @@ public class ConfigModel {
      *
      * @param config Configuration to be added
      */
-    public void addToConfigList(Config config) {
+    public void addToConfigList(Config config) throws GUIException {
         try {
             this.configList.add(config);
             save(config.getName(), config.getExtension(), config.getMap());
         } catch (BLLException ex) {
-            Logger.getLogger(ModelManager.class.getName()).log(Level.SEVERE, null, ex);
+            throw new GUIException(ex);
         }
     }
 
@@ -71,8 +67,12 @@ public class ConfigModel {
      * @return List of all Configurations
      * @throws BLLException
      */
-    public List<Config> getAllConfigs() throws BLLException {
-        return logic.getAllConfigs();
+    public List<Config> getAllConfigs() throws GUIException {
+        try {
+            return logic.getAllConfigs();
+        } catch (BLLException ex) {
+            throw new GUIException(ex);
+        }
     }
 
     /**

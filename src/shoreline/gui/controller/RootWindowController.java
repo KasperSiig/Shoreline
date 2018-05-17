@@ -20,15 +20,13 @@ import shoreline.statics.Window;
 
 /**
  *
- * @author
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class RootWindowController implements Initializable, IController {
 
     private ModelManager model;
     @FXML
     private BorderPane borderPane;
-    @FXML
-    private AnchorPane anchMenu;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {

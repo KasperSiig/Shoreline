@@ -16,6 +16,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import shoreline.be.ConvTask;
 import shoreline.gui.model.ModelManager;
+import shoreline.statics.Window;
 
 /**
  *
@@ -43,7 +44,7 @@ public class TaskView extends BorderPane implements IController {
             loader.load();
             this.task = task;
         } catch (IOException ex) {
-            //to be done 
+            Window.openExceptionWindow(ex.getMessage());
         }
     }
 
@@ -52,7 +53,6 @@ public class TaskView extends BorderPane implements IController {
         this.model = model;
         setInfo(task);
         setWidthListener();
-//        lblTaskName.setWrapText(false);
         lblTaskName.prefWidthProperty().bind(vBox.widthProperty());
     }
 
@@ -80,7 +80,6 @@ public class TaskView extends BorderPane implements IController {
     }
 
     private void pathName(Number size) {
-        // 7 PIXELS PER BOGSTAV
         int iSize = size.intValue();
         int characters = (iSize / 9);
         String path = task.getTarget().getAbsolutePath();

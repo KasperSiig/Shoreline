@@ -50,7 +50,7 @@ import shoreline.statics.Window;
 /**
  * FXML Controller class
  *
- * @author madst
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class ConfigWindowController implements Initializable, IController {
 
@@ -109,12 +109,11 @@ public class ConfigWindowController implements Initializable, IController {
         generateRightclickMenu();
         lvMappingSetup();
         makeConfigListener();
-        onCloseRequest();
         try {
             tabPane.getTabs().add(makeTab(model, Window.View.SingleTask, "Single task"));
             tabPane.getTabs().add(makeTab(model, Window.View.logView, "Log"));
         } catch (GUIException ex) {
-            Logger.getLogger(ConfigWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            Window.openExceptionWindow(ex.getMessage());
         }
 
 //        TabPaneDetacher.create().makeTabsDetachable(tabPane);
@@ -134,9 +133,10 @@ public class ConfigWindowController implements Initializable, IController {
             tab.setContent(node);
 
             return tab;
-        } catch (IOException e) {
-            throw new GUIException(e);
+        } catch (IOException ex) {
+            Window.openExceptionWindow(ex.getMessage());
         }
+        return null;
     }
 
     /**
@@ -154,18 +154,6 @@ public class ConfigWindowController implements Initializable, IController {
             } else if (lvMapOverview.getSelectionModel().getSelectedItems().size() > 1) {
                 Delete.setText("Remove all");
             }
-        });
-    }
-
-    /**
-     * Makes a onCloseRequest event closes the thread pool and stops the timer.
-     *
-     */
-    private void onCloseRequest() {
-        model.getBorderPane().getScene().getWindow().setOnCloseRequest((event) -> {
-            ThreadPool tPool = ThreadPool.getInstance();
-            tPool.closeThreadPool();
-            model.getLogModel().getTimer().cancel();
         });
     }
 
@@ -253,7 +241,7 @@ public class ConfigWindowController implements Initializable, IController {
                 Styling.clearRedOutline(btnInput);
                 generateRightclickMenu();
             } catch (GUIException ex) {
-                Window.openExceptionWindow("Whoops");
+                Window.openExceptionWindow(ex.getMessage());
             }
         }
     }
@@ -356,14 +344,14 @@ public class ConfigWindowController implements Initializable, IController {
                     }
                     
                 }
-            } catch (BLLException ex) {
-                Logger.getLogger(ConfigWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (GUIException ex) {
+                Window.openExceptionWindow(ex.getMessage());
             }
         } else {
             try {
                 temp.addAll(model.getConfigModel().getAllConfigs());
-            } catch (BLLException ex) {
-                Logger.getLogger(ConfigWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            }catch (GUIException ex) {
+                Window.openExceptionWindow(ex.getMessage());
             }
         }
 
@@ -502,7 +490,11 @@ public class ConfigWindowController implements Initializable, IController {
             extension = file.getAbsolutePath().substring(i + 1);
         }
         Config config = new Config(name, extension, map);
-        model.getConfigModel().addToConfigList(config);
+        try {
+            model.getConfigModel().addToConfigList(config);
+        } catch (GUIException ex) {
+            Window.openExceptionWindow(ex.getMessage());
+        }
     }
 
     /**
@@ -514,7 +506,6 @@ public class ConfigWindowController implements Initializable, IController {
     private boolean checkRequired() {
         boolean hasFailed = false;
         if (inputFile == null) {
-            // Window.openSnack("Please choose an input file", bPane, "red");
             Styling.redOutline(btnInput);
             Styling.redOutline(lvInput);
             hasFailed = true;
@@ -524,14 +515,12 @@ public class ConfigWindowController implements Initializable, IController {
         }
         if (txtFileName.getText().equals("")) {
             Styling.redOutline(txtFileName);
-            //Window.openSnack("Please enter a file name", bPane, "red");
             hasFailed = true;
         } else {
             Styling.clearRedOutline(txtFileName);
         }
         if (JSONmap.isEmpty()) {
             Styling.redOutline(lvMapOverview);
-            //Window.openSnack("Please select a config", bPane, "red");
             hasFailed = true;
         } else {
             Styling.clearRedOutline(lvMapOverview);
