@@ -25,15 +25,11 @@ public class LogModel {
 
     private ObservableList<LogItem> logList;
 
-    public LogModel(BorderPane borderPane, LogicManager logic) {
-        try {
-            this.borderPane = borderPane;
-            this.logic = logic;
-            
-            this.logList = FXCollections.observableArrayList(getAll());
-        } catch (GUIException ex) {
-            Logger.getLogger(LogModel.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public LogModel(BorderPane borderPane, LogicManager logic) throws GUIException {
+        this.borderPane = borderPane;
+        this.logic = logic;
+
+        this.logList = FXCollections.observableArrayList(getAll());
     }
 
     /**
@@ -61,9 +57,9 @@ public class LogModel {
 
     /**
      * Gets all logs from database
-     * 
+     *
      * @return
-     * @throws GUIException 
+     * @throws GUIException
      */
     public List<LogItem> getAll() throws GUIException {
         try {

@@ -36,7 +36,7 @@ public class RootWindowController implements Initializable, IController {
             model.setBorderPane(borderPane);
             Window.openView(model, borderPane, Window.View.Login, "center");
         } catch (GUIException ex) {
-            Logger.getLogger(RootWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            Window.openExceptionWindow(ex.getMessage());
         }
 
     }

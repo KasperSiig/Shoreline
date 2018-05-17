@@ -80,7 +80,7 @@ public class SingleTaskWindowController implements Initializable, IController {
         try {
             Window.openView(model, bPaneSplit, Window.View.TaskView, "center");
         } catch (GUIException ex) {
-            Logger.getLogger(SingleTaskWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            Window.openExceptionWindow(ex.getMessage());
         }
     }
 
