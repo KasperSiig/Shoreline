@@ -27,6 +27,7 @@ import shoreline.bll.LogicManager;
 import shoreline.exceptions.BLLException;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.ModelManager;
+import shoreline.statics.Styling;
 import shoreline.statics.Window;
 
 /**
@@ -49,7 +50,7 @@ public class BatchWindowController implements Initializable, IController {
     @FXML
     private JFXTextField txtFileName;
     @FXML
-    private JFXComboBox<?> comboConfig;
+    private JFXComboBox<Config> comboConfig;
     @FXML
     private BorderPane bPaneSplit;
 
@@ -69,7 +70,12 @@ public class BatchWindowController implements Initializable, IController {
     public void postInit(ModelManager model) {
         this.model = model;
         try {
-            Window.openView(model, bPane, Window.View.BatchTask, "right");
+            Window.openView(model, bPaneSplit, Window.View.BatchTask, "center");
+            
+
+            comboConfig.setItems(model.getConfigModel().getConfigList());
+            
+            
         } catch (GUIException ex) {
             Logger.getLogger(BatchWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -79,7 +85,7 @@ public class BatchWindowController implements Initializable, IController {
     private void handleTargetFolderBtn(ActionEvent event) {
         DirectoryChooser dirChooser = new DirectoryChooser();
         File file = dirChooser.showDialog(null);
-        
+
         if (file != null) {
             targetFolder = file;
             txtTargetPath.setText(targetFolder.getAbsolutePath());
@@ -90,7 +96,7 @@ public class BatchWindowController implements Initializable, IController {
     private void handleImportFolderBtn(ActionEvent event) {
         DirectoryChooser dirChooser = new DirectoryChooser();
         File file = dirChooser.showDialog(null);
-        
+
         if (file != null) {
             importFolder = file;
             txtImportPath.setText(importFolder.getAbsolutePath());
@@ -98,12 +104,63 @@ public class BatchWindowController implements Initializable, IController {
     }
 
     @FXML
-    private void handleCreateBatch(ActionEvent event) throws BLLException, BEException {
-        LogicManager l = new LogicManager();
-        List<File> files = l.getFilesInBatch(new Batch(new File("C:\\Users\\kaspe\\Desktop"), new File("C:\\Users\\kaspe\\Desktop"), null, new Config(null, "xlsx", null)));
-        files.forEach((t) -> {
-            System.out.println(t);
-        });
+    private void handleCreateBatch(ActionEvent event) {
+        if (checkRequired()) {
+            return;
+        }
+
+        try {
+            Batch tempBacth = new Batch(importFolder, targetFolder, txtFileName.getText(), comboConfig.getSelectionModel().getSelectedItem());
+            model.getBatchModel().addToBatches(tempBacth);
+            Window.openSnack("New bacth " + tempBacth.getName() + " was created", bPane, "blue");
+        } catch (BEException ex) {
+            Logger.getLogger(BatchWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GUIException ex) {
+            Logger.getLogger(BatchWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+
+    /**
+     * Checks if there is an input file. Checks if the JSONmap is empty. Checks
+     * if there is a file name. Checks if there is a target path.
+     *
+     * @return
+     */
+    private boolean checkRequired() {
+        boolean hasFailed = false;
+        if (importFolder == null) {
+            // Window.openSnack("Please choose an input file", bPane, "red");
+            Styling.redOutline(hBoxImport);
+            hasFailed = true;
+        } else {
+            Styling.clearRedOutline(hBoxImport);
+        }
+        if (txtFileName.getText().equals("")) {
+            Styling.redOutline(txtFileName);
+            //Window.openSnack("Please enter a file name", bPane, "red");
+            hasFailed = true;
+        } else {
+            Styling.clearRedOutline(txtFileName);
+        }
+        if (importFolder == null) {
+            Styling.redOutline(hBoxTarget);
+            //Window.openSnack("Please choose a target folder", bPane, "red");
+            hasFailed = true;
+        } else {
+            Styling.clearRedOutline(hBoxTarget);
+        }
+        if (comboConfig.getSelectionModel().getSelectedItem() == null) {
+            Styling.redOutline(comboConfig);
+            //Window.openSnack("Please select a config", bPane, "red");
+            hasFailed = true;
+        } else {
+            Styling.clearRedOutline(comboConfig);
+        }
+        if (hasFailed) {
+            Window.openSnack("Could not create task. Missing input is highlighted.", bPane, "red", 4000);
+        }
+        return hasFailed;
     }
 
 }

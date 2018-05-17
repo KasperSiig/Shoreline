@@ -97,7 +97,7 @@ public class SingleTaskWindowController implements Initializable, IController {
         if (tempFile != null) {
             importFile = tempFile;
             txtImportPath.setText(importFile.getAbsolutePath());
-
+            
             List temp = new ArrayList();
             try {
                 for (Config config : model.getConfigModel().getAllConfigs()) {

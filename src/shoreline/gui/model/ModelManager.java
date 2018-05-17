@@ -17,6 +17,7 @@ public class ModelManager {
     private ConfigModel configModel;
     private LogModel logModel;
     private UserModel userModel;
+    private BatchModel batchModel;
 
     private BorderPane borderPane;
 
@@ -35,6 +36,7 @@ public class ModelManager {
             configModel = new ConfigModel(borderPane, logic);
             logModel = new LogModel(borderPane, logic);
             userModel = new UserModel(borderPane, logic);
+            batchModel = new BatchModel(borderPane, logic);
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
@@ -112,6 +114,13 @@ public class ModelManager {
      */
     public UserModel getUserModel() {
         return userModel;
+    }
+    
+    /**
+     * @return Instance of UserModel
+     */
+    public BatchModel getBatchModel() {
+        return batchModel;
     }
     
     

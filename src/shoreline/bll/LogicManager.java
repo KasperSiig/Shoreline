@@ -42,6 +42,7 @@ public class LogicManager {
     public LogicManager() throws BLLException {
         try {
             this.dm = new DataManager();
+            batches = new ArrayList();
         } catch (DALException ex) {
             throw new BLLException(ex);
         }
