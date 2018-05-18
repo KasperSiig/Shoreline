@@ -1,5 +1,6 @@
 package shoreline.be;
 
+import shoreline.exceptions.BEException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;

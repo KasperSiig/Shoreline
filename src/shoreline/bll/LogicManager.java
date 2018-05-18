@@ -158,12 +158,13 @@ public class LogicManager {
         t.schedule(new TimerTask() {
             @Override
             public void run() {
-                try {
                     tempLog.clear();
+                try {
                     tempLog.addAll(getNewLogs());
                 } catch (BLLException ex) {
                     Logger.getLogger(LogicManager.class.getName()).log(Level.SEVERE, null, ex);
                 }
+
             }
         }, 5000, 5000);
     }

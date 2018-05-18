@@ -25,7 +25,7 @@ import shoreline.statics.Window;
  */
 public class CreateUserWindowController implements Initializable, IController {
 
-    ModelManager model;
+    private ModelManager model;
 
     @FXML
     private JFXTextField txtFirstname;

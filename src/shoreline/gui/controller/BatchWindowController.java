@@ -20,7 +20,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
-import shoreline.be.BEException;
+import shoreline.exceptions.BEException;
 import shoreline.be.Batch;
 import shoreline.be.Config;
 import shoreline.bll.LogicManager;

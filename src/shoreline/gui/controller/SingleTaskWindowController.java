@@ -41,10 +41,10 @@ import shoreline.statics.Styling;
  */
 public class SingleTaskWindowController implements Initializable, IController {
 
-    ModelManager model;
-    HashMap cellIndexMap;
-    File importFile;
-    File targetFile;
+    private ModelManager model;
+    private HashMap cellIndexMap;
+    private File importFile;
+    private File targetFile;
 
     @FXML
     private BorderPane bPane;

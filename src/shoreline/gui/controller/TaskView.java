@@ -24,8 +24,8 @@ import shoreline.statics.Window;
  */
 public class TaskView extends BorderPane implements IController {
 
-    ModelManager model;
-    ConvTask task;
+    private ModelManager model;
+    private ConvTask task;
 
     @FXML
     private Label lblTaskName;

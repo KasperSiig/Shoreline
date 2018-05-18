@@ -11,8 +11,8 @@ package shoreline.be;
  */
 public class User {
     
-    String lName, fName, uName;
-    int id;
+    private String lName, fName, uName;
+    private int id;
 
     public User(String lName, String fName, String uName, int id) {
         this.lName = lName;

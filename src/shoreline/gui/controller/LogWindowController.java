@@ -27,7 +27,7 @@ import shoreline.gui.model.ModelManager;
  */
 public class LogWindowController implements Initializable, IController {
 
-    ModelManager model;
+    private ModelManager model;
 
     @FXML
     private TableView<LogItem> tv;

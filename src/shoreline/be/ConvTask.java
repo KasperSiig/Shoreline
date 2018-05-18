@@ -27,7 +27,7 @@ public class ConvTask {
         Finished("Finished"),
         Cancelled("Cancelled");
         
-        String status;
+        private String status;
 
         Status(String status) {
             this.status = status;

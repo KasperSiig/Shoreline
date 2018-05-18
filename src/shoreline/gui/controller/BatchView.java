@@ -24,8 +24,8 @@ import shoreline.gui.model.ModelManager;
  */
 public class BatchView extends BorderPane implements IController {
 
-    ModelManager model;
-    Batch batch;
+    private ModelManager model;
+    private Batch batch;
 
     @FXML
     private Label lblTaskName;

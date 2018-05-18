@@ -54,14 +54,14 @@ import shoreline.statics.Window;
  */
 public class ConfigWindowController implements Initializable, IController {
 
-    ObservableList<String> templateList = FXCollections.observableArrayList();
-    ObservableList<String> inputList = FXCollections.observableArrayList();
-    ObservableList<String> mappingList = FXCollections.observableArrayList();
-    HashMap<String, String> JSONmap = new HashMap<>();
+    private ObservableList<String> templateList = FXCollections.observableArrayList();
+    private ObservableList<String> inputList = FXCollections.observableArrayList();
+    private ObservableList<String> mappingList = FXCollections.observableArrayList();
+    private HashMap<String, String> JSONmap = new HashMap<>();
 
-    ModelManager model;
-    String targetPath;
-    File inputFile;
+    private ModelManager model;
+    private String targetPath;
+    private File inputFile;
 
     private HashMap<String, Integer> cellIndexMap;
 
