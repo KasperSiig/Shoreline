@@ -10,16 +10,18 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.Callable;
 import javafx.application.Platform;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import shoreline.be.ConvTask;
 import shoreline.bll.ThreadPool;
+import shoreline.dal.TitleStrats.TitleImpl;
+import shoreline.dal.TitleStrats.XLSXTitleStrat;
 import shoreline.exceptions.DALException;
 
 /**
@@ -44,6 +46,9 @@ public class XLXSConvStrat implements ConvStrategy {
 
         // Creates the Callable, that's going to be added to the ConvTask
         Callable call = (Callable) () -> {
+            TitleImpl impl = new TitleImpl(new XLSXTitleStrat());
+            HashMap<String, Integer> cellIndexMap = impl.getTitles(task.getSource());
+            task.getConfig().setCellIndexMap(cellIndexMap);
             try {
                 Platform.runLater(() -> {
                     task.setStatus(ConvTask.Status.Running);
@@ -102,8 +107,9 @@ public class XLXSConvStrat implements ConvStrategy {
 
         // Is being used to keep track of what row to pull data from
         int i = task.getProgress() + 1;
-        while (sheet1.getRow(i) != null 
+        while (sheet1.getRow(i) != null
                 && task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
+            
             JSONObject jOb = createJSONObject(i, task);
             jAr.put(jOb);
             task.setProgress(i);
@@ -131,6 +137,7 @@ public class XLXSConvStrat implements ConvStrategy {
     private JSONObject createJSONObject(int i, ConvTask task) {
         JSONObject jOb = new JSONObject();
         JSONObject planning = new JSONObject();
+        
         task.getConfig().getHeaderMap().forEach((key, value) -> {
             switch (key) {
                 case "earliestStartDate":
