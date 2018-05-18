@@ -178,12 +178,11 @@ public class BatchTaskWindowController implements Initializable, IController {
     private void toggleSelected(BatchView batchView, List<BatchView> selectedBatches, boolean selected) {
         if (selected) {
             selectedBatches.add(batchView);
-            batchView.setStyle("-fx-border-color: #2e6da4; -fx-border-radius: 4px; "
-                    + "-fx-background-color: derive(#337ab7, 80%); "
-                    + "-fx-background-radius: 4px; -fx-text-fill: white");
+            batchView.getStyleClass().add("selectedBorder");
+            System.out.println("selected");
         } else {
             selectedBatches.remove(batchView);
-            batchView.setStyle("-fx-border-color: transparent");
+            batchView.getStyleClass().remove(0);
         }
     }
 
