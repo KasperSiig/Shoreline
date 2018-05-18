@@ -11,7 +11,7 @@
    <center>
       <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="300.0" spacing="10.0" BorderPane.alignment="CENTER_LEFT">
          <children>
-            <Label fx:id="lblTaskName" maxWidth="560.0" minWidth="300.0" text="Task Name" />
+            <Label fx:id="lblTaskName" maxWidth="560.0" minWidth="300.0" styleClass="label-bright" text="Task Name" />
             <Label fx:id="lblInputDir" maxWidth="560.0" minWidth="100.0" text="Input dir" />
             <Label fx:id="lblTargetDir" maxWidth="560.0" minWidth="100.0" text="target dir" />
          </children>
