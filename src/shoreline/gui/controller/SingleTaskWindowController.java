@@ -165,7 +165,7 @@ public class SingleTaskWindowController implements Initializable, IController {
 
         try {
             cellIndexMap = model.getConfigModel().getTitles(importFile);
-
+            config.setCellIndexMap(cellIndexMap);
             HashMap temp = new HashMap(config.getHeaderMap());
             HashMap cellTemp = new HashMap(cellIndexMap);
 

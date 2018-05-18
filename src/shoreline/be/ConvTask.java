@@ -112,4 +112,11 @@ public class ConvTask {
     public Config getConfig() {
         return config;
     }
+
+    @Override
+    public String toString() {
+        return "ConvTask{" + "name=" + name + ", source=" + source + ", target=" + target + ", isRunning=" + isRunning + ", Callable=" + Callable + ", future=" + future + ", progress=" + progress + ", jAr=" + jAr + ", status=" + status + ", config=" + config + '}';
+    }
+    
+    
 }

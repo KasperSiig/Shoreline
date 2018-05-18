@@ -1,6 +1,14 @@
 package shoreline.bll;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,6 +51,7 @@ public class LogicManager {
         try {
             this.dm = new DataManager();
             batches = new ArrayList();
+            setBatchTimer();
         } catch (DALException ex) {
             throw new BLLException(ex);
         }
@@ -208,31 +217,34 @@ public class LogicManager {
 
     public void runBatch(Batch batch) throws BLLException {
         createTasks(batch);
-        List<ConvTask> tasks = batch.getPendingTasks();
+        List<ConvTask> tasks = new ArrayList(batch.getPendingTasks());
         for (ConvTask task : tasks) {
             addCallableToTask(task);
             startTask(task);
+            batch.removeFromPending(task);
         }
     }
 
     private void createTasks(Batch batch) {
         List<File> filesInBatch = getFilesInBatch(batch);
         filesInBatch.forEach((file) -> {
-            HashMap<String, Integer> cellIndexMap = batch.getConfig().getCellIndexMap();
-            HashMap<String, String> headerMap = batch.getConfig().getHeaderMap();
-            String name = file.getName();
-            File targetDir = batch.getTargetDir();
-
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Calendar cal = Calendar.getInstance();
-            String date = dateFormat.format(cal.getTime());
-
-            File tempFile = new File(targetDir + "\\" + date + " - " + name + ".json");
-
-            ConvTask task = new ConvTask(name, file, tempFile, batch.getConfig());
-            batch.addToPending(task);
+            addToBatchPending(batch, file);
         });
 
+    }
+
+    private void addToBatchPending(Batch batch, File file) {
+        String name = file.getName();
+        File targetDir = batch.getTargetDir();
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        String date = dateFormat.format(cal.getTime());
+
+        File tempFile = new File(targetDir + "\\" + date + " - " + name + ".json");
+
+        ConvTask task = new ConvTask(name, file, tempFile, batch.getConfig());
+        batch.addToPending(task);
     }
 
     public List<File> getFilesInBatch(Batch batch) {
@@ -246,6 +258,52 @@ public class LogicManager {
             }
         }
         return returnList;
+    }
+
+    private void setBatchTimer() {
+
+        Timer batchTimer = new Timer();
+        batchTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                batches.forEach((batch) -> {
+                    checkBatch(batch);
+                });
+            }
+        }, 0, 500);
+    }
+
+    private void checkBatch(Batch batch) {
+        try {
+            Path dir = Paths.get(batch.getSourceDir().getAbsolutePath());
+            dir.register(batch.getWatchService(), ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
+            WatchKey key = null;
+            try {
+                key = batch.getWatchService().take();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(LogicManager.class.getName()).log(Level.INFO, "message");
+            }
+            for (WatchEvent<?> event : key.pollEvents()) {
+                WatchEvent.Kind<?> kind = event.kind();
+
+                @SuppressWarnings("unchecked")
+                WatchEvent<Path> ev = (WatchEvent<Path>) event;
+                Path fileName = ev.context();
+
+//                System.out.println(kind.name() + ": " + fileName);
+                String extension = batch.getConfig().getExtension();
+                if (fileName.toString().endsWith(extension)) {
+                    addToBatchPending(batch, new File(batch.getTargetDir() + "\\" + fileName.toString()));
+                    runBatch(batch);
+                }
+
+            }
+            key.reset();
+        } catch (IOException ex) {
+            Logger.getLogger(LogicManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (BLLException ex) {
+            Logger.getLogger(LogicManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }
