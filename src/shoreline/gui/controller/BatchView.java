@@ -65,9 +65,9 @@ public class BatchView extends BorderPane implements IController {
         lblTaskName.setText(batch.getName());
         lblInputDir.setText(batch.getTargetDir().getAbsolutePath());
 
-        lblPending.setText(String.valueOf(batch.getFilesPending()));
-        lblFailed.setText(String.valueOf(batch.getFilesFailed()));
-        lblHandled.setText(String.valueOf(batch.getFilesHandled()));
+        lblPending.setText(String.valueOf(batch.getFilesPending().getValue()));
+        lblFailed.setText(String.valueOf(batch.getFilesFailed().getValue()));
+        lblHandled.setText(String.valueOf(batch.getFilesHandled().getValue()));
         batch.getFilesPending().addListener((observable, oldValue, newValue) -> {
             lblPending.setText(String.valueOf(newValue));
         });

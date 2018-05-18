@@ -337,7 +337,6 @@ public class ConfigWindowController implements Initializable, IController {
                     extension = inputFile.getAbsolutePath().substring(i + 1);
                 }
                 if (config.getExtension().equals(extension)) {
-                    System.out.println("added: " + config.getName());
                     temp.add(config);
                 }
                 
@@ -349,10 +348,8 @@ public class ConfigWindowController implements Initializable, IController {
                 Window.openExceptionWindow(ex.getMessage());
             }
         }
-        System.out.println("clearing rightclick");
         configMenu.getItems().clear();
         temp.forEach((config) -> {
-            System.out.println("Adding items");
             MenuItem item = new MenuItem(config.getName());
             item.setOnAction((event) -> {
                 if (inputFile == null) {
@@ -469,6 +466,7 @@ public class ConfigWindowController implements Initializable, IController {
             }
         }
         createConfig(inputFile, temp, name);
+        Window.openSnack("Config " + name + " was created", bPane, "blue");
     }
 
     @FXML

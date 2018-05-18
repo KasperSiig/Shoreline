@@ -28,19 +28,19 @@
          <children>
             <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="300.0" spacing="5.0">
                <children>
-                  <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="300.0">
+                  <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="300.0" spacing="5.0">
                      <children>
                         <Label alignment="CENTER" maxWidth="560.0" minWidth="0.0" text="Files pending:" />
                         <Label fx:id="lblPending" alignment="CENTER" maxWidth="560.0" minWidth="0.0" />
                      </children>
                   </HBox>
-                  <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="300.0">
+                  <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="300.0" spacing="5.0">
                      <children>
                         <Label alignment="CENTER" maxWidth="560.0" minWidth="0.0" text="Files handled:" />
                         <Label fx:id="lblHandled" alignment="CENTER" maxWidth="560.0" minWidth="0.0" />
                      </children>
                   </HBox>
-                  <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="300.0">
+                  <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="300.0" spacing="5.0">
                      <children>
                         <Label alignment="CENTER" maxWidth="560.0" minWidth="0.0" text="Files failed:" />
                         <Label fx:id="lblFailed" alignment="CENTER" maxWidth="560.0" minWidth="0.0" />
