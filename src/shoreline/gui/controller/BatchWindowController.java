@@ -71,11 +71,7 @@ public class BatchWindowController implements Initializable, IController {
         this.model = model;
         try {
             Window.openView(model, bPaneSplit, Window.View.BatchTask, "center");
-            
-
             comboConfig.setItems(model.getConfigModel().getConfigList());
-            
-            
         } catch (GUIException ex) {
             Logger.getLogger(BatchWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
