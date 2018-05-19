@@ -221,6 +221,22 @@ public class TaskWindowController implements Initializable, IController {
         taskView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                handlePrimaryButton(event);
+                handleSecondaryButoon(event);
+            }
+
+            private void handleSecondaryButoon(MouseEvent event) {
+                if (event.getButton().equals(MouseButton.SECONDARY)) {
+                    cMenu.show(vBoxPen, event.getScreenX(), event.getScreenY());
+                    if (!selectedTasks.contains(taskView)) {
+                        toggleSelected(taskView, selectedTasks, false);
+                    } else {
+                        toggleSelected(taskView, selectedTasks, true);
+                    }
+                }
+            }
+
+            private void handlePrimaryButton(MouseEvent event) throws NumberFormatException {
                 if (event.getButton().equals(MouseButton.PRIMARY)) {
                     cMenu.hide();
                     if (event.isControlDown()) {
@@ -272,12 +288,6 @@ public class TaskWindowController implements Initializable, IController {
                         }
                     }
                 }
-                if (event.getButton().equals(MouseButton.SECONDARY)) {
-                    cMenu.show(vBox, event.getScreenX(), event.getScreenY());
-                    if (!selectedTasks.contains(taskView)) {
-                        toggleSelected(taskView, selectedTasks, true);
-                    }
-                }
             }
         }
         );
@@ -324,32 +334,28 @@ public class TaskWindowController implements Initializable, IController {
         delItem.setOnAction((event) -> {
             if (selectedPenTasks.size() > 1) {
                 if (openConfirmWindow("Are you sure you want to delete " + selectedPenTasks.size() + " tasks?", false)) {
-                    selectedPenTasks.forEach((task) -> {
-                        model.getTaskModel().getPendingTasks().remove(task.getTask());
-                        try {
-                            model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has deleted task " + task.getTask().getName());
-                        } catch (GUIException ex) {
-                            Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
-                        }
-
-                    });
-                    selectedPenTasks.clear();
+                    delSelectedTask();
                 } else {
                     return;
                 }
             } else {
-                selectedPenTasks.forEach((selectedTask) -> {
-                    model.getTaskModel().getPendingTasks().remove(selectedTask.getTask());
-                    try {
-                        model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has deleted task " + selectedTask.getTask().getName());
-                    } catch (GUIException ex) {
-                        Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
-                    }
-                });
-                selectedPenTasks.clear();
+                delSelectedTask();
             }
         });
         cMenu.getItems().add(delItem);
+    }
+
+    private void delSelectedTask() {
+        List<TaskView> temp = selectedPenTasks;
+        for (TaskView task : temp) {
+            try {
+                model.getTaskModel().getPendingTasks().remove(task.getTask());
+                model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has deleted task " + task.getTask().getName());
+            } catch (GUIException ex) {
+                Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
+            }
+        }
+        selectedPenTasks.clear();
     }
 
     /**
@@ -400,7 +406,6 @@ public class TaskWindowController implements Initializable, IController {
         }
         return false;
     }
-
 
     @FXML
     private void handleTaskCancel(ActionEvent event) {
