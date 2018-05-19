@@ -51,7 +51,9 @@ public class BatchTaskWindowController implements Initializable, IController {
 
     /* Java Variables */
     private List<BatchView> selectedBatches;
+
     private ContextMenu cMenu;
+
     private ModelManager model;
 
     public BatchTaskWindowController() {
@@ -110,33 +112,6 @@ public class BatchTaskWindowController implements Initializable, IController {
         batchView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                handleSelectionMethods(event);
-                handleDoubleClick(event);
-                handleRightClick(event);
-            }
-
-            private void handleRightClick(MouseEvent event) {
-                if (event.getButton().equals(MouseButton.SECONDARY)) {
-                    cMenu.show(vBox, event.getScreenX(), event.getScreenY());
-                    if (!selectedb.contains(batchView)) {
-                        toggleSelected(batchView, selectedb, true);
-                    }
-                }
-            }
-
-            private void handleDoubleClick(MouseEvent event) {
-                if (event.getClickCount() % 2 == 0) {
-                    try {
-                        String temp = batch.getTargetDir().getParentFile().getPath();
-                        temp = temp.replaceAll("\\\\", "/");
-                        Desktop.getDesktop().browse(new URI(temp));
-                    } catch (URISyntaxException | IOException ex) {
-                        Logger.getLogger(TaskWindowController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
-
-            private void handleSelectionMethods(MouseEvent event) throws NumberFormatException {
                 if (event.getButton().equals(MouseButton.PRIMARY)) {
                     cMenu.hide();
                     if (event.isControlDown()) {
@@ -176,6 +151,22 @@ public class BatchTaskWindowController implements Initializable, IController {
                             toggleSelected(batchView, selectedb, true);
                         }
                     }
+
+                    if (event.getClickCount() % 2 == 0) {
+                        try {
+                            String temp = batch.getTargetDir().getParentFile().getPath();
+                            temp = temp.replaceAll("\\\\", "/");
+                            Desktop.getDesktop().browse(new URI(temp));
+                        } catch (URISyntaxException | IOException ex) {
+                            Logger.getLogger(TaskWindowController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+                if (event.getButton().equals(MouseButton.SECONDARY)) {
+                    cMenu.show(vBox, event.getScreenX(), event.getScreenY());
+                    if (!selectedb.contains(batchView)) {
+                        toggleSelected(batchView, selectedb, true);
+                    }
                 }
             }
         }
@@ -187,6 +178,7 @@ public class BatchTaskWindowController implements Initializable, IController {
         if (selected) {
             selectedBatches.add(batchView);
             batchView.getStyleClass().add("selectedBorder");
+            System.out.println("selected");
         } else {
             selectedBatches.remove(batchView);
             batchView.getStyleClass().remove(0);
@@ -208,27 +200,32 @@ public class BatchTaskWindowController implements Initializable, IController {
         delItem.setOnAction((event) -> {
             if (selectedBatches.size() > 1) {
                 if (openConfirmWindow("Are you sure you want to delete " + selectedBatches.size() + " batches?", false)) {
-                    delSelectedBatches();
+                    selectedBatches.forEach((batch) -> {
+                        try {
+                            model.getBatchModel().getBatches().remove(batch.getBatch());
+                            model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has deleted task " + batch.getBatch().getName());
+                        } catch (GUIException ex) {
+                            Logger.getLogger(BatchTaskWindowController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                    });
+                    selectedBatches.clear();
                 } else {
                     return;
                 }
             } else {
-                delSelectedBatches();
+                selectedBatches.forEach((batch) -> {
+                    try {
+                        model.getBatchModel().getBatches().remove(batch.getBatch());
+                        model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has deleted task " + batch.getBatch().getName());
+                    } catch (GUIException ex) {
+                        Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
+                    }
+                });
+                selectedBatches.clear();
             }
         });
         cMenu.getItems().add(delItem);
-    }
-
-    private void delSelectedBatches() {
-        selectedBatches.forEach((batch) -> {
-            try {
-                model.getBatchModel().getBatches().remove(batch.getBatch());
-                model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has deleted task " + batch.getBatch().getName());
-            } catch (GUIException ex) {
-                Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
-            }
-        });
-        selectedBatches.clear();
     }
 
     /**
