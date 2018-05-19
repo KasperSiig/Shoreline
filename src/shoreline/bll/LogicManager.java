@@ -167,7 +167,7 @@ public class LogicManager {
         t.schedule(new TimerTask() {
             @Override
             public void run() {
-                    tempLog.clear();
+                tempLog.clear();
                 try {
                     tempLog.addAll(getNewLogs());
                 } catch (BLLException ex) {
@@ -208,6 +208,7 @@ public class LogicManager {
 
     public void addToBatchList(Batch batch) throws BLLException {
         batches.add(batch);
+        createTasks(batch);
         runBatch(batch);
     }
 
@@ -216,12 +217,13 @@ public class LogicManager {
     }
 
     public void runBatch(Batch batch) throws BLLException {
-        createTasks(batch);
         List<ConvTask> tasks = new ArrayList(batch.getPendingTasks());
         for (ConvTask task : tasks) {
             addCallableToTask(task);
             startTask(task);
             batch.removeFromPending(task);
+            System.out.println("shoreline.bll.LogicManager.runBatch()");
+            System.out.println("task = " + task + "\n");
         }
     }
 
@@ -276,7 +278,7 @@ public class LogicManager {
     private void checkBatch(Batch batch) {
         try {
             Path dir = Paths.get(batch.getSourceDir().getAbsolutePath());
-            dir.register(batch.getWatchService(), ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
+            dir.register(batch.getWatchService(), ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
             WatchKey key = null;
             try {
                 key = batch.getWatchService().take();
@@ -290,10 +292,12 @@ public class LogicManager {
                 WatchEvent<Path> ev = (WatchEvent<Path>) event;
                 Path fileName = ev.context();
 
-//                System.out.println(kind.name() + ": " + fileName);
+                System.out.println(kind.name() + ": " + fileName);
                 String extension = batch.getConfig().getExtension();
                 if (fileName.toString().endsWith(extension)) {
-                    addToBatchPending(batch, new File(batch.getTargetDir() + "\\" + fileName.toString()));
+                    System.out.println("shoreline.bll.LogicManager.checkBatch()");
+                    System.out.println("extension = " + extension + "\n");
+                    addToBatchPending(batch, new File(batch.getSourceDir() + "\\" + fileName.toString()));
                     runBatch(batch);
                 }
 

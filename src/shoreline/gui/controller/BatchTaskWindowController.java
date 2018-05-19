@@ -89,7 +89,7 @@ public class BatchTaskWindowController implements Initializable, IController {
     }
 
     /**
-     * Generates TaskViews for List
+     * Generates BatchViews for List
      *
      * @param model
      */
@@ -127,7 +127,6 @@ public class BatchTaskWindowController implements Initializable, IController {
                         if (selectedb.size() > 1) {
                             int id2 = Integer.valueOf(selectedb.get(selectedb.size() - 1).getId());
 
-                            //TO BE DONE!
                             List<BatchView> allBatches = new ArrayList();
 
                             vBox.getChildren().forEach((node) -> {
@@ -194,7 +193,7 @@ public class BatchTaskWindowController implements Initializable, IController {
     }
 
     /**
-     * Generates MenuItem for delete task
+     * Generates MenuItem for delete batch
      */
     private void genRightClickDel() {
         MenuItem delItem = new MenuItem("Delete selected batch");

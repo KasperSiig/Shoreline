@@ -325,37 +325,29 @@ public class ConfigWindowController implements Initializable, IController {
      *
      */
     private void generateRightclickMenu() {
-        if (model.getConfigModel().getConfigList().isEmpty()) {
-            return;
-        }
 
         List<Config> temp = new ArrayList();
 
         if (inputFile != null) {
-            try {
-                for (Config config : model.getConfigModel().getAllConfigs()) {
-                    String extension = "";
-                    
-                    int i = inputFile.getAbsolutePath().lastIndexOf('.');
-                    if (i > 0) {
-                        extension = inputFile.getAbsolutePath().substring(i + 1);
-                    }
-                    if (config.getExtension().equals(extension)) {
-                        temp.add(config);
-                    }
-                    
+            for (Config config : model.getConfigModel().getConfigList()) {
+                String extension = "";
+                
+                int i = inputFile.getAbsolutePath().lastIndexOf('.');
+                if (i > 0) {
+                    extension = inputFile.getAbsolutePath().substring(i + 1);
                 }
-            } catch (GUIException ex) {
-                Window.openExceptionWindow(ex.getMessage());
+                if (config.getExtension().equals(extension)) {
+                    temp.add(config);
+                }
+                
             }
         } else {
             try {
                 temp.addAll(model.getConfigModel().getAllConfigs());
-            }catch (GUIException ex) {
+            } catch (GUIException ex) {
                 Window.openExceptionWindow(ex.getMessage());
             }
         }
-
         configMenu.getItems().clear();
         temp.forEach((config) -> {
             MenuItem item = new MenuItem(config.getName());
@@ -474,6 +466,7 @@ public class ConfigWindowController implements Initializable, IController {
             }
         }
         createConfig(inputFile, temp, name);
+        Window.openSnack("Config " + name + " was created", bPane, "blue");
     }
 
     @FXML

@@ -5,17 +5,13 @@
  */
 package shoreline.gui.controller;
 
-import com.jfoenix.controls.JFXSpinner;
 import java.io.IOException;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import shoreline.be.Batch;
-import shoreline.be.ConvTask;
 import shoreline.gui.model.ModelManager;
 
 /**
@@ -31,6 +27,8 @@ public class BatchView extends BorderPane implements IController {
     private Label lblTaskName;
     @FXML
     private Label lblTargetDir;
+    @FXML
+    private Label lblInputDir;
     @FXML
     private Label lblPending;
     @FXML
@@ -62,10 +60,14 @@ public class BatchView extends BorderPane implements IController {
     }
 
     private void setInfo(Batch batch) {
-        pathName(vBox.getWidth());
+        pathName(vBox.getWidth(), lblTargetDir, batch.getSourceDir().getAbsolutePath());
+        pathName(vBox.getWidth(), lblInputDir, batch.getTargetDir().getAbsolutePath());
         lblTaskName.setText(batch.getName());
+        lblInputDir.setText(batch.getTargetDir().getAbsolutePath());
 
-        lblPending.setText(String.valueOf(batch.getPendingTasks().size()));
+        lblPending.setText(String.valueOf(batch.getFilesPending().getValue()));
+        lblFailed.setText(String.valueOf(batch.getFilesFailed().getValue()));
+        lblHandled.setText(String.valueOf(batch.getFilesHandled().getValue()));
         batch.getFilesPending().addListener((observable, oldValue, newValue) -> {
             lblPending.setText(String.valueOf(newValue));
         });
@@ -79,20 +81,20 @@ public class BatchView extends BorderPane implements IController {
 
     private void setWidthListener() {
         vBox.widthProperty().addListener((observable, oldValue, newValue) -> {
-            pathName(newValue);
+            pathName(newValue, lblTargetDir, batch.getSourceDir().getAbsolutePath());
+            pathName(newValue, lblInputDir, batch.getTargetDir().getAbsolutePath());
         });
     }
 
-    private void pathName(Number size) {
+    private void pathName(Number size, Label lbl, String path) {
         // 7 PIXELS PER BOGSTAV
         int iSize = size.intValue();
         int characters = (iSize / 9);
-        String path = batch.getTargetDir().getAbsolutePath();
         String root = path.substring(0, 3);
         if (path.length() > characters) {
             path = root + ".." + path.substring(path.length() - characters);
         }
-        lblTargetDir.setText(path);
+        lbl.setText(path);
     }
 
     public Batch getBatch() {
