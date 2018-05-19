@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package shoreline.dal.ConvStrats;
+package shoreline.bll.ConvStrats;
 
 import shoreline.be.ConvTask;
+import shoreline.dal.Readers.InputReader;
+import shoreline.dal.Writers.OutputWriter;
 import shoreline.exceptions.DALException;
 
 /**
@@ -14,24 +16,30 @@ import shoreline.exceptions.DALException;
  */
 public class ConvImpl {
     private ConvStrategy strategy;
+    private InputReader reader;
+    private OutputWriter writer;
 
     /**
      * Initiates the Conversion Implementation, and sets the strategy to use
      * 
      * @param strategy The strategy to be used
+     * @param reader
+     * @param writer
      */
-    public ConvImpl(ConvStrategy strategy) {
+    public ConvImpl(ConvStrategy strategy, InputReader reader, OutputWriter writer) {
         this.strategy = strategy;
+        this.reader = reader;
+        this.writer = writer;
     }
     
     /**
-     * Runs the addCallableToTask method, with the strategy chosen in constructor
+     * Runs the addCallable method, with the strategy chosen in constructor
      * 
      * @param task The ConvTask to be converted
      * @throws DALException 
      */
-    public void addCallableToTask(ConvTask task) throws DALException {
-        strategy.addCallableToTask(task);
+    public void addCallable(ConvTask task) throws DALException {
+        strategy.addCallable(task, reader, writer);
     }
     
 }

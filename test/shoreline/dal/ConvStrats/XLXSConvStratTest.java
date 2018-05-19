@@ -5,6 +5,7 @@
  */
 package shoreline.dal.ConvStrats;
 
+import shoreline.bll.ConvStrats.XLXSConvStrat;
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -57,11 +58,11 @@ public class XLXSConvStratTest {
     }
 
     /**
-     * Test of addCallableToTask method, of class XLXSConvStrat.
+     * Test of addCallable method, of class XLXSConvStrat.
      */
     @Test
     public void testConvertAndWrite() throws Exception {
-//        System.out.println("addCallableToTask");
+//        System.out.println("addCallable");
         HashMap mapper = new HashMap<String, String>();
         mapper.put("siteName", "");
         mapper.put("assetSerialNumber", "");
@@ -78,7 +79,7 @@ public class XLXSConvStratTest {
         
         ConvTask task = new ConvTask(cellIndexMap, mapper, "", new File(testFile), new File("C:\\JavaProjects\\Shoreline\\test\\shoreline\\res\\XLSX\\Json.json"));
         XLXSConvStrat instance = new XLXSConvStrat();
-        instance.addCallableToTask(task);
+        instance.addCallable(task);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
         

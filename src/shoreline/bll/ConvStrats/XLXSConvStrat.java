@@ -1,7 +1,6 @@
-package shoreline.dal.ConvStrats;
+package shoreline.bll.ConvStrats;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,8 +11,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -22,8 +19,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import shoreline.be.ConvTask;
 import shoreline.bll.ThreadPool;
+import shoreline.dal.Readers.InputReader;
 import shoreline.dal.TitleStrats.TitleImpl;
 import shoreline.dal.TitleStrats.XLSXTitleStrat;
+import shoreline.dal.Writers.OutputWriter;
 import shoreline.exceptions.DALException;
 
 /**
@@ -38,10 +37,8 @@ public class XLXSConvStrat implements ConvStrategy {
     // The Sheet holding the data from the XLSX file
     private XSSFSheet sheet1;
 
-    private FileInputStream fin;
-
     @Override
-    public JSONArray addCallableToTask(ConvTask task) throws DALException {
+    public void addCallable(ConvTask task, InputReader reader, OutputWriter writer) {
         // Gets the instance of the ThreadPool object
         ThreadPool threadPool = ThreadPool.getInstance();
         threadPool.addToPending(task);
@@ -51,32 +48,23 @@ public class XLXSConvStrat implements ConvStrategy {
             TitleImpl impl = new TitleImpl(new XLSXTitleStrat());
             HashMap<String, Integer> cellIndexMap = impl.getTitles(task.getSource());
             task.getConfig().setCellIndexMap(cellIndexMap);
-            try {
-
-                fin = new FileInputStream(task.getSource());
-                wb = new XSSFWorkbook(fin);
-                // XLSX files can contain more sheets, this gets the one at index 0
-                sheet1 = wb.getSheetAt(0);
-                writeJson(task);
-                if (task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
-                    Platform.runLater(() -> {
-                        task.setStatus(ConvTask.Status.Finished);
-                    });
-                    threadPool.removeFromRunning(task);
-
-                    threadPool.addToFinished(task);
-                }
-            } catch (FileNotFoundException ex) {
-                throw new DALException("File was not found.", ex);
-            } catch (IOException ex) {
-                throw new DALException("Error reading file", ex);
+            wb = (XSSFWorkbook) reader.read(task.getSource());
+            // XLSX files can contain more sheets, this gets the one at index 0
+            sheet1 = wb.getSheetAt(0);
+            writeJson(task, writer);
+            if (task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
+                Platform.runLater(() -> {
+                    task.setStatus(ConvTask.Status.Finished);
+                });
+                threadPool.removeFromRunning(task);
+                
+                threadPool.addToFinished(task);
             }
             return null;
         };
 
         // Sets the Callable in the ConvTask, so it can be used in the ThreadPool later.
         task.setCallable(call);
-        return null;
     }
 
     /**
@@ -101,7 +89,7 @@ public class XLXSConvStrat implements ConvStrategy {
      * @param task The task containing what needs to be converted
      * @throws DALException
      */
-    private void writeJson(ConvTask task) throws DALException {
+    private void writeJson(ConvTask task, OutputWriter writer) throws DALException {
 
         JSONArray jAr = task.getjAr();
 
@@ -114,25 +102,8 @@ public class XLXSConvStrat implements ConvStrategy {
             jAr.put(jOb);
             task.setProgress(i);
             task.setjAr(jAr);
-            writeToFile(task, jAr);
+            writer.write(task.getTarget(), jAr.toString(4));
             i++;
-        }
-        System.out.println("wrote new task: " + task.getName());
-
-    }
-
-    private void writeToFile(ConvTask task, JSONArray jAr) throws DALException {
-        try {
-            // Gets the destination to write to 
-            File file = task.getTarget();
-            file.createNewFile();
-            try (FileWriter fileWriter = new FileWriter(file)) {
-                fileWriter.write(jAr.toString(4));
-                fileWriter.flush();
-                fileWriter.close();
-            }
-        } catch (IOException ex) {
-            throw new DALException("Error writing JSON File", ex);
         }
     }
 

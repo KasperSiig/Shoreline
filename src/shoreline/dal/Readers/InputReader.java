@@ -3,23 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package shoreline.dal.ConvStrats;
+package shoreline.dal.Readers;
 
-import org.json.JSONArray;
-import shoreline.be.ConvTask;
+import java.io.File;
 import shoreline.exceptions.DALException;
 
 /**
  *
  * @author Kasper Siig
+ * @param <T>
  */
-public interface ConvStrategy {
+public interface InputReader<T> {
     /**
+     * Reads from a given file
      * 
-     * 
-     * @param task
+     * @param file
      * @return
      * @throws DALException 
      */
-    public JSONArray addCallableToTask(ConvTask task) throws DALException;
+    public T read(File file) throws DALException;
 }
