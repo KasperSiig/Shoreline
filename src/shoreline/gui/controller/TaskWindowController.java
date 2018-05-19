@@ -48,6 +48,7 @@ public class TaskWindowController implements Initializable, IController {
     private List<TaskView> selectedPenTasks;
     private List<TaskView> selectedFinTasks;
     private List<TaskView> selectedCanTasks;
+    private int idCount;
 
     private ContextMenu cMenu;
 
@@ -165,23 +166,39 @@ public class TaskWindowController implements Initializable, IController {
         this.model = model;
         tabPane.tabMinWidthProperty().bind(tabPane.widthProperty().divide(tabPane.getTabs().size()).subtract(20));
 
-        setTasks(selectedPenTasks, model.getTaskModel().getPendingTasks(), vBoxPen);
-        setTasks(selectedFinTasks, model.getTaskModel().getFinishedTasks(), vBoxFin);
-        setTasks(selectedCanTasks, model.getTaskModel().getCancelledTasks(), vBoxCan);
+        createTasksListener(selectedPenTasks, model.getTaskModel().getPendingTasks(), vBoxPen);
+        createTasksListener(selectedFinTasks, model.getTaskModel().getFinishedTasks(), vBoxFin);
+        createTasksListener(selectedCanTasks, model.getTaskModel().getCancelledTasks(), vBoxCan);
+    
 
         genRightClickStart();
         genRightClickDel();
         genRightClickPause();
         genRightClickStop();
 
+        idCount = 0;
     }
 
-    private void setTasks(List<TaskView> selectedTasks, ObservableList<ConvTask> tasks, VBox vBox) {
-        setTaskView(selectedTasks, tasks, vBox);
-        tasks.addListener((ListChangeListener.Change<? extends ConvTask> c) -> {
+    private void createTasksListener(List<TaskView> selectedTasks, ObservableList<TaskView> tasks, VBox vBox) {
+        tasks.addListener((ListChangeListener.Change<? extends TaskView> c) -> {
             while (c.next()) {
-                if (c.wasAdded() || c.wasPermutated() || c.wasRemoved() || c.wasReplaced() || c.wasUpdated()) {
-                    setTaskView(selectedTasks, tasks, vBox);
+                if (c.wasAdded()) {
+                    TaskView taskView = c.getAddedSubList().get(0);
+                    if (taskView.getLblTaskName().isEmpty()) {
+                        setTaskView(selectedTasks, taskView, vBox);
+                    } else {
+                        vBox.getChildren().add(c.getAddedSubList().get(0));
+                    }
+                }
+            }
+        });
+    }
+    
+    private void moveTasksListener(ObservableList<TaskView> tasks, VBox vBox) {
+        tasks.addListener((ListChangeListener.Change<? extends TaskView> c) -> {
+            while (c.next()) {
+                if (c.wasAdded()) {
+                    vBox.getChildren().add(c.getAddedSubList().get(0));
                 }
             }
         });
@@ -192,22 +209,16 @@ public class TaskWindowController implements Initializable, IController {
      *
      * @param model
      */
-    private void setTaskView(List<TaskView> selectedTasks, ObservableList<ConvTask> tasks, VBox vBox) {
-        int i = 0;
-        vBox.getChildren().clear();
-        selectedTasks.clear();
-        for (ConvTask convTask : tasks) {
-            TaskView taskView = makeTaskView(selectedTasks, vBox, convTask);
-            taskView.setId(String.valueOf(i));
-            vBox.getChildren().add(taskView);
-            i++;
-        }
+    private void setTaskView(List<TaskView> selectedTasks, TaskView task, VBox vBox) {
+        TaskView taskView = makeTaskView(selectedTasks, vBox, task);
+        taskView.setId(String.valueOf(idCount));
+        idCount++;
+        vBox.getChildren().add(taskView);
     }
 
-    private TaskView makeTaskView(List<TaskView> selectedTasks, VBox vBox, ConvTask convTask) {
-        TaskView taskView = new TaskView(convTask);
+    private TaskView makeTaskView(List<TaskView> selectedTasks, VBox vBox, TaskView taskView) {
         taskView.postInit(model);
-        Tooltip tt = new Tooltip(convTask.getTarget().toString());
+        Tooltip tt = new Tooltip(taskView.getTask().getTarget().toString());
         Tooltip.install(taskView, tt);
         taskView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -255,7 +266,7 @@ public class TaskWindowController implements Initializable, IController {
 
                     if (event.getClickCount() % 2 == 0) {
                         try {
-                            String temp = convTask.getTarget().getParentFile().getPath();
+                            String temp = taskView.getTask().getTarget().getParentFile().getPath();
                             temp = temp.replaceAll("\\\\", "/");
                             Desktop.getDesktop().browse(new URI(temp));
                         } catch (URISyntaxException | IOException ex) {

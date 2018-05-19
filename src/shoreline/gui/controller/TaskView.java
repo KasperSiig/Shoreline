@@ -7,6 +7,8 @@ package shoreline.gui.controller;
 
 import com.jfoenix.controls.JFXSpinner;
 import java.io.IOException;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -57,17 +59,16 @@ public class TaskView extends BorderPane implements IController {
     }
 
     private void setInfo(ConvTask task) {
-        this.task = task;
-        lblStatus.setText(task.getStatus().getValue());
+        lblStatus.textProperty().bind(task.getStatus());
         task.getStatus().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-            if (newValue.equals(ConvTask.Status.Running.getValue())) {
+            if (task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
                 JFXSpinner spin = new JFXSpinner();
                 vBox.getChildren().set(0, spin);
             } else {
                 vBox.getChildren().set(0, lblStatus);
-                lblStatus.setText(task.getStatus().getValue());
             }
         });
+
         pathName(vBox.getWidth());
         lblTaskName.setText(task.getName());
 
@@ -93,4 +94,10 @@ public class TaskView extends BorderPane implements IController {
     public ConvTask getTask() {
         return task;
     }
+
+    public String getLblTaskName() {
+        return lblTaskName.getText();
+    }
+    
+    
 }

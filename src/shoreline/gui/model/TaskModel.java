@@ -1,6 +1,5 @@
 package shoreline.gui.model;
 
-import java.util.ArrayList;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -10,6 +9,7 @@ import shoreline.be.ConvTask;
 import shoreline.bll.LogicManager;
 import shoreline.exceptions.BLLException;
 import shoreline.exceptions.GUIException;
+import shoreline.gui.controller.TaskView;
 
 /**
  *
@@ -20,9 +20,9 @@ public class TaskModel {
     private BorderPane borderPane;
     private LogicManager logic;
 
-    private ObservableList<ConvTask> pendingTasks;
-    private ObservableList<ConvTask> finishedTasks;
-    private ObservableList<ConvTask> cancelledTasks;
+    private ObservableList<TaskView> pendingTasks;
+    private ObservableList<TaskView> finishedTasks;
+    private ObservableList<TaskView> cancelledTasks;
 
     public TaskModel(BorderPane borderPane, LogicManager logic) {
         this.borderPane = borderPane;
@@ -39,7 +39,7 @@ public class TaskModel {
      *
      * @param task Task to be added
      */
-    public void addToPendingTasks(ConvTask task) {
+    public void addToPendingTasks(TaskView task) {
         pendingTasks.add(task);
     }
 
@@ -48,17 +48,14 @@ public class TaskModel {
      *
      * @param task Task to be removed
      */
-    public void removeFromPendingTasks(ConvTask task) {
+    public void removeFromPendingTasks(TaskView task) {
         pendingTasks.remove(task);
     }
 
     /**
      * @return ObersableList containing ConvTasks
      */
-//    public ObservableList<ConvTask> getTaskList() {
-//        return pendingTasks;
-//    }
-    public ObservableList<ConvTask> getPendingTasks() {
+    public ObservableList<TaskView> getPendingTasks() {
         return pendingTasks;
     }
 
@@ -67,10 +64,8 @@ public class TaskModel {
      *
      * @param task Task to be added
      */
-    public void addToFinishedTasks(ConvTask task) {
+    public void addToFinishedTasks(TaskView task) {
         finishedTasks.add(task);
-        System.out.println("shoreline.gui.model.MainModel.addToFinishedTasks()");
-        System.out.println("finishedTasks = " + finishedTasks.size() + "\n");
     }
 
     /**
@@ -78,14 +73,14 @@ public class TaskModel {
      *
      * @param task Task to be removed
      */
-    public void removeFromFinishedTasks(ConvTask task) {
+    public void removeFromFinishedTasks(TaskView task) {
         finishedTasks.remove(task);
     }
 
     /**
      * @return ObersableList containing ConvTasks
      */
-    public ObservableList<ConvTask> getFinishedTasks() {
+    public ObservableList<TaskView> getFinishedTasks() {
         return finishedTasks;
     }
 
@@ -94,7 +89,7 @@ public class TaskModel {
      *
      * @param task Task to be added
      */
-    public void addToCancelledTasks(ConvTask task) {
+    public void addToCancelledTasks(TaskView task) {
         cancelledTasks.add(task);
     }
 
@@ -103,14 +98,14 @@ public class TaskModel {
      *
      * @param task Task to be removed
      */
-    public void removeFromCancelledTasks(ConvTask task) {
+    public void removeFromCancelledTasks(TaskView task) {
         cancelledTasks.remove(task);
     }
 
     /**
      * @return ObersableList containing ConvTasks
      */
-    public ObservableList<ConvTask> getCancelledTasks() {
+    public ObservableList<TaskView> getCancelledTasks() {
         return cancelledTasks;
     }
 
@@ -127,25 +122,25 @@ public class TaskModel {
      * Adds listeners to the ObservableLists
      */
     private void addListeners() {
-        pendingTasks.addListener((ListChangeListener.Change<? extends ConvTask> c) -> {
+        pendingTasks.addListener((ListChangeListener.Change<? extends TaskView> c) -> {
             while (c.next()) {
                 if (c.wasAdded()) {
-                    ConvTask task = pendingTasks.get(pendingTasks.size() - 1);
-                    task.getStatus().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+                    TaskView taskView = pendingTasks.get(pendingTasks.size() - 1);
+                    taskView.getTask().getStatus().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
                         if (newValue.equals(ConvTask.Status.Running.getValue())) {
-                            if (finishedTasks.contains(task)) {
-                                removeFromFinishedTasks(task);
-                                addToPendingTasks(task);
-                            } else if (cancelledTasks.contains(task)) {
-                                removeFromCancelledTasks(task);
-                                addToPendingTasks(task);
+                            if (finishedTasks.contains(taskView)) {
+                                removeFromFinishedTasks(taskView);
+                                addToPendingTasks(taskView);
+                            } else if (cancelledTasks.contains(taskView)) {
+                                removeFromCancelledTasks(taskView);
+                                addToPendingTasks(taskView);
                             }
-                        } else if (newValue.equals(ConvTask.Status.Finished.getValue()) && !finishedTasks.contains(task)) {
-                            removeFromPendingTasks(task);
-                            addToFinishedTasks(task);
-                        } else if (newValue.equals(ConvTask.Status.Cancelled.getValue()) && !cancelledTasks.contains(task)) {
-                            removeFromPendingTasks(task);
-                            addToCancelledTasks(task);
+                        } else if (newValue.equals(ConvTask.Status.Finished.getValue()) && !finishedTasks.contains(taskView)) {
+                            removeFromPendingTasks(taskView);
+                            addToFinishedTasks(taskView);
+                        } else if (newValue.equals(ConvTask.Status.Cancelled.getValue()) && !cancelledTasks.contains(taskView)) {
+                            removeFromPendingTasks(taskView);
+                            addToCancelledTasks(taskView);
                         }
                     });
                 }

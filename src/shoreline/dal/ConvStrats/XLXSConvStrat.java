@@ -12,6 +12,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -50,9 +52,7 @@ public class XLXSConvStrat implements ConvStrategy {
             HashMap<String, Integer> cellIndexMap = impl.getTitles(task.getSource());
             task.getConfig().setCellIndexMap(cellIndexMap);
             try {
-                Platform.runLater(() -> {
-                    task.setStatus(ConvTask.Status.Running);
-                });
+
                 fin = new FileInputStream(task.getSource());
                 wb = new XSSFWorkbook(fin);
                 // XLSX files can contain more sheets, this gets the one at index 0
@@ -109,7 +109,7 @@ public class XLXSConvStrat implements ConvStrategy {
         int i = task.getProgress() + 1;
         while (sheet1.getRow(i) != null
                 && task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
-            
+
             JSONObject jOb = createJSONObject(i, task);
             jAr.put(jOb);
             task.setProgress(i);
@@ -117,6 +117,8 @@ public class XLXSConvStrat implements ConvStrategy {
             writeToFile(task, jAr);
             i++;
         }
+        System.out.println("wrote new task: " + task.getName());
+
     }
 
     private void writeToFile(ConvTask task, JSONArray jAr) throws DALException {
@@ -137,7 +139,7 @@ public class XLXSConvStrat implements ConvStrategy {
     private JSONObject createJSONObject(int i, ConvTask task) {
         JSONObject jOb = new JSONObject();
         JSONObject planning = new JSONObject();
-        
+
         task.getConfig().getHeaderMap().forEach((key, value) -> {
             switch (key) {
                 case "earliestStartDate":

@@ -45,7 +45,7 @@ public class ConvTask {
     private Future future;
     private int progress;
     private JSONArray jAr;
-    private StringProperty status = new SimpleStringProperty("Ready");
+    private volatile StringProperty status = new SimpleStringProperty("Ready");
     private Config config;
 
     public ConvTask(String name, File source, File target, Config config) {

@@ -170,8 +170,8 @@ public class SingleTaskWindowController implements Initializable, IController {
             HashMap cellTemp = new HashMap(cellIndexMap);
 
             ConvTask task = new ConvTask(name, importFile, tempFile, config);
-
-            model.getTaskModel().addToPendingTasks(task);
+            
+            model.getTaskModel().addToPendingTasks(new TaskView(task));
             model.getTaskModel().addCallable(task);
         } catch (GUIException ex) {
             Window.openExceptionWindow(ex.getMessage());

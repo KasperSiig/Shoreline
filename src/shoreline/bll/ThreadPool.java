@@ -33,6 +33,8 @@ public class ThreadPool {
     private List<ConvTask> pending;
     private List<ConvTask> running;
     private List<ConvTask> finished;
+    private Long cur;
+    private boolean started = false;
 
     /**
      * Instantiates the 3 ArrayLists, and sets the ThreadPool to the max number
@@ -42,7 +44,7 @@ public class ThreadPool {
         pending = new ArrayList();
         running = new ArrayList();
         finished = new ArrayList();
-        this.threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        this.threadPool = Executors.newFixedThreadPool(4);
     }
 
     /**
@@ -70,6 +72,9 @@ public class ThreadPool {
      */
     public void addToFinished(ConvTask task) {
         finished.add(task);
+        if (running.isEmpty()) {
+            System.out.println(System.currentTimeMillis() - cur);
+        }
     }
 
     /**
@@ -88,13 +93,15 @@ public class ThreadPool {
      * @param task
      */
     public void startTask(ConvTask task) {
-        task.setStatus(ConvTask.Status.Pending);
+        if (!started) {
+            cur = System.currentTimeMillis();
+        }
+        task.setStatus(ConvTask.Status.Running);
         Future future = threadPool.submit(task.getCallable());
         task.setFuture(future);
         pending.remove(task);
         running.add(task);
-        System.out.println("shoreline.bll.ThreadPool.startTask()");
-        System.out.println("task = " + task + "\n");
+        started = true;
     }
 
     /**
