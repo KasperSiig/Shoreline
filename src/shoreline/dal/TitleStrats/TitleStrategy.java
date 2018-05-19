@@ -1,7 +1,7 @@
 package shoreline.dal.TitleStrats;
 
 import java.io.File;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import shoreline.exceptions.DALException;
 
 /**
@@ -16,5 +16,5 @@ public interface TitleStrategy {
      * @return LinkedHashMap of titles with indexes
      * @throws DALException 
      */
-    public LinkedHashMap<String, Integer> getTitles(File file) throws DALException;
+    public HashMap<String, Integer> getTitles(File file) throws DALException;
 }

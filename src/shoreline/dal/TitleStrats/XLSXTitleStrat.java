@@ -31,7 +31,7 @@ public class XLSXTitleStrat implements TitleStrategy {
     }
 
     @Override
-    public LinkedHashMap<String, Integer> getTitles(File file) throws DALException {
+    public HashMap<String, Integer> getTitles(File file) throws DALException {
         try {
             fin = new FileInputStream(file);
             wb = new XSSFWorkbook(fin);

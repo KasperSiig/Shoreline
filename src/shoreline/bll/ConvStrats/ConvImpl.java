@@ -8,6 +8,7 @@ package shoreline.bll.ConvStrats;
 import shoreline.be.ConvTask;
 import shoreline.dal.Readers.InputReader;
 import shoreline.dal.Writers.OutputWriter;
+import shoreline.exceptions.BLLException;
 import shoreline.exceptions.DALException;
 
 /**
@@ -35,10 +36,9 @@ public class ConvImpl {
     /**
      * Runs the addCallable method, with the strategy chosen in constructor
      * 
-     * @param task The ConvTask to be converted
-     * @throws DALException 
+     * @param task The ConvTask to be converted 
      */
-    public void addCallable(ConvTask task) throws DALException {
+    public void addCallable(ConvTask task) {
         strategy.addCallable(task, reader, writer);
     }
     

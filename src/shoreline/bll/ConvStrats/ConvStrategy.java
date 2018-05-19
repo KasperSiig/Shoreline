@@ -18,8 +18,8 @@ public interface ConvStrategy {
      * 
      * 
      * @param task
-     * @param inputReader
-     * @param outputWriter 
+     * @param reader
+     * @param writer 
      */
-    public void addCallable(ConvTask task, InputReader inputReader, OutputWriter outputWriter);
+    public void addCallable(ConvTask task, InputReader reader, OutputWriter writer);
 }

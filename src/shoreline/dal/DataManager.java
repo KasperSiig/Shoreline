@@ -13,10 +13,13 @@ import shoreline.be.Config;
 import shoreline.be.ConvTask;
 import shoreline.be.LogItem;
 import shoreline.be.User;
+import shoreline.bll.ConvStrats.CSVConvStrat;
 import shoreline.bll.ConvStrats.ConvImpl;
 import shoreline.bll.ConvStrats.XLXSConvStrat;
 import shoreline.dal.ObjectPool.ConnectionPool;
+import shoreline.dal.Readers.CSVReader;
 import shoreline.dal.Readers.XLSXReader;
+import shoreline.dal.TitleStrats.CSVTitleStrat;
 import shoreline.dal.TitleStrats.TitleImpl;
 import shoreline.dal.TitleStrats.XLSXTitleStrat;
 import shoreline.dal.Writers.StringToFile;
@@ -116,6 +119,9 @@ public class DataManager {
             case "xlsx":
                 impl = new TitleImpl(new XLSXTitleStrat());
                 break;
+            case "csv":
+                impl = new TitleImpl(new CSVTitleStrat());
+                break;
             default:
                 throw new IllegalArgumentException();
         }
@@ -133,6 +139,9 @@ public class DataManager {
         switch (extension) {
             case "xlsx":
                 impl = new ConvImpl(new XLXSConvStrat(), new XLSXReader(), new StringToFile());
+                break;
+            case "csv":
+                impl = new ConvImpl(new CSVConvStrat(), new CSVReader(), new StringToFile());
                 break;
             default:
                 throw new IllegalArgumentException();
