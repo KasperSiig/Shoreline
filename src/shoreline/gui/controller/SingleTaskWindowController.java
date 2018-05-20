@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.gui.controller;
 
 import com.jfoenix.controls.JFXComboBox;
@@ -16,8 +11,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -31,7 +24,6 @@ import shoreline.exceptions.GUIException;
 import shoreline.gui.model.ModelManager;
 import shoreline.statics.Window;
 import shoreline.be.Config;
-import shoreline.exceptions.BLLException;
 import shoreline.statics.Styling;
 
 /**
@@ -42,7 +34,6 @@ import shoreline.statics.Styling;
 public class SingleTaskWindowController implements Initializable, IController {
 
     private ModelManager model;
-    private HashMap cellIndexMap;
     private File importFile;
     private File targetFile;
 
@@ -84,6 +75,10 @@ public class SingleTaskWindowController implements Initializable, IController {
         }
     }
 
+    /**
+     * Opens FileChooser for choosing input file, sets the importFile variable,
+     * and refreshes the view accordingly
+     */
     private void chooseFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
@@ -97,7 +92,7 @@ public class SingleTaskWindowController implements Initializable, IController {
         if (tempFile != null) {
             importFile = tempFile;
             txtImportPath.setText(importFile.getAbsolutePath());
-            
+
             List temp = new ArrayList();
             try {
                 for (Config config : model.getConfigModel().getAllConfigs()) {
@@ -115,10 +110,10 @@ public class SingleTaskWindowController implements Initializable, IController {
                 comboConfig.getItems().clear();
                 comboConfig.getItems().addAll(temp);
                 String name = importFile.getName();
-                txtFileName.setText(name.substring(0,name.lastIndexOf('.')));
+                txtFileName.setText(name.substring(0, name.lastIndexOf('.')));
             } catch (GUIException ex) {
                 Window.openExceptionWindow(ex.getMessage());
-            } 
+            }
         }
     }
 
@@ -132,6 +127,9 @@ public class SingleTaskWindowController implements Initializable, IController {
         chooseTarget();
     }
 
+    /**
+     * Opens DirectoryChooser for choosing the target folder.
+     */
     private void chooseTarget() {
         DirectoryChooser dirChooser = new DirectoryChooser();
         File file = dirChooser.showDialog(null);
@@ -147,6 +145,9 @@ public class SingleTaskWindowController implements Initializable, IController {
         createTask();
     }
 
+    /**
+     * Creates a new ConvTask from inputs, given from user.
+     */
     private void createTask() {
 
         if (checkRequired()) {
@@ -164,13 +165,8 @@ public class SingleTaskWindowController implements Initializable, IController {
         File tempFile = new File(targetFile + "\\" + date + " - " + name + ".json");
 
         try {
-            cellIndexMap = model.getConfigModel().getTitles(importFile);
-            config.setCellIndexMap(cellIndexMap);
-            HashMap temp = new HashMap(config.getHeaderMap());
-            HashMap cellTemp = new HashMap(cellIndexMap);
-
             ConvTask task = new ConvTask(name, importFile, tempFile, config);
-            
+
             model.getTaskModel().addToPendingTasks(new TaskView(task));
             model.getTaskModel().addCallable(task);
         } catch (GUIException ex) {
@@ -212,7 +208,7 @@ public class SingleTaskWindowController implements Initializable, IController {
             Styling.clearRedOutline(comboConfig);
         }
         if (hasFailed) {
-            Window.openSnack("Could not create task. Missing input is highlighted.", bPane, "red", 4000);
+            Window.openSnack("Could not create task. Missing input.", bPane, "red", 4000);
         }
         return hasFailed;
     }
