@@ -7,10 +7,10 @@ package shoreline.bll;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import org.omg.SendingContext.RunTime;
 import shoreline.be.ConvTask;
 
 /**
@@ -97,6 +97,7 @@ public class ThreadPool {
         if (!started) {
             cur = System.currentTimeMillis();
         }
+        System.out.println("started task");
         task.setStatus(ConvTask.Status.Running);
         Future future = threadPool.submit(task.getCallable());
         task.setFuture(future);
@@ -145,5 +146,10 @@ public class ThreadPool {
     public void closeThreadPool() {
         threadPool.shutdown();
     }
+    
+    public void addCallableToPool(Callable callable) {
+        threadPool.submit(callable);
+    }
+    
 
 }

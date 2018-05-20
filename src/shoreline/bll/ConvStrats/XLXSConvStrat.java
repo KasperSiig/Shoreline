@@ -60,6 +60,7 @@ public class XLXSConvStrat implements ConvStrategy {
                 threadPool.addToFinished(task);
                 task.setProgress(0);
             }
+            System.out.println("callable done");
             return null;
         };
 

@@ -38,6 +38,7 @@ public class CSVConvStrat implements ConvStrategy {
         // Creates the Callable, that's going to be added to the ConvTask
         Callable call = (Callable) () -> {
             sheet = (CSVSheet) reader.read(task.getSource());
+            System.out.println("after reader");
             // XLSX files can contain more sheets, this gets the one at index 0
             System.out.println(sheet);
             writeJson(task, writer);

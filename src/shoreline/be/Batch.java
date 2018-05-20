@@ -94,6 +94,12 @@ public class Batch {
     public void addToPending(ConvTask task) {
         pendingTasks.add(task);
     }
+
+    @Override
+    public String toString() {
+        return "Batch{" + "sourceDir=" + sourceDir + ", targetDir=" + targetDir + ", name=" + name + ", pendingTasks=" + pendingTasks + ", watchService=" + watchService + '}';
+    }
+
     
     
     

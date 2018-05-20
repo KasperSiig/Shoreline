@@ -33,10 +33,15 @@ public class XLSXTitleStrat implements TitleStrategy {
     @Override
     public HashMap<String, Integer> getTitles(File file) throws DALException {
         try {
+            System.out.println("starting titles");
+            System.out.println(file.getAbsolutePath());
             fin = new FileInputStream(file);
+            System.out.println("after fileIn");
             wb = new XSSFWorkbook(fin);
+            System.out.println("after workbook");
             sheet1 = wb.getSheetAt(0);
-
+            System.out.println("after sheet");
+            
             int i = 0;
             while (sheet1.getRow(0).getCell(i) != null) {
                 String tempName = sheet1.getRow(0).getCell(i).getStringCellValue();

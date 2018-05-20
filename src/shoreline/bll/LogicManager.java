@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
@@ -210,6 +211,7 @@ public class LogicManager {
         batches.add(batch);
         createTasks(batch);
         runBatch(batch);
+        checkBatch(batch);
     }
 
     public void removeFromBatchList(Batch batch) {
@@ -222,8 +224,6 @@ public class LogicManager {
             addCallableToTask(task);
             startTask(task);
             batch.removeFromPending(task);
-            System.out.println("shoreline.bll.LogicManager.runBatch()");
-            System.out.println("task = " + task + "\n");
         }
     }
 
@@ -264,50 +264,60 @@ public class LogicManager {
 
     private void setBatchTimer() {
 
-        Timer batchTimer = new Timer();
-        batchTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                batches.forEach((batch) -> {
-                    checkBatch(batch);
-                });
-            }
-        }, 0, 500);
+//        Timer batchTimer = new Timer();
+//        batchTimer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                List<Batch> temp = new ArrayList(batches);
+//                temp.forEach((batch) -> {
+//                    System.out.println("setBatchTimer()");
+//                    System.out.println(batch);
+//                    checkBatch(batch);
+//                });
+//            }
+//        }, 0, 10);
     }
 
     private void checkBatch(Batch batch) {
-        try {
-            Path dir = Paths.get(batch.getSourceDir().getAbsolutePath());
-            dir.register(batch.getWatchService(), ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
-            WatchKey key = null;
-            try {
-                key = batch.getWatchService().take();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(LogicManager.class.getName()).log(Level.INFO, "message");
-            }
-            for (WatchEvent<?> event : key.pollEvents()) {
-                WatchEvent.Kind<?> kind = event.kind();
+        ThreadPool tp = ThreadPool.getInstance();
+        Callable callable = (Callable) () -> {
+            while (true) {
+                try {
+                    Path dir = Paths.get(batch.getSourceDir().getAbsolutePath());
+                    dir.register(batch.getWatchService(), ENTRY_CREATE, ENTRY_MODIFY);
+                    WatchKey key = null;
+                    try {
+                        key = batch.getWatchService().take();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(LogicManager.class.getName()).log(Level.INFO, "message");
+                    }
+                    for (WatchEvent<?> event : key.pollEvents()) {
+                        WatchEvent.Kind<?> kind = event.kind();
 
-                @SuppressWarnings("unchecked")
-                WatchEvent<Path> ev = (WatchEvent<Path>) event;
-                Path fileName = ev.context();
+                        @SuppressWarnings("unchecked")
+                        WatchEvent<Path> ev = (WatchEvent<Path>) event;
+                        Path fileName = ev.context();
 
-                System.out.println(kind.name() + ": " + fileName);
-                String extension = batch.getConfig().getExtension();
-                if (fileName.toString().endsWith(extension)) {
-                    System.out.println("shoreline.bll.LogicManager.checkBatch()");
-                    System.out.println("extension = " + extension + "\n");
-                    addToBatchPending(batch, new File(batch.getSourceDir() + "\\" + fileName.toString()));
-                    runBatch(batch);
+                        System.out.println(kind.name() + ": " + fileName);
+                        String extension = batch.getConfig().getExtension();
+                        if (fileName.toString().endsWith(extension)) {
+                            System.out.println("shoreline.bll.LogicManager.checkBatch()");
+                            System.out.println("extension = " + extension + "\n");
+                            addToBatchPending(batch, new File(batch.getSourceDir() + "\\" + fileName.toString()));
+                            runBatch(batch);
+                        }
+
+                    }
+                    key.reset();
+                } catch (IOException ex) {
+                    Logger.getLogger(LogicManager.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (BLLException ex) {
+                    Logger.getLogger(LogicManager.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
             }
-            key.reset();
-        } catch (IOException ex) {
-            Logger.getLogger(LogicManager.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (BLLException ex) {
-            Logger.getLogger(LogicManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        };
+        tp.addCallableToPool(callable);
+
     }
 
 }
