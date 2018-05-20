@@ -56,14 +56,11 @@ public class CSVConvStrat implements ConvStrategy {
     }
 
     private void writeJson(ConvTask task, OutputWriter writer) throws DALException {
-        JSONArray jAr = task.getjAr();
         writer.write(task.getTarget(), "[");
         for (int i = task.getProgress(); i < sheet.getSize(); i++) {
             if (task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
                 JSONObject jOb = createJSONObject(i, task);
-                jAr.put(jOb);
                 task.setProgress(i + 1);
-                task.setjAr(jAr);
                 String seperator = ",";
                 if (i == sheet.getSize() - 1) {
                     seperator = "\n";

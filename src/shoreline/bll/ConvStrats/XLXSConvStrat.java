@@ -90,21 +90,22 @@ public class XLXSConvStrat implements ConvStrategy {
      * @throws DALException
      */
     private void writeJson(ConvTask task, OutputWriter writer) throws DALException {
-
-        JSONArray jAr = task.getjAr();
-
         // Is being used to keep track of what row to pull data from
+        writer.write(task.getTarget(), "[");
         int i = task.getProgress() + 1;
         while (sheet1.getRow(i) != null
                 && task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
 
             JSONObject jOb = createJSONObject(i, task);
-            jAr.put(jOb);
             task.setProgress(i);
-            task.setjAr(jAr);
-            writer.write(task.getTarget(), jAr.toString(4));
+            String seperator = ",";
+                if (i == sheet1.getLastRowNum()) {
+                    seperator = "\n";
+                }
+            writer.write(task.getTarget(), "\n" + jOb.toString() + seperator);
             i++;
         }
+        writer.write(task.getTarget(), "]");
     }
 
     private JSONObject createJSONObject(int i, ConvTask task) {
