@@ -92,12 +92,8 @@ public class TaskWindowController implements Initializable, IController {
     private void startTask(List<TaskView> selectedTasks) {
         List<TaskView> temp = new ArrayList(selectedTasks);
         temp.forEach((taskView) -> {
-            System.out.println(taskView);
-            if (!model.getTaskModel().getPendingTasks().contains(taskView)) {
-                model.getTaskModel().addToPendingTasks(taskView);
-            }
             model.getTaskModel().start(taskView.getTask());
-            toggleSelected(taskView, selectedTasks, false);
+            toggleSelected(taskView, false);
             try {
                 model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has started task " + taskView.getTask().getName());
             } catch (GUIException ex) {
@@ -134,7 +130,7 @@ public class TaskWindowController implements Initializable, IController {
                     } else {
                         tp.pauseTask(task.getTask());
                     }
-                    toggleSelected(task, tasks, false);
+                    toggleSelected(task, false);
                     try {
                         model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has stopped task " + task.getTask().getName());
                     } catch (GUIException ex) {
@@ -154,7 +150,7 @@ public class TaskWindowController implements Initializable, IController {
             } else {
                 tp.pauseTask(task);
             }
-            toggleSelected(tasks.get(0), tasks, false);
+            toggleSelected(tasks.get(0), false);
 //            tasks.clear();
             try {
                 model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has paused task " + task.getName());
@@ -188,11 +184,14 @@ public class TaskWindowController implements Initializable, IController {
             while (c.next()) {
                 if (c.wasAdded()) {
                     TaskView taskView = c.getAddedSubList().get(0);
+                    taskView.setCurList(selectedTasks);
                     if (taskView.getLblTaskName().isEmpty()) {
-                        setTaskView(selectedTasks, taskView, vBox);
+                        setTaskView(taskView, vBox);
                     } else {
+//                        vBox.getChildren().add(c.getAddedSubList().get(0));
                         vBox.getChildren().add(c.getAddedSubList().get(0));
                     }
+                    
                 }
             }
         });
@@ -213,14 +212,14 @@ public class TaskWindowController implements Initializable, IController {
      *
      * @param model
      */
-    private void setTaskView(List<TaskView> selectedTasks, TaskView task, VBox vBox) {
-        TaskView taskView = makeTaskView(selectedTasks, vBox, task);
+    private void setTaskView(TaskView task, VBox vBox) {
+        TaskView taskView = makeTaskView(vBox, task);
         taskView.setId(String.valueOf(idCount));
         idCount++;
         vBox.getChildren().add(taskView);
     }
 
-    private TaskView makeTaskView(List<TaskView> selectedTasks, VBox vBox, TaskView taskView) {
+    private TaskView makeTaskView(VBox vBox, TaskView taskView) {
         taskView.postInit(model);
         Tooltip tt = new Tooltip(taskView.getTask().getTarget().toString());
         Tooltip.install(taskView, tt);
@@ -234,10 +233,10 @@ public class TaskWindowController implements Initializable, IController {
             private void handleSecondaryButoon(MouseEvent event) {
                 if (event.getButton().equals(MouseButton.SECONDARY)) {
                     cMenu.show(vBoxPen, event.getScreenX(), event.getScreenY());
-                    if (!selectedTasks.contains(taskView)) {
-                        toggleSelected(taskView, selectedTasks, false);
+                    if (!taskView.getCurList().contains(taskView)) {
+                        toggleSelected(taskView, false);
                     } else {
-                        toggleSelected(taskView, selectedTasks, true);
+                        toggleSelected(taskView,  true);
                     }
                 }
             }
@@ -246,17 +245,17 @@ public class TaskWindowController implements Initializable, IController {
                 if (event.getButton().equals(MouseButton.PRIMARY)) {
                     cMenu.hide();
                     if (event.isControlDown()) {
-                        if (selectedTasks.contains(taskView)) {
-                            toggleSelected(taskView, selectedTasks, false);
+                        if (taskView.getCurList().contains(taskView)) {
+                            toggleSelected(taskView, false);
                         } else {
-                            toggleSelected(taskView, selectedTasks, true);
+                            toggleSelected(taskView, true);
                         }
                     } else if (event.isShiftDown()) {
-                        toggleSelected(taskView, selectedTasks, true);
-                        int id1 = Integer.valueOf(selectedTasks.get(0).getId());
+                        toggleSelected(taskView, true);
+                        int id1 = Integer.valueOf(taskView.getCurList().get(0).getId());
 
-                        if (selectedTasks.size() > 1) {
-                            int id2 = Integer.valueOf(selectedTasks.get(selectedTasks.size() - 1).getId());
+                        if (taskView.getCurList().size() > 1) {
+                            int id2 = Integer.valueOf(taskView.getCurList().get(taskView.getCurList().size() - 1).getId());
 
                             //TO BE DONE!
                             List<TaskView> allTasks = new ArrayList();
@@ -267,20 +266,20 @@ public class TaskWindowController implements Initializable, IController {
 
                             for (TaskView task : allTasks) {
                                 if (Integer.valueOf(task.getId()) > id1 && Integer.valueOf(task.getId()) < id2) {
-                                    toggleSelected(task, selectedTasks, true);
+                                    toggleSelected(task, true);
                                 } else if (Integer.valueOf(task.getId()) < id1 && Integer.valueOf(task.getId()) > id2) {
-                                    toggleSelected(task, selectedTasks, true);
+                                    toggleSelected(task, true);
                                 }
                             }
                         }
 
                     } else {
-                        if (selectedTasks.contains(taskView)) {
-                            clearSelected(selectedTasks);
+                        if (taskView.getCurList().contains(taskView)) {
+                            clearSelected(taskView.getCurList());
 
                         } else {
-                            clearSelected(selectedTasks);
-                            toggleSelected(taskView, selectedTasks, true);
+                            clearSelected(taskView.getCurList());
+                            toggleSelected(taskView, true);
                         }
                     }
 
@@ -300,14 +299,14 @@ public class TaskWindowController implements Initializable, IController {
         return taskView;
     }
 
-    private void toggleSelected(TaskView taskView, List<TaskView> selectedTasks, boolean selected) {
+    private void toggleSelected(TaskView taskView, boolean selected) {
         if (selected) {
-            selectedTasks.add(taskView);
+            taskView.getCurList().add(taskView);
             taskView.setStyle("-fx-border-color: #2e6da4; -fx-border-radius: 4px; "
                     + "-fx-background-color: derive(#337ab7, 80%); "
                     + "-fx-background-radius: 4px; -fx-text-fill: white");
         } else {
-            selectedTasks.remove(taskView);
+            taskView.getCurList().remove(taskView);
             taskView.setStyle("-fx-border-color: transparent");
         }
     }
@@ -315,7 +314,7 @@ public class TaskWindowController implements Initializable, IController {
     private void clearSelected(List<TaskView> taskViews) {
         List<TaskView> temp = new ArrayList(taskViews);
         temp.forEach((taskView) -> {
-            toggleSelected(taskView, taskViews, false);
+            toggleSelected(taskView, false);
         });
     }
 

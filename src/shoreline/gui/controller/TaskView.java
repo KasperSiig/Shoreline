@@ -7,9 +7,7 @@ package shoreline.gui.controller;
 
 import com.jfoenix.controls.JFXSpinner;
 import java.io.IOException;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
+import java.util.List;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,6 +35,8 @@ public class TaskView extends BorderPane implements IController {
     private Label lblStatus;
     @FXML
     private VBox vBox;
+    
+    private List<TaskView> curList;
 
     public TaskView(ConvTask task) {
         try {
@@ -97,6 +97,14 @@ public class TaskView extends BorderPane implements IController {
 
     public String getLblTaskName() {
         return lblTaskName.getText();
+    }
+
+    public List<TaskView> getCurList() {
+        return curList;
+    }
+
+    public void setCurList(List<TaskView> curList) {
+        this.curList = curList;
     }
     
     
