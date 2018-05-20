@@ -13,20 +13,19 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.json.JSONArray;
 
-
 /**
  *
  * @author Kasper Siig
  */
 public class ConvTask {
-    
+
     public enum Status {
         Pending("Pending"),
         Running("Running"),
         Paused("Paused"),
         Finished("Finished"),
         Cancelled("Cancelled");
-        
+
         private String status;
 
         Status(String status) {
@@ -37,7 +36,7 @@ public class ConvTask {
             return status;
         }
     }
-    
+
     private String name;
     private File source, target;
     private boolean isRunning;
@@ -67,6 +66,10 @@ public class ConvTask {
 
     public File getTarget() {
         return target;
+    }
+
+    public void setTarget(File target) {
+        this.target = target;
     }
 
     public Callable<ConvTask> getCallable() {
@@ -104,7 +107,7 @@ public class ConvTask {
     public StringProperty getStatus() {
         return status;
     }
-    
+
     public void setStatus(Status status) {
         this.status.setValue(status.getValue());
     }
@@ -117,6 +120,5 @@ public class ConvTask {
     public String toString() {
         return "ConvTask{" + "name=" + name + ", source=" + source + ", target=" + target + ", isRunning=" + isRunning + ", Callable=" + Callable + ", future=" + future + ", progress=" + progress + ", jAr=" + jAr + ", status=" + status + ", config=" + config + '}';
     }
-    
-    
+
 }

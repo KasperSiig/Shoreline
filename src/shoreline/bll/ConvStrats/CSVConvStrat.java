@@ -5,6 +5,7 @@
  */
 package shoreline.bll.ConvStrats;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
@@ -45,8 +46,8 @@ public class CSVConvStrat implements ConvStrategy {
                     task.setStatus(ConvTask.Status.Finished);
                 });
                 threadPool.removeFromRunning(task);
-
                 threadPool.addToFinished(task);
+                task.setProgress(0);
             }
             return null;
         };
@@ -56,19 +57,20 @@ public class CSVConvStrat implements ConvStrategy {
     }
 
     private void writeJson(ConvTask task, OutputWriter writer) throws DALException {
+        task.setTarget(checkForExistingFile(task.getTarget()));
         writer.write(task.getTarget(), "[");
         for (int i = task.getProgress(); i < sheet.getSize(); i++) {
             if (task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
                 JSONObject jOb = createJSONObject(i, task);
                 task.setProgress(i + 1);
-                String seperator = ",";
-                if (i == sheet.getSize() - 1) {
+                String seperator = "\n,";
+                if (i == 0) {
                     seperator = "\n";
                 }
-                writer.write(task.getTarget(), "\n" + jOb.toString() + seperator);
+                writer.write(task.getTarget(), seperator + jOb.toString());
             }
         }
-        writer.write(task.getTarget(), "]");
+        writer.write(task.getTarget(), "n]");
     }
 
     private JSONObject createJSONObject(int i, ConvTask task) {
@@ -94,6 +96,27 @@ public class CSVConvStrat implements ConvStrategy {
         jOb.put("createdBy", "SAP");
         jOb.put("planning", planning);
         return jOb;
+    }
+    
+    private File checkForExistingFile(File file) {
+        int i = 1;
+        File tempFile = file;
+        while (true) {
+            System.out.println(tempFile.getAbsolutePath());
+            if (!tempFile.isFile()) {
+                return tempFile;
+            }
+            String extension = "";
+
+            int count = file.getAbsolutePath().lastIndexOf('.');
+            if (i > 0) {
+                extension = file.getAbsolutePath().substring(count);
+            }
+            String append = " (" + i + ")";
+            String withoutExt = file.getAbsolutePath().substring(0, file.getAbsolutePath().length() - extension.length());
+            tempFile = new File(withoutExt + append + extension);
+            i++;
+        }
     }
 
 }

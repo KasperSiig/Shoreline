@@ -92,6 +92,10 @@ public class TaskWindowController implements Initializable, IController {
     private void startTask(List<TaskView> selectedTasks) {
         List<TaskView> temp = new ArrayList(selectedTasks);
         temp.forEach((taskView) -> {
+            System.out.println(taskView);
+            if (!model.getTaskModel().getPendingTasks().contains(taskView)) {
+                model.getTaskModel().addToPendingTasks(taskView);
+            }
             model.getTaskModel().start(taskView.getTask());
             toggleSelected(taskView, selectedTasks, false);
             try {
@@ -130,13 +134,14 @@ public class TaskWindowController implements Initializable, IController {
                     } else {
                         tp.pauseTask(task.getTask());
                     }
+                    toggleSelected(task, tasks, false);
                     try {
                         model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has stopped task " + task.getTask().getName());
                     } catch (GUIException ex) {
                         Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
                     }
                 });
-                tasks.clear();
+//                tasks.clear();
             } else {
                 return true;
             }
@@ -149,7 +154,8 @@ public class TaskWindowController implements Initializable, IController {
             } else {
                 tp.pauseTask(task);
             }
-            tasks.clear();
+            toggleSelected(tasks.get(0), tasks, false);
+//            tasks.clear();
             try {
                 model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has paused task " + task.getName());
             } catch (GUIException ex) {
@@ -414,6 +420,7 @@ public class TaskWindowController implements Initializable, IController {
 
     @FXML
     private void handleStartAgainFin(ActionEvent event) {
+        System.out.println(selectedFinTasks);
         startTask(selectedFinTasks);
     }
 

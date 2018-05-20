@@ -57,8 +57,8 @@ public class XLXSConvStrat implements ConvStrategy {
                     task.setStatus(ConvTask.Status.Finished);
                 });
                 threadPool.removeFromRunning(task);
-                
                 threadPool.addToFinished(task);
+                task.setProgress(0);
             }
             return null;
         };
@@ -90,22 +90,23 @@ public class XLXSConvStrat implements ConvStrategy {
      * @throws DALException
      */
     private void writeJson(ConvTask task, OutputWriter writer) throws DALException {
-        // Is being used to keep track of what row to pull data from
+        task.setTarget(checkForExistingFile(task.getTarget()));
         writer.write(task.getTarget(), "[");
+        // Is being used to keep track of what row to pull data from
         int i = task.getProgress() + 1;
         while (sheet1.getRow(i) != null
                 && task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
 
             JSONObject jOb = createJSONObject(i, task);
             task.setProgress(i);
-            String seperator = ",";
-                if (i == sheet1.getLastRowNum()) {
-                    seperator = "\n";
-                }
-            writer.write(task.getTarget(), "\n" + jOb.toString() + seperator);
+            String seperator = "\n,";
+            if (i == 1) {
+                seperator = "\n";
+            }
+            writer.write(task.getTarget(), seperator + jOb.toString());
             i++;
         }
-        writer.write(task.getTarget(), "]");
+        writer.write(task.getTarget(), "\n]");
     }
 
     private JSONObject createJSONObject(int i, ConvTask task) {
@@ -133,13 +134,24 @@ public class XLXSConvStrat implements ConvStrategy {
         return jOb;
     }
 
-    private Date getDate(String sheetdata) throws DALException {
-        try {
-            DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-            Date date = format.parse(sheetdata);
-            return date;
-        } catch (ParseException ex) {
-            throw new DALException("Parsing date went wrong.", ex);
+    private File checkForExistingFile(File file) {
+        int i = 1;
+        File tempFile = file;
+        while (true) {
+            System.out.println(tempFile.getAbsolutePath());
+            if (!tempFile.isFile()) {
+                return tempFile;
+            }
+            String extension = "";
+
+            int count = file.getAbsolutePath().lastIndexOf('.');
+            if (i > 0) {
+                extension = file.getAbsolutePath().substring(count);
+            }
+            String append = " (" + i + ")";
+            String withoutExt = file.getAbsolutePath().substring(0, file.getAbsolutePath().length() - extension.length());
+            tempFile = new File(withoutExt + append + extension);
+            i++;
         }
     }
 
