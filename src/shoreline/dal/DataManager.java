@@ -13,11 +13,16 @@ import shoreline.be.Config;
 import shoreline.be.ConvTask;
 import shoreline.be.LogItem;
 import shoreline.be.User;
-import shoreline.dal.ConvStrats.ConvImpl;
-import shoreline.dal.ConvStrats.XLXSConvStrat;
+import shoreline.bll.ConvStrats.CSVConvStrat;
+import shoreline.bll.ConvStrats.ConvImpl;
+import shoreline.bll.ConvStrats.XLXSConvStrat;
 import shoreline.dal.ObjectPool.ConnectionPool;
+import shoreline.dal.Readers.CSVReader;
+import shoreline.dal.Readers.XLSXReader;
+import shoreline.dal.TitleStrats.CSVTitleStrat;
 import shoreline.dal.TitleStrats.TitleImpl;
 import shoreline.dal.TitleStrats.XLSXTitleStrat;
+import shoreline.dal.Writers.StringToFile;
 import shoreline.exceptions.DALException;
 
 /**
@@ -31,7 +36,7 @@ public class DataManager {
     private UserDAO userDAO;
     private LoggingDAO logDAO;
     private ConfigDAO cfgDAO;
-    
+
     public DataManager() throws DALException {
         this.conPool = new ConnectionPool();
         this.pDAO = new PropertiesDAO();
@@ -61,43 +66,42 @@ public class DataManager {
         conPool.checkIn(con);
         return id;
     }
-    
+
     public User getUser(String userName, String password) throws DALException {
         Connection con = conPool.checkOut();
         User user = userDAO.getUser(userName, password, con);
         conPool.checkIn(con);
         return user;
     }
-    
-    
-    public void addLog(int userId, Alert.AlertType type, String message) throws DALException{
+
+    public void addLog(int userId, Alert.AlertType type, String message) throws DALException {
         Connection con = conPool.checkOut();
         logDAO.addLog(userId, type, message, con);
         conPool.checkIn(con);
     }
-    
-    public List<LogItem> getAllLogs() throws DALException{
+
+    public List<LogItem> getAllLogs() throws DALException {
         Connection con = conPool.checkOut();
         List<LogItem> items = logDAO.getAllLogs(con);
         conPool.checkIn(con);
         return items;
     }
-    
+
     public List<LogItem> getNewLogs() throws DALException {
         Connection con = conPool.checkOut();
         List<LogItem> items = logDAO.getNewLogs(con);
         conPool.checkIn(con);
         return items;
     }
-    
-    public List<Config> getAllConfigs() throws DALException{
+
+    public List<Config> getAllConfigs() throws DALException {
         Connection con = conPool.checkOut();
         List<Config> configs = cfgDAO.getAllConfigs(con);
         conPool.checkIn(con);
         return configs;
     }
-    
-    public void saveConfig(String name, String extension, HashMap map) throws DALException{
+
+    public void saveConfig(String name, String extension, HashMap map) throws DALException {
         Connection con = conPool.checkOut();
         cfgDAO.saveConfig(name, extension, map, con);
         conPool.checkIn(con);
@@ -115,6 +119,9 @@ public class DataManager {
             case "xlsx":
                 impl = new TitleImpl(new XLSXTitleStrat());
                 break;
+            case "csv":
+                impl = new TitleImpl(new CSVTitleStrat());
+                break;
             default:
                 throw new IllegalArgumentException();
         }
@@ -131,13 +138,15 @@ public class DataManager {
         ConvImpl impl;
         switch (extension) {
             case "xlsx":
-                impl = new ConvImpl(new XLXSConvStrat());
-                impl.addCallableToTask(task);
+                impl = new ConvImpl(new XLXSConvStrat(), new XLSXReader(), new StringToFile());
+                break;
+            case "csv":
+                impl = new ConvImpl(new CSVConvStrat(), new CSVReader(), new StringToFile());
                 break;
             default:
                 throw new IllegalArgumentException();
         }
-        
+        impl.addCallable(task);
     }
 
 }
