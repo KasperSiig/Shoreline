@@ -21,13 +21,13 @@ import shoreline.exceptions.DALException;
  */
 public class XLSXTitleStrat implements TitleStrategy {
 
-    private LinkedHashMap<String, Integer> cellIndexMap;
+    private HashMap<String, Integer> cellIndexMap;
     private FileInputStream fin;
     private XSSFWorkbook wb;
     private XSSFSheet sheet1;
 
     public XLSXTitleStrat() {
-        this.cellIndexMap = new LinkedHashMap();
+        this.cellIndexMap = new HashMap();
     }
 
     @Override

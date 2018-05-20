@@ -7,6 +7,7 @@ package shoreline.dal.TitleStrats;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
@@ -19,7 +20,7 @@ import shoreline.exceptions.DALException;
  * @author Kasper Siig
  */
 public class CSVTitleStrat implements TitleStrategy {
-    private static final String DELIMITER = ",";
+    private static final String DELIMITER = ";";
     
     @Override
     public HashMap<String, Integer> getTitles(File file) throws DALException {
@@ -28,9 +29,21 @@ public class CSVTitleStrat implements TitleStrategy {
             Scanner scanner = new Scanner(file);
             String firstLine = scanner.nextLine();
             String[] headers = splitLine(firstLine, DELIMITER);
-            headerMap = new HashMap();
+            headerMap= new HashMap();
             for (int i = 0; i < headers.length; i++) {
-                headerMap.put(headers[i], i);
+                String tempName = headers[i];
+                if (!headerMap.containsKey(tempName)) {
+                    headerMap.put(tempName, i);
+                } else {
+                    int j = 0;
+                    boolean done = false;
+                    while (!done) {
+                        if (!headerMap.containsKey(tempName + ++j)) {
+                            headerMap.put(tempName + j, i);
+                            done = true;
+                        }
+                    }
+                }
             }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(CSVTitleStrat.class.getName()).log(Level.SEVERE, null, ex);

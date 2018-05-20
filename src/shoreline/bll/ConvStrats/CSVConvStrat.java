@@ -8,6 +8,8 @@ package shoreline.bll.ConvStrats;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,16 +29,16 @@ import shoreline.exceptions.DALException;
 public class CSVConvStrat implements ConvStrategy {
 
     private CSVSheet sheet;
-    
+
     @Override
     public void addCallable(ConvTask task, InputReader reader, OutputWriter writer) {
         ThreadPool threadPool = ThreadPool.getInstance();
         threadPool.addToPending(task);
-
         // Creates the Callable, that's going to be added to the ConvTask
         Callable call = (Callable) () -> {
             sheet = (CSVSheet) reader.read(task.getSource());
             // XLSX files can contain more sheets, this gets the one at index 0
+            System.out.println(sheet);
             writeJson(task, writer);
             if (task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
                 Platform.runLater(() -> {
@@ -55,17 +57,21 @@ public class CSVConvStrat implements ConvStrategy {
 
     private void writeJson(ConvTask task, OutputWriter writer) throws DALException {
         JSONArray jAr = task.getjAr();
-
-        // Is being used to keep track of what row to pull data from
-        for (int i = task.getProgress() + 1; i < sheet.getSize(); i++) {
-            System.out.println("shoreline.bll.ConvStrats.CSVConvStrat.writeJson()");
-            System.out.println("i = " + i + "\n");
-            JSONObject jOb = createJSONObject(i, task);
-            jAr.put(jOb);
-            task.setProgress(i);
-            task.setjAr(jAr);
-            writer.write(task.getTarget(), jAr.toString(4));
+        writer.write(task.getTarget(), "[");
+        for (int i = task.getProgress(); i < sheet.getSize(); i++) {
+            if (task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
+                JSONObject jOb = createJSONObject(i, task);
+                jAr.put(jOb);
+                task.setProgress(i + 1);
+                task.setjAr(jAr);
+                String seperator = ",";
+                if (i == sheet.getSize() - 1) {
+                    seperator = "\n";
+                }
+                writer.write(task.getTarget(), "\n" + jOb.toString() + seperator);
+            }
         }
+        writer.write(task.getTarget(), "]");
     }
 
     private JSONObject createJSONObject(int i, ConvTask task) {

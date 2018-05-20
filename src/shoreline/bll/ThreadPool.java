@@ -74,6 +74,7 @@ public class ThreadPool {
         finished.add(task);
         if (running.isEmpty()) {
             System.out.println(System.currentTimeMillis() - cur);
+            started = false;
         }
     }
 

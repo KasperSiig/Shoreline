@@ -25,9 +25,9 @@ import shoreline.exceptions.DALException;
  * @author Kasper Siig
  */
 public class CSVReader implements InputReader<CSVSheet> {
-    
-    private static final String DELIMITER = ",";
-    
+
+    private static final String DELIMITER = ";";
+
     @Override
     public CSVSheet read(File file) throws DALException {
         CSVSheet sheet = null;
@@ -66,10 +66,10 @@ public class CSVReader implements InputReader<CSVSheet> {
     private String[] splitLine(String firstLine, String delimiter) {
         String[] line = firstLine.split(delimiter + "(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
         for (int i = 0; i < line.length; i++) {
-                if (line[i].contains("\"")) {
-                    line[i] = line[i].substring(1, line[i].length() - 1);
-                }
+            if (line[i].contains("\"")) {
+                line[i] = line[i].substring(1, line[i].length() - 1);
             }
+        }
         return line;
     }
 

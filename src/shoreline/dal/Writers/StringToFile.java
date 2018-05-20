@@ -8,25 +8,26 @@ package shoreline.dal.Writers;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import shoreline.exceptions.DALException;
 
 /**
  * Writes a given string, to a given output
- * 
+ *
  * @author Kasper Siig
  */
 public class StringToFile implements OutputWriter<String> {
-    
+
     @Override
     public void write(File file, String output) throws DALException {
 
-        try (FileWriter fileWriter = new FileWriter(file)) {
-            file.createNewFile();
+        try (FileWriter fileWriter = new FileWriter(file, true)) {
+            if (!file.isFile()) {
+                file.createNewFile();
+            }
             fileWriter.write(output);
             fileWriter.flush();
             fileWriter.close();
+
         } catch (IOException ex) {
             throw new DALException("There was a problem writing output to file", ex);
         }
