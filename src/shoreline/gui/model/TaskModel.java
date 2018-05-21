@@ -115,7 +115,7 @@ public class TaskModel {
      * @param task Task to be converted
      */
     public void start(ConvTask task) {
-        logic.startTask(task);
+        logic.getTaskLogic().startTask(task);
     }
 
     /**
@@ -156,7 +156,7 @@ public class TaskModel {
      */
     public void addCallable(ConvTask task) throws GUIException {
         try {
-            logic.addCallableToTask(task);
+            logic.getTaskLogic().addCallableToTask(task);
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }

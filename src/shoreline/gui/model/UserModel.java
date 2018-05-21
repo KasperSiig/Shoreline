@@ -55,7 +55,7 @@ public class UserModel {
      */
     public int create(String username, String password, String firstname, String lastname) throws GUIException {
         try {
-            return logic.createUser(username, hashString(password), firstname, lastname);
+            return logic.getUserLogic().createUser(username, hashString(password), firstname, lastname);
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
@@ -71,7 +71,7 @@ public class UserModel {
      */
     public User getUserOnLogin(String username, String password) throws GUIException {
         try {
-            return logic.getUser(username, hashString(password).toString());
+            return logic.getUserLogic().getUser(username, hashString(password).toString());
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
@@ -87,7 +87,7 @@ public class UserModel {
      */
     public boolean validatePassword(String username, String pass) throws GUIException {
         try {
-            return logic.validateLogin(username, hashString(pass));
+            return logic.getUserLogic().validateLogin(username, hashString(pass));
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
