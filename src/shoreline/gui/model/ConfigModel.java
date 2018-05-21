@@ -69,7 +69,7 @@ public class ConfigModel {
      */
     public List<Config> getAllConfigs() throws GUIException {
         try {
-            return logic.getAllConfigs();
+            return logic.getConfigLogic().getAllConfigs();
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
@@ -84,7 +84,7 @@ public class ConfigModel {
      * @throws BLLException
      */
     public void save(String name, String extension, HashMap map) throws BLLException {
-        logic.saveConfig(name, extension, map);
+        logic.getConfigLogic().saveConfig(name, extension, map);
     }
     
     /**
@@ -94,7 +94,7 @@ public class ConfigModel {
      */
     public HashMap<String, Integer> getTitles(File file) throws GUIException {
         try {
-            return logic.getTitles(file);
+            return logic.getTaskLogic().getTitles(file);
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }

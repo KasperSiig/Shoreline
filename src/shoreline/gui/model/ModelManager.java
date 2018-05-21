@@ -59,36 +59,6 @@ public class ModelManager {
     }
 
     /**
-     * Writes a property to the config.properties file
-     *
-     * @param key Key for the property
-     * @param string Value for the property
-     * @throws GUIException
-     */
-    public void setProperty(String key, String string) throws GUIException {
-        try {
-            logic.setProperty(key, string);
-        } catch (BLLException ex) {
-            throw new GUIException(ex);
-        }
-    }
-
-    /**
-     * Gets a property from the config.properties
-     *
-     * @param key Key from the property
-     * @return Property based on key given
-     * @throws GUIException
-     */
-    public String getProperty(String key) throws GUIException {
-        try {
-            return logic.getProperty(key);
-        } catch (BLLException ex) {
-            throw new GUIException(ex);
-        }
-    }
-
-    /**
      * @return Instance of TaskModel
      */
     public TaskModel getTaskModel() {

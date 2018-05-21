@@ -49,7 +49,7 @@ public class LogModel {
      */
     public void add(int userId, Alert.AlertType type, String message) throws GUIException {
         try {
-            logic.addLog(userId, type, message);
+            logic.getLogLogic().addLog(userId, type, message);
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
@@ -64,7 +64,7 @@ public class LogModel {
     public List<LogItem> getAll() throws GUIException {
         try {
             startTimer();
-            return logic.getAllLogs();
+            return logic.getLogLogic().getAllLogs();
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
@@ -76,7 +76,7 @@ public class LogModel {
      * @throws GUIException
      */
     private void startTimer() throws GUIException {
-        logic.logTimer();
+        logic.getLogLogic().logTimer();
         addLogListener();
     }
 
@@ -85,7 +85,7 @@ public class LogModel {
      * @throws BLLException
      */
     public List<LogItem> getNew() throws BLLException {
-        return logic.getNewLogs();
+        return logic.getLogLogic().getNewLogs();
     }
 
     /**
@@ -94,17 +94,17 @@ public class LogModel {
      * @return
      */
     public Timer getTimer() {
-        return logic.getTimer();
+        return logic.getLogLogic().getTimer();
     }
 
     /**
      * Adds listener to Log List in BLL
      */
     private void addLogListener() {
-        logic.getTempLog().addListener((ListChangeListener.Change<? extends LogItem> c) -> {
+        logic.getLogLogic().getTempLog().addListener((ListChangeListener.Change<? extends LogItem> c) -> {
             c.next();
             if (c.wasAdded() || c.wasRemoved() || c.wasReplaced() || c.wasUpdated()) {
-                logList.addAll(logic.getTempLog());
+                logList.addAll(logic.getLogLogic().getTempLog());
             }
         });
     }

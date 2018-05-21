@@ -29,7 +29,7 @@ public class BatchModel {
     public BatchModel(BorderPane borderPane, LogicManager logic) {
         this.logic = logic;
 
-        this.batches = FXCollections.observableArrayList(logic.getBatches());
+        this.batches = FXCollections.observableArrayList(logic.getBatchLogic().getBatches());
 
     }
 
@@ -40,7 +40,7 @@ public class BatchModel {
     public void addToBatches(Batch batch) throws GUIException {
         try {
             batches.add(batch);
-            logic.addToBatchList(batch);
+            logic.getBatchLogic().addToBatchList(batch);
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
