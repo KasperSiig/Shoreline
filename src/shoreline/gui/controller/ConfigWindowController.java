@@ -61,6 +61,7 @@ public class ConfigWindowController implements Initializable, IController {
     private ObservableList<String> mappingList = FXCollections.observableArrayList();
     private HashMap<String, String> JSONmap = new HashMap<>();
     private HashMap<String, String> secondPriMap = new HashMap<>();
+    private HashMap<String, String> defaultValuesMap = new HashMap<>();
 
     private ModelManager model;
     private String targetPath;
@@ -107,6 +108,7 @@ public class ConfigWindowController implements Initializable, IController {
     @Override
     public void postInit(ModelManager model) {
         this.model = model;
+        defaultValuesMap = new HashMap<>();
         lvInput.setItems(inputList);
         lvTemplate.setItems(model.getConfigModel().getTemplateList());
         generateRightclickMenu();
@@ -510,7 +512,7 @@ public class ConfigWindowController implements Initializable, IController {
         }
         Config config = new Config(name, extension, cellMap);
         config.setSecondPriority(secondPriMap);
-        config.setDefaultValues(JSONmap);
+        config.setDefaultValues(defaultValuesMap);
         try {
             model.getConfigModel().addToConfigList(config);
         } catch (GUIException ex) {
@@ -587,7 +589,7 @@ public class ConfigWindowController implements Initializable, IController {
             stage.setScene(scene);
             stage.setAlwaysOnTop(true);
             stage.showAndWait();
-            dvwc.getDefaultValues();
+            defaultValuesMap = dvwc.getDefaultValues();
         } catch (IOException ex) {
             Window.openExceptionWindow("Couldn't open confirmation window.");
         }
