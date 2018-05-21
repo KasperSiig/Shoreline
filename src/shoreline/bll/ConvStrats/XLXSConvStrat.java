@@ -11,6 +11,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -96,8 +98,10 @@ public class XLXSConvStrat implements ConvStrategy {
      * @throws DALException
      */
     private void writeJson(ConvTask task, OutputWriter writer) throws DALException {
-        task.setTarget(checkForExistingFile(task.getTarget()));
-        writer.write(task.getTarget(), "[");
+        if (task.getProgress() == 0) {
+            task.setTarget(checkForExistingFile(task.getTarget()));
+            writer.write(task.getTarget(), "[");
+        }
         // Is being used to keep track of what row to pull data from
         int i = task.getProgress() + 1;
         while (sheet1.getRow(i) != null
@@ -112,7 +116,9 @@ public class XLXSConvStrat implements ConvStrategy {
             writer.write(task.getTarget(), seperator + jOb.toString());
             i++;
         }
-        writer.write(task.getTarget(), "\n]");
+        if (i == sheet1.getLastRowNum() + 1) {
+            writer.write(task.getTarget(), "\n]");
+        }
     }
 
     private JSONObject createJSONObject(int i, ConvTask task) {
