@@ -59,8 +59,13 @@ public class XLXSConvStrat implements ConvStrategy {
                 threadPool.removeFromRunning(task);
                 threadPool.addToFinished(task);
                 task.setProgress(0);
+                if (task.getBatch() != null) {
+                    Platform.runLater(() -> {
+                        task.getBatch().decrement(task.getBatch().getFilesPending());
+                        task.getBatch().increment(task.getBatch().getFilesHandled());
+                    });
+                }
             }
-            System.out.println("callable done");
             return null;
         };
 
@@ -139,7 +144,6 @@ public class XLXSConvStrat implements ConvStrategy {
         int i = 1;
         File tempFile = file;
         while (true) {
-            System.out.println(tempFile.getAbsolutePath());
             if (!tempFile.isFile()) {
                 return tempFile;
             }

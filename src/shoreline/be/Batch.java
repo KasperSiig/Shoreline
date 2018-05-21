@@ -22,7 +22,6 @@ public class Batch {
     private Config config;
     private IntegerProperty filesPending, filesHandled, filesFailed;
     private List<ConvTask> pendingTasks;
-    private WatchService watchService;
 
     public Batch(File sourceDir, File targetDir, String name, Config config) throws BEException {
         this.sourceDir = sourceDir;
@@ -34,11 +33,6 @@ public class Batch {
         this.filesHandled = new SimpleIntegerProperty(0);
         this.filesFailed = new SimpleIntegerProperty(0);
         this.pendingTasks = new ArrayList();
-        try {
-            this.watchService = FileSystems.getDefault().newWatchService();
-        } catch (IOException ex) {
-            throw new BEException("Something went wrong, creating a WatcherService", ex);
-        }
     }
 
     private File getFailedDir(File targetDir) {
@@ -83,21 +77,26 @@ public class Batch {
         return pendingTasks;
     }
 
-    public WatchService getWatchService() {
-        return watchService;
-    }
-
     public void removeFromPending(ConvTask task) {
         pendingTasks.remove(task);
     }
     
     public void addToPending(ConvTask task) {
         pendingTasks.add(task);
+        increment(filesPending);
     }
-
+    
+    public void increment(IntegerProperty prop) {
+        prop.setValue(prop.intValue() + 1);
+    }
+    
+    public void decrement(IntegerProperty prop) {
+        prop.setValue(prop.intValue() - 1);
+    }
+    
     @Override
     public String toString() {
-        return "Batch{" + "sourceDir=" + sourceDir + ", targetDir=" + targetDir + ", name=" + name + ", pendingTasks=" + pendingTasks + ", watchService=" + watchService + '}';
+        return "Batch{" + "sourceDir=" + sourceDir + ", targetDir=" + targetDir + ", name=" + name + ", pendingTasks=" + pendingTasks + '}';
     }
 
     

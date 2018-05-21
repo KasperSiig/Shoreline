@@ -39,8 +39,8 @@ public class BatchModel {
     
     public void addToBatches(Batch batch) throws GUIException {
         try {
-            logic.addToBatchList(batch);
             batches.add(batch);
+            logic.addToBatchList(batch);
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }

@@ -46,6 +46,7 @@ public class ConvTask {
     private JSONArray jAr;
     private volatile StringProperty status = new SimpleStringProperty("Ready");
     private Config config;
+    private Batch batch = null;
 
     public ConvTask(String name, File source, File target, Config config) {
         this.jAr = new JSONArray();
@@ -114,6 +115,14 @@ public class ConvTask {
 
     public Config getConfig() {
         return config;
+    }
+
+    public Batch getBatch() {
+        return batch;
+    }
+
+    public void setBatch(Batch batch) {
+        this.batch = batch;
     }
 
     @Override
