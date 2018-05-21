@@ -16,7 +16,8 @@ public class Config {
     private String name, extension;
     private HashMap<String, String> headerMap;
     private HashMap<String, Integer> cellIndexMap;
-    private HashMap<String, String> SecondPriority;
+    private HashMap<String, String> secondPriority;
+    private HashMap<String, String> defaultValues;
     
 
     public Config(String name, String extension, HashMap<String, String> headerMap) {
@@ -64,10 +65,20 @@ public class Config {
     }
 
     public HashMap<String, String> getSecondPriority() {
-        return SecondPriority;
+        return secondPriority;
     }
 
     public void setSecondPriority(HashMap<String, String> SecondPriority) {
-        this.SecondPriority = SecondPriority;
+        this.secondPriority = SecondPriority;
     }
+
+    public HashMap<String, String> getDefaultValues() {
+        return defaultValues;
+    }
+
+    public void setDefaultValues(HashMap<String, String> defaultValues) {
+        this.defaultValues = defaultValues;
+    }
+    
+    
 }

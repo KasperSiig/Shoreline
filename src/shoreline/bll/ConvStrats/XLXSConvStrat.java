@@ -1,24 +1,15 @@
 package shoreline.bll.ConvStrats;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.json.JSONArray;
 import org.json.JSONObject;
+import shoreline.be.Config;
 import shoreline.be.ConvTask;
 import shoreline.bll.ThreadPool;
 import shoreline.dal.Readers.InputReader;
@@ -83,11 +74,29 @@ public class XLXSConvStrat implements ConvStrategy {
      * @param task Needed to get a cellIndexMap
      * @return Data from XLSX file
      */
-    private String getSheetdata(String indexString, int rowNumber, ConvTask task) {
-        if (indexString.equals("")) {
-            return "";
+    private String getSheetdata(String header, int rowNumber, ConvTask task) {
+        
+        
+        Config config = task.getConfig();
+        HashMap<String, Integer> cellIndexMap = config.getCellIndexMap();
+        HashMap<String, String> headers = config.getHeaderMap();
+        HashMap<String, String> second = config.getSecondPriority();
+        HashMap<String, String> defaultValues = config.getDefaultValues();
+        String rtn;
+        rtn = getCellData(rowNumber, cellIndexMap, headers.get(header));
+        if (!rtn.equals("")) {
+            return rtn;
         }
-        return sheet1.getRow(rowNumber).getCell(task.getConfig().getCellIndexMap().get(indexString), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).toString();
+        rtn = getCellData(rowNumber, cellIndexMap, second.get(header));
+        if (!rtn.equals("")) {
+            return rtn;
+        }
+        rtn = defaultValues.get(header);
+        return rtn;
+    }
+
+    private String getCellData(int rowNumber, HashMap<String, Integer> map, String indexString) {
+        return sheet1.getRow(rowNumber).getCell(map.get(indexString), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).toString();
     }
 
     /**
@@ -130,13 +139,13 @@ public class XLXSConvStrat implements ConvStrategy {
                 case "earliestStartDate":
                 case "latestFinishDate":
                 case "latestStartDate":
-                    planning.put(key, getSheetdata(value, i, task));
+                    planning.put(key, getSheetdata(key, i, task));
                     break;
                 case "estimatedTime":
-                    planning.put("estimatedTime", getSheetdata(value, i, task));
+                    planning.put("estimatedTime", getSheetdata(key, i, task));
                     break;
                 default:
-                    jOb.put(key, getSheetdata(value, i, task));
+                    jOb.put(key, getSheetdata(key, i, task));
                     break;
             }
         });
