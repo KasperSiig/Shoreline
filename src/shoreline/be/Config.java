@@ -64,6 +64,7 @@ public class Config {
     }
 
     public HashMap<String, String> getSecondPriority() {
+        System.out.println(secondPriority);
         return secondPriority;
     }
 
@@ -72,6 +73,7 @@ public class Config {
     }
 
     public HashMap<String, String> getDefaultValues() {
+        System.out.println(defaultValues);
         return defaultValues;
     }
 
