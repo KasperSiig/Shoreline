@@ -36,7 +36,8 @@ public class Window {
         Confirm("ConfirmationWindow.fxml"),
         SingleTask("SingleTaskWindow.fxml"),
         Batch("BatchWindow.fxml"),
-        BatchTask("BatchTaskWindow.fxml");
+        BatchTask("BatchTaskWindow.fxml"),
+        defaultValue("DefaultValueWindow.fxml");
 
         String view;
 
