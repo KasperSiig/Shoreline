@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -28,6 +26,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
@@ -36,12 +36,12 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import shoreline.Main;
 import shoreline.be.Config;
-import shoreline.bll.ThreadPool;
-import shoreline.exceptions.BLLException;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.ModelManager;
 import shoreline.statics.Styling;
@@ -58,6 +58,7 @@ public class ConfigWindowController implements Initializable, IController {
     private ObservableList<String> inputList = FXCollections.observableArrayList();
     private ObservableList<String> mappingList = FXCollections.observableArrayList();
     private HashMap<String, String> JSONmap = new HashMap<>();
+    private HashMap<String, String> secondPriMap = new HashMap<>();
 
     private ModelManager model;
     private String targetPath;
@@ -83,7 +84,6 @@ public class ConfigWindowController implements Initializable, IController {
     private MenuItem Delete1;
     @FXML
     private JFXButton btnInput;
-    private JFXButton btnTarget;
     @FXML
     private Label lblInfo;
     @FXML
@@ -118,6 +118,21 @@ public class ConfigWindowController implements Initializable, IController {
         }
 
 //        TabPaneDetacher.create().makeTabsDetachable(tabPane);
+        lvMapOverview.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(final ListView<String> list) {
+                return new ListCell<String>() {
+                    {
+                        Text text = new Text();
+                        text.wrappingWidthProperty().bind(list.widthProperty().subtract(15));
+                        text.textProperty().bind(itemProperty());
+
+                        setPrefWidth(0);
+                        setGraphic(text);
+                    }
+                };
+            }
+        });
     }
 
     public Tab makeTab(ModelManager model, Window.View view, String name) throws GUIException {
@@ -262,10 +277,14 @@ public class ConfigWindowController implements Initializable, IController {
             tempList = lvMapOverview.getItems();
 
             tempList.forEach((string) -> {
-                JSONmap.remove(string.split(" -> ")[1]);
+                String split = string.split(" -> ")[1].split("\n")[0];
+                JSONmap.remove(split);
+                secondPriMap.remove(split);
             });
 
             mappingList.removeAll(tempList);
+            System.out.println(secondPriMap);
+            System.out.println(JSONmap);
         }
     }
 
@@ -331,7 +350,7 @@ public class ConfigWindowController implements Initializable, IController {
         if (inputFile != null) {
             for (Config config : model.getConfigModel().getConfigList()) {
                 String extension = "";
-                
+
                 int i = inputFile.getAbsolutePath().lastIndexOf('.');
                 if (i > 0) {
                     extension = inputFile.getAbsolutePath().substring(i + 1);
@@ -339,7 +358,7 @@ public class ConfigWindowController implements Initializable, IController {
                 if (config.getExtension().equals(extension)) {
                     temp.add(config);
                 }
-                
+
             }
         } else {
             try {
@@ -426,7 +445,9 @@ public class ConfigWindowController implements Initializable, IController {
             openConfirmWindow("Are you sure you want to delete all these links?", false);
         }
         tempList.forEach((string) -> {
-            JSONmap.remove(string.split(" -> ")[1]);
+            String split = string.split(" -> ")[1].split("\n")[0];
+            JSONmap.remove(split);
+            secondPriMap.remove(split);
         });
 
         mappingList.removeAll(tempList);
@@ -450,7 +471,8 @@ public class ConfigWindowController implements Initializable, IController {
             return;
         }
 
-        HashMap<String, String> temp = new HashMap<>(JSONmap);
+        HashMap<String, String> tempCellMap = new HashMap<>(JSONmap);
+        HashMap<String, String> tempSecondMap = new HashMap<>(secondPriMap);
         String name = txtFileName.getText();
 
         if (name.isEmpty()) {
@@ -465,7 +487,7 @@ public class ConfigWindowController implements Initializable, IController {
                 }
             }
         }
-        createConfig(inputFile, temp, name);
+        createConfig(inputFile, tempCellMap, name);
         Window.openSnack("Config " + name + " was created", bPane, "blue");
     }
 
@@ -476,14 +498,14 @@ public class ConfigWindowController implements Initializable, IController {
         }
     }
 
-    private void createConfig(File file, HashMap map, String name) {
+    private void createConfig(File file, HashMap cellMap, String name) {
         String extension = "";
 
         int i = file.getAbsolutePath().lastIndexOf('.');
         if (i > 0) {
             extension = file.getAbsolutePath().substring(i + 1);
         }
-        Config config = new Config(name, extension, map);
+        Config config = new Config(name, extension, cellMap);
         try {
             model.getConfigModel().addToConfigList(config);
         } catch (GUIException ex) {
@@ -523,6 +545,25 @@ public class ConfigWindowController implements Initializable, IController {
             Window.openSnack("Could not create task. Missing input is highlighted.", bPane, "red", 4000);
         }
         return hasFailed;
+    }
+
+    @FXML
+    private void handleSecondPri(ActionEvent event) {
+        if (JSONmap.containsKey(lvTemplate.getSelectionModel().getSelectedItem())) {
+            String inputSelection = lvInput.getSelectionModel().getSelectedItem();
+            String templateSelection = lvTemplate.getSelectionModel().getSelectedItem();
+            secondPriMap.put(templateSelection, inputSelection);
+
+            String temp = null;
+            for (String string : mappingList) {
+                if (string.contains(templateSelection)) {
+                    temp = string;
+                }
+            }
+            mappingList.remove(temp);
+            mappingList.add(temp += "\nSecond: " + inputSelection);
+        }
+
     }
 
 }
