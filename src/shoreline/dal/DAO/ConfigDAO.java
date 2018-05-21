@@ -74,15 +74,15 @@ public class ConfigDAO {
      * @param map
      * @throws DALException
      */
-    public void saveConfig(String name, String extension, HashMap map, Connection con) throws DALException {
+    public void saveConfig(Config config, Connection con) throws DALException {
         try {
             int id = 0;
             String sql = "INSERT INTO ConfigTable VALUES(?,?)";
 
             PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-            statement.setString(1, name);
-            statement.setString(2, extension);
+            statement.setString(1, config.getName());
+            statement.setString(2, config.getExtension());
 
             if (statement.executeUpdate() == 1) {
                 ResultSet rs = statement.getGeneratedKeys();
@@ -91,7 +91,7 @@ public class ConfigDAO {
             }
 
             final int fid = id;
-            map.forEach((Object k, Object v) -> {
+            config.getHeaderMap().forEach((Object k, Object v) -> {
                 try {
                     saveMap(con, k, v, fid);
                 } catch (DALException ex) {

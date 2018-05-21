@@ -57,7 +57,7 @@ public class ConfigModel {
     public void addToConfigList(Config config) throws GUIException {
         try {
             this.configList.add(config);
-            save(config.getName(), config.getExtension(), config.getHeaderMap());
+            save(config);
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
@@ -78,13 +78,11 @@ public class ConfigModel {
     /**
      * Save new configuration
      *
-     * @param name Name of configuration
-     * @param extension Extension of the file, fit to config
-     * @param map Mapping of the configuration
+     * @param config Config to be saved
      * @throws BLLException
      */
-    public void save(String name, String extension, HashMap map) throws BLLException {
-        logic.getConfigLogic().saveConfig(name, extension, map);
+    public void save(Config config) throws BLLException {
+        logic.getConfigLogic().saveConfig(config);
     }
     
     /**

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.bll;
 
 import java.util.HashMap;
@@ -13,7 +8,7 @@ import shoreline.exceptions.DALException;
 
 /**
  *
- * @author Kasper Siig
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class ConfigLogic {
     private LogicManager logicManager;
@@ -22,6 +17,10 @@ public class ConfigLogic {
         this.logicManager = logicManager;
     }
     
+    /**
+     * @return List of all configs in database
+     * @throws BLLException 
+     */
     public List<Config> getAllConfigs() throws BLLException {
         try {
             return logicManager.getDataManager().getAllConfigs();
@@ -30,9 +29,17 @@ public class ConfigLogic {
         }
     }
 
-    public void saveConfig(String name, String extension, HashMap map) throws BLLException {
+    /**
+     * Saves config in database
+     * 
+     * @param name Name of config
+     * @param extension Filetype that config is used for
+     * @param map 
+     * @throws BLLException 
+     */
+    public void saveConfig(Config config) throws BLLException {
         try {
-            logicManager.getDataManager().saveConfig(name, extension, map);
+            logicManager.getDataManager().saveConfig(config);
         } catch (DALException ex) {
             throw new BLLException(ex);
         }

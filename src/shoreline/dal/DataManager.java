@@ -101,9 +101,9 @@ public class DataManager {
         return configs;
     }
 
-    public void saveConfig(String name, String extension, HashMap map) throws DALException {
+    public void saveConfig(Config config) throws DALException {
         Connection con = conPool.checkOut();
-        cfgDAO.saveConfig(name, extension, map, con);
+        cfgDAO.saveConfig(config, con);
         conPool.checkIn(con);
     }
 
