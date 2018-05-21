@@ -75,24 +75,31 @@ public class XLXSConvStrat implements ConvStrategy {
      * @return Data from XLSX file
      */
     private String getSheetdata(String header, int rowNumber, ConvTask task) {
-        
-        
+
         Config config = task.getConfig();
         HashMap<String, Integer> cellIndexMap = config.getCellIndexMap();
         HashMap<String, String> headers = config.getHeaderMap();
         HashMap<String, String> second = config.getSecondPriority();
         HashMap<String, String> defaultValues = config.getDefaultValues();
         String rtn;
-        rtn = getCellData(rowNumber, cellIndexMap, headers.get(header));
-        if (!rtn.equals("")) {
-            return rtn;
+        if (headers.get(header) != null) {
+            rtn = getCellData(rowNumber, cellIndexMap, headers.get(header));
+            if (!rtn.isEmpty()) {
+                System.out.println("inside headerRtn");
+                return rtn;
+            }
         }
-        rtn = getCellData(rowNumber, cellIndexMap, second.get(header));
-        if (!rtn.equals("")) {
-            return rtn;
+        if (second.get(header) != null) {
+            rtn = getCellData(rowNumber, cellIndexMap, second.get(header));
+            if (!rtn.isEmpty()) {
+                System.out.println("inside secondRtn");
+                return rtn;
+            }
         }
-        rtn = defaultValues.get(header);
-        return rtn;
+        if (defaultValues.get(header) != null) {
+            return defaultValues.get(header);
+        }
+        return "";
     }
 
     private String getCellData(int rowNumber, HashMap<String, Integer> map, String indexString) {
@@ -115,14 +122,13 @@ public class XLXSConvStrat implements ConvStrategy {
         int i = task.getProgress() + 1;
         while (sheet1.getRow(i) != null
                 && task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
-
             JSONObject jOb = createJSONObject(i, task);
             task.setProgress(i);
             String seperator = "\n,";
             if (i == 1) {
                 seperator = "\n";
             }
-            writer.write(task.getTarget(), seperator + jOb.toString());
+            writer.write(task.getTarget(), seperator + jOb.toString(4));
             i++;
         }
         if (i == sheet1.getLastRowNum() + 1) {

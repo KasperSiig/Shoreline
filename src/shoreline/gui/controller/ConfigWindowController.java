@@ -288,8 +288,6 @@ public class ConfigWindowController implements Initializable, IController {
             });
 
             mappingList.removeAll(tempList);
-            System.out.println(secondPriMap);
-            System.out.println(JSONmap);
         }
     }
 

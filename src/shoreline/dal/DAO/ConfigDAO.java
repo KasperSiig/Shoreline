@@ -58,11 +58,9 @@ public class ConfigDAO {
                     hm.put(rsMap.getString("targetName"), rsMap.getString("sourceName"));
                     if(rsMap.getString("source2Name") != null){
                         sm.put(rsMap.getString("targetName"), rsMap.getString("source2Name"));
-//                        System.out.println(sm);
                     }
                     if(rsMap.getString("defaultName") != null){
-                        sm.put(rsMap.getString("targetName"), rsMap.getString("defaultName"));
-//                        System.out.println(dm);
+                        dm.put(rsMap.getString("targetName"), rsMap.getString("defaultName"));
                     }
                 }
                 Config cfg = new Config(rs.getString("name"), rs.getString("extension"), hm);
