@@ -28,11 +28,13 @@ public class XLSXReader implements InputReader<XSSFWorkbook> {
         try {
             fin = new FileInputStream(file);
             wb = new XSSFWorkbook(fin);
+            fin.close();
         } catch (FileNotFoundException ex) {
             throw new DALException("Could not find file to read from", ex);
         } catch (IOException ex) {
             throw new DALException("Could not read from file", ex);
         }
+        
         return wb;
     }
 

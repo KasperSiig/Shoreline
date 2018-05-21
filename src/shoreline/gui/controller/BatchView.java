@@ -79,7 +79,10 @@ public class BatchView extends BorderPane implements IController {
         });
         batch.getFilesFailed().addListener((observable, oldValue, newValue) -> {
             lblFailed.setText(String.valueOf(newValue));
-        });
+        });  
+//        lblPending.textProperty().bind(batch.getFilesPending().asString());
+//        lblFailed.textProperty().bind(batch.getFilesFailed().asString());
+//        lblHandled.textProperty().bind(batch.getFilesHandled().asString());
     }
 
     private void setWidthListener() {

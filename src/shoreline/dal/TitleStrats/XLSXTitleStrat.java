@@ -11,6 +11,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import shoreline.exceptions.DALException;
@@ -33,14 +35,10 @@ public class XLSXTitleStrat implements TitleStrategy {
     @Override
     public HashMap<String, Integer> getTitles(File file) throws DALException {
         try {
-            System.out.println("starting titles");
-            System.out.println(file.getAbsolutePath());
+            Thread.sleep(1000);
             fin = new FileInputStream(file);
-            System.out.println("after fileIn");
             wb = new XSSFWorkbook(fin);
-            System.out.println("after workbook");
             sheet1 = wb.getSheetAt(0);
-            System.out.println("after sheet");
             
             int i = 0;
             while (sheet1.getRow(0).getCell(i) != null) {
@@ -59,11 +57,13 @@ public class XLSXTitleStrat implements TitleStrategy {
                 }
                 i++;
             }
-
+            fin.close();
             return cellIndexMap;
         } catch (FileNotFoundException ex) {
             throw new DALException(ex);
         } catch (IOException ex) {
+            throw new DALException(ex);
+        } catch (InterruptedException ex) {
             throw new DALException(ex);
         }
     }

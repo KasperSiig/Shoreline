@@ -2,13 +2,13 @@ package shoreline.bll;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,13 +46,13 @@ public class LogicManager {
     private List<Batch> batches;
     private Timer t;
 
+
     private DataManager dm;
 
     public LogicManager() throws BLLException {
         try {
             this.dm = new DataManager();
             batches = new ArrayList();
-            setBatchTimer();
         } catch (DALException ex) {
             throw new BLLException(ex);
         }
@@ -246,6 +246,7 @@ public class LogicManager {
         File tempFile = new File(targetDir + "\\" + date + " - " + name + ".json");
 
         ConvTask task = new ConvTask(name, file, tempFile, batch.getConfig());
+        task.setBatch(batch);
         batch.addToPending(task);
     }
 
@@ -262,32 +263,17 @@ public class LogicManager {
         return returnList;
     }
 
-    private void setBatchTimer() {
-
-//        Timer batchTimer = new Timer();
-//        batchTimer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                List<Batch> temp = new ArrayList(batches);
-//                temp.forEach((batch) -> {
-//                    System.out.println("setBatchTimer()");
-//                    System.out.println(batch);
-//                    checkBatch(batch);
-//                });
-//            }
-//        }, 0, 10);
-    }
-
     private void checkBatch(Batch batch) {
         ThreadPool tp = ThreadPool.getInstance();
         Callable callable = (Callable) () -> {
-            while (true) {
-                try {
-                    Path dir = Paths.get(batch.getSourceDir().getAbsolutePath());
-                    dir.register(batch.getWatchService(), ENTRY_CREATE, ENTRY_MODIFY);
+            try {
+                WatchService watcher = FileSystems.getDefault().newWatchService();
+                Path dir = Paths.get(batch.getSourceDir().getAbsolutePath());
+                dir.register(watcher, ENTRY_CREATE);
+                while (true) {
                     WatchKey key = null;
                     try {
-                        key = batch.getWatchService().take();
+                        key = watcher.take();
                     } catch (InterruptedException ex) {
                         Logger.getLogger(LogicManager.class.getName()).log(Level.INFO, "message");
                     }
@@ -298,23 +284,24 @@ public class LogicManager {
                         WatchEvent<Path> ev = (WatchEvent<Path>) event;
                         Path fileName = ev.context();
 
-                        System.out.println(kind.name() + ": " + fileName);
                         String extension = batch.getConfig().getExtension();
                         if (fileName.toString().endsWith(extension)) {
-                            System.out.println("shoreline.bll.LogicManager.checkBatch()");
-                            System.out.println("extension = " + extension + "\n");
                             addToBatchPending(batch, new File(batch.getSourceDir() + "\\" + fileName.toString()));
                             runBatch(batch);
                         }
 
                     }
-                    key.reset();
-                } catch (IOException ex) {
-                    Logger.getLogger(LogicManager.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (BLLException ex) {
-                    Logger.getLogger(LogicManager.class.getName()).log(Level.SEVERE, null, ex);
+                    boolean valid = key.reset();
+                    if (!valid) {
+                        break;
+                    }
                 }
+            } catch (IOException ex) {
+                Logger.getLogger(LogicManager.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (BLLException ex) {
+                Logger.getLogger(LogicManager.class.getName()).log(Level.SEVERE, null, ex);
             }
+            return null;
         };
         tp.addCallableToPool(callable);
 

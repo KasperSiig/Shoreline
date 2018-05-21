@@ -97,7 +97,6 @@ public class ThreadPool {
         if (!started) {
             cur = System.currentTimeMillis();
         }
-        System.out.println("started task");
         task.setStatus(ConvTask.Status.Running);
         Future future = threadPool.submit(task.getCallable());
         task.setFuture(future);
