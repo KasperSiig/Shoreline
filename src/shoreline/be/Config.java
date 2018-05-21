@@ -24,7 +24,6 @@ public class Config {
         this.name = name;
         this.extension = extension;
         this.headerMap = headerMap;
-        this.cellIndexMap = cellIndexMap;
     }
     
     public String getName() {
@@ -79,6 +78,4 @@ public class Config {
     public void setDefaultValues(HashMap<String, String> defaultValues) {
         this.defaultValues = defaultValues;
     }
-    
-    
 }

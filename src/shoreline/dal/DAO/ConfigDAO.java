@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import shoreline.be.Config;
@@ -47,12 +48,22 @@ public class ConfigDAO {
 
             while (rs.next()) {
                 HashMap hm = new HashMap();
+                HashMap sm = new HashMap();
+                HashMap dm = new HashMap();
                 sql = "SELECT * FROM MapTable WHERE cfgId = ?";
                 statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 statement.setInt(1, rs.getInt("id"));
                 ResultSet rsMap = statement.executeQuery();
                 while (rsMap.next()) {
                     hm.put(rsMap.getString("targetName"), rsMap.getString("sourceName"));
+                    if(rsMap.getString("source2Name") != null){
+                        sm.put(rsMap.getString("targetName"), rsMap.getString("source2Name"));
+                        System.out.println(sm);
+                    }
+                    if(rsMap.getString("defaultName") != null){
+                        sm.put(rsMap.getString("targetName"), rsMap.getString("defaultName"));
+                        System.out.println(dm);
+                    }
                 }
                 Config cfg = new Config(rs.getString("name"), rs.getString("extension"), hm);
                 configs.add(cfg);
@@ -89,11 +100,15 @@ public class ConfigDAO {
                 rs.next();
                 id = rs.getInt(1);
             }
-
+            
             final int fid = id;
-            config.getHeaderMap().forEach((Object k, Object v) -> {
+            
+            HashMap<String, String> def = config.getDefaultValues();
+            HashMap<String, String> sec = config.getSecondPriority();
+            
+            config.getHeaderMap().forEach((String k, String v) -> {
                 try {
-                    saveMap(con, k, v, fid);
+                    saveMap(con, k, v, sec, def, fid);
                 } catch (DALException ex) {
                     Logger.getLogger(ConfigDAO.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -112,16 +127,20 @@ public class ConfigDAO {
      * @param id
      * @throws DALException
      */
-    private void saveMap(Connection con, Object k, Object v, int id) throws DALException {
+    private void saveMap(Connection con,String hK, String hV, HashMap<String, String> second, HashMap<String, String> defaults, int id) throws DALException {
         try {
-            String sql = "INSERT INTO MapTable VALUES(?,?,?)";
+            String sec;
+            String def;
+            String sql = "INSERT INTO MapTable VALUES(?,?,?,?,?)";
             PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             statement.setInt(1, id);
-            statement.setString(2, (String) v);
-            statement.setString(3, (String) k);
+            statement.setString(2, hV);
+            statement.setString(3, hK);
+            statement.setString(4, second.get(hK));
+            statement.setString(5, defaults.get(hK));                      
             statement.execute();
         } catch (SQLException ex) {
-            throw new DALException("SQL Error.", ex);
+            throw new DALException("Error saving config.", ex);
         }
     }
 

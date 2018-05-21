@@ -506,6 +506,8 @@ public class ConfigWindowController implements Initializable, IController {
             extension = file.getAbsolutePath().substring(i + 1);
         }
         Config config = new Config(name, extension, cellMap);
+        config.setSecondPriority(secondPriMap);
+        config.setDefaultValues(JSONmap);
         try {
             model.getConfigModel().addToConfigList(config);
         } catch (GUIException ex) {
