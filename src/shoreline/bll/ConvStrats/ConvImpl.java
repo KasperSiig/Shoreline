@@ -1,19 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.bll.ConvStrats;
 
 import shoreline.be.ConvTask;
 import shoreline.dal.Readers.InputReader;
 import shoreline.dal.Writers.OutputWriter;
-import shoreline.exceptions.BLLException;
-import shoreline.exceptions.DALException;
 
 /**
- *
- * @author Kasper Siig
+ * Class responsible for implementing Strategy Pattern
+ * 
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class ConvImpl {
     private ConvStrategy strategy;

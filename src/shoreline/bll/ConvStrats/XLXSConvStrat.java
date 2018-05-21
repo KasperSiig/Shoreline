@@ -19,8 +19,9 @@ import shoreline.dal.Writers.OutputWriter;
 import shoreline.exceptions.DALException;
 
 /**
+ * Conversion strategy for XLSX files
  *
- * @author Kasper Siig
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class XLXSConvStrat implements ConvStrategy {
 
@@ -38,9 +39,11 @@ public class XLXSConvStrat implements ConvStrategy {
 
         // Creates the Callable, that's going to be added to the ConvTask
         Callable call = (Callable) () -> {
+            // Gets titleIndexMap with XLSXTitleStrat, and sets it in the config
             TitleImpl impl = new TitleImpl(new XLSXTitleStrat());
-            HashMap<String, Integer> cellIndexMap = impl.getTitles(task.getSource());
-            task.getConfig().setTitleIndexMap(cellIndexMap);
+            HashMap<String, Integer> titleIndexMap = impl.getTitles(task.getSource());
+            task.getConfig().setTitleIndexMap(titleIndexMap);
+
             wb = (XSSFWorkbook) reader.read(task.getSource());
             // XLSX files can contain more sheets, this gets the one at index 0
             sheet1 = wb.getSheetAt(0);
@@ -69,49 +72,65 @@ public class XLXSConvStrat implements ConvStrategy {
     /**
      * Gets data from the XLSX file
      *
-     * @param indexString Name of the column to get data from
-     * @param rowNumber The row to get data from
-     * @param task Needed to get a cellIndexMap
-     * @return Data from XLSX file
+     * @param header The template header to link to
+     * @param rowNumber The row number to get data from
+     * @param task ConvTask to get headers and config from
+     * @return Contents of a cell from XLSX file
      */
     private String getSheetdata(String header, int rowNumber, ConvTask task) {
-
         Config config = task.getConfig();
-        HashMap<String, Integer> cellIndexMap = config.getTitleIndexMap();
-        HashMap<String, String> headers = config.getPrimaryHeaders();
-        HashMap<String, String> second = config.getSecondaryHeaders();
+
+        HashMap<String, Integer> titleIndexMap = config.getTitleIndexMap();
+        HashMap<String, String> primaryHeaders = config.getPrimaryHeaders();
+        HashMap<String, String> secondaryHeaders = config.getSecondaryHeaders();
         HashMap<String, String> defaultValues = config.getDefaultValues();
+
         String rtn;
-        if (headers.get(header) != null) {
-            rtn = getCellData(rowNumber, cellIndexMap, headers.get(header));
+
+        // If header exists in primaryHeaders
+        if (primaryHeaders.get(header) != null) {
+            rtn = getCellData(rowNumber, titleIndexMap, primaryHeaders.get(header));
+            // If given cell is not empty
             if (!rtn.isEmpty()) {
                 return rtn;
             }
         }
-        if (second.get(header) != null) {
-            rtn = getCellData(rowNumber, cellIndexMap, second.get(header));
+
+        if (secondaryHeaders.get(header) != null) {
+            rtn = getCellData(rowNumber, titleIndexMap, secondaryHeaders.get(header));
             if (!rtn.isEmpty()) {
                 return rtn;
             }
         }
+
         if (defaultValues.get(header) != null) {
             return defaultValues.get(header);
         }
+
         return "";
     }
 
-    private String getCellData(int rowNumber, HashMap<String, Integer> map, String indexString) {
-        return sheet1.getRow(rowNumber).getCell(map.get(indexString), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).toString();
+    /**
+     * Get stringValue from specific cell
+     *
+     * @param rowNumber Row to get data from
+     * @param titelIndexMap HashMap of titleIndexes
+     * @param indexString Column header to get data from
+     * @return StringValue of the specific cell, blank if null
+     */
+    private String getCellData(int rowNumber, HashMap<String, Integer> titelIndexMap, String indexString) {
+        return sheet1.getRow(rowNumber).getCell(titelIndexMap.get(indexString), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).toString();
     }
 
     /**
-     * Puts all the data into a JSONArray containing JSONObjects, and then
-     * writes it to a .json file.
+     * Writes the XLSX file to given output
      *
-     * @param task The task containing what needs to be converted
-     * @throws DALException
+     * @param task ConvTask containing information about conversion
+     * @param writer How the information should be written
+     * @throws DALException If there was a problem writing to the file
      */
     private void writeJson(ConvTask task, OutputWriter writer) throws DALException {
+        // If task is starting, and not continuing from a pause, create new file
         if (task.getProgress() == 0) {
             task.setTarget(checkForExistingFile(task.getTarget()));
             writer.write(task.getTarget(), "[");
@@ -129,11 +148,19 @@ public class XLXSConvStrat implements ConvStrategy {
             writer.write(task.getTarget(), seperator + jOb.toString(4));
             i++;
         }
+        // If the last row has been written, close the JSONArray
         if (i == sheet1.getLastRowNum() + 1) {
             writer.write(task.getTarget(), "\n]");
         }
     }
 
+    /**
+     * Creates new JSONObject
+     *
+     * @param i What row to pull data from in XLSX file
+     * @param task ConvTask containing information about conversion
+     * @return JSONObject containing information, taken from XLSX file
+     */
     private JSONObject createJSONObject(int i, ConvTask task) {
         JSONObject jOb = new JSONObject();
         JSONObject planning = new JSONObject();
@@ -153,12 +180,19 @@ public class XLXSConvStrat implements ConvStrategy {
                     break;
             }
         });
+        
         jOb.put("createdOn", Calendar.getInstance().getTime());
         jOb.put("createdBy", "SAP");
         jOb.put("planning", planning);
         return jOb;
     }
 
+    /**
+     * Check if filename already exists. If it does, append (i) to the end.
+     * 
+     * @param file File to check for existence
+     * @return File containing available filename
+     */
     private File checkForExistingFile(File file) {
         int i = 1;
         File tempFile = file;
