@@ -34,12 +34,14 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.controlsfx.control.PopOver;
 import shoreline.Main;
 import shoreline.be.Config;
 import shoreline.exceptions.GUIException;
@@ -63,6 +65,7 @@ public class ConfigWindowController implements Initializable, IController {
     private ModelManager model;
     private String targetPath;
     private File inputFile;
+    private Parent root;
 
     private HashMap<String, Integer> cellIndexMap;
 
@@ -397,7 +400,7 @@ public class ConfigWindowController implements Initializable, IController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(Window.View.Confirm.getView()));
-            Parent root = fxmlLoader.load();
+            root = fxmlLoader.load();
 
             ConfirmationWindowController cwc = fxmlLoader.getController();
             cwc.postInit(model);
@@ -566,6 +569,28 @@ public class ConfigWindowController implements Initializable, IController {
             mappingList.add(temp += "\nSecond: " + inputSelection);
         }
 
+    }
+
+    @FXML
+    private void handleDefaultValue(ActionEvent event) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource(Window.View.defaultValue.getView()));
+            root = fxmlLoader.load();
+
+            DefaultVauleWindowController dvwc = fxmlLoader.getController();
+            dvwc.postInit(model);
+
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.setTitle("Default values");
+            stage.setScene(scene);
+            stage.setAlwaysOnTop(true);
+            stage.showAndWait();
+            dvwc.getDefaultValues();
+        } catch (IOException ex) {
+            Window.openExceptionWindow("Couldn't open confirmation window.");
+        }
     }
 
 }

@@ -35,6 +35,7 @@
                            <children>
                               <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleMap" text="Link" />
                               <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleSecondPri" text="2. priority" />
+                              <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleDefaultValue" text="Default value" />
                               <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleDelMap" text="Delete Map" />
                               <JFXButton onAction="#handleCreateConfig" text="Create Config" />
                            </children>
