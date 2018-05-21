@@ -1,81 +1,89 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.be;
 
 import java.util.HashMap;
 
 /**
+ * Holds all data about a configuration
  *
- * @author madst
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class Config {
-    
-    private String name, extension;
-    private HashMap<String, String> headerMap;
-    private HashMap<String, Integer> cellIndexMap;
-    private HashMap<String, String> secondPriority;
-    private HashMap<String, String> defaultValues;
-    
 
-    public Config(String name, String extension, HashMap<String, String> headerMap) {
+    private String name, extension; 
+    private HashMap<String, Integer> titleIndexMap;
+    private HashMap<String, String> primaryHeaders, secondaryHeaders, defaultValues;
+
+    /**
+     * Constructor for Config
+     * 
+     * @param name Name of configuration
+     * @param extension Extension that fits chosen configuration
+     * @param primaryHeaders HashMap of primary headers
+     * @param secondaryHeaders HashMap of secondary headers
+     * @param defaultValues HashMap of default headers
+     */
+    public Config(String name, String extension, HashMap<String, String> primaryHeaders, 
+            HashMap<String, String> secondaryHeaders, HashMap<String, String> defaultValues) {
         this.name = name;
         this.extension = extension;
-        this.headerMap = headerMap;
+        this.primaryHeaders = primaryHeaders;
+        this.secondaryHeaders = secondaryHeaders;
+        this.defaultValues = defaultValues;
     }
     
+    /**
+     * @return Name of Config
+     */
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    /**
+     * @return Extension from Config
+     */
     public String getExtension() {
         return extension;
     }
 
-    public void setExtension(String extension) {
-        this.extension = extension;
-    }
-
-    public HashMap<String, String> getHeaderMap() {
-        return headerMap;
-    }
-
-    public void setHeaderMap(HashMap map) {
-        this.headerMap = map;
-    }
-
-    public HashMap<String, Integer> getCellIndexMap() {
-        return cellIndexMap;
-    }
-
-    public void setCellIndexMap(HashMap<String, Integer> cellIndexMap) {
-        this.cellIndexMap = cellIndexMap;
+    /**
+     * @return HashMap of TitleIndexes
+     */
+    public HashMap<String, Integer> getTitleIndexMap() {
+        return titleIndexMap;
     }
     
-    @Override
-    public String toString() {
-        return name;
+    /**
+     * @return HashMap of Primary Headers
+     */
+    public HashMap<String, String> getPrimaryHeaders() {
+        return primaryHeaders;
     }
 
-    public HashMap<String, String> getSecondPriority() {
-        return secondPriority;
+    /**
+     * @return HashMap of Secondary Headers
+     */
+    public HashMap<String, String> getSecondaryHeaders() {
+        return secondaryHeaders;
     }
 
-    public void setSecondPriority(HashMap<String, String> SecondPriority) {
-        this.secondPriority = SecondPriority;
-    }
-
+    /**
+     * @return HashMap of Default Values
+     */
     public HashMap<String, String> getDefaultValues() {
         return defaultValues;
     }
 
-    public void setDefaultValues(HashMap<String, String> defaultValues) {
-        this.defaultValues = defaultValues;
+    /**
+     * Sets the titleIndexMap
+     * 
+     * @param titleIndexMap HashMap to be set
+     */
+    public void setTitleIndexMap(HashMap<String, Integer> titleIndexMap) {
+        this.titleIndexMap = titleIndexMap;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

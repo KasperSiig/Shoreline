@@ -223,7 +223,7 @@ public class BatchTaskWindowController implements Initializable, IController {
         selectedBatches.forEach((batch) -> {
             try {
                 model.getBatchModel().getBatches().remove(batch.getBatch());
-                model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has deleted task " + batch.getBatch().getName());
+                model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getFirstName() + " has deleted task " + batch.getBatch().getName());
             } catch (GUIException ex) {
                 Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
             }

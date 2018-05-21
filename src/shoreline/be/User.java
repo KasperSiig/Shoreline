@@ -1,58 +1,55 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.be;
 
 /**
- *
- * @author madst
+ * Contains relevant information about an individual User
+ * 
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class User {
     
-    private String lName, fName, uName;
+    private String lastName, firstName, userName;
     private int id;
 
-    public User(String lName, String fName, String uName, int id) {
-        this.lName = lName;
-        this.fName = fName;
-        this.uName = uName;
+    /**
+     * Constructor for User
+     * 
+     * @param lastName Last name
+     * @param firstName First name
+     * @param userName Username
+     * @param id Id of User
+     */
+    public User(String lastName, String firstName, String userName, int id) {
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.userName = userName;
         this.id = id;
     }
 
-    public String getlName() {
-        return lName;
+    /**
+     * @return get LastName of User
+     */
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setlName(String lName) {
-        this.lName = lName;
+    /**
+     * @return get FirstName of User
+     */
+    public String getFirstName() {
+        return firstName;
+    }
+    
+    /**
+     * @return get UserName of User
+     */
+    public String getUserName() {
+        return userName;
     }
 
-    public String getfName() {
-        return fName;
-    }
-
-    public void setfName(String fName) {
-        this.fName = fName;
-    }
-
-    public String getuName() {
-        return uName;
-    }
-
-    public void setuName(String uName) {
-        this.uName = uName;
-    }
-
+    /**
+     * @return Id of User
+     */
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-    
-    
-    
+    }    
 }

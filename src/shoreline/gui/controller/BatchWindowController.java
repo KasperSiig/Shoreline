@@ -109,8 +109,6 @@ public class BatchWindowController implements Initializable, IController {
             Batch tempBacth = new Batch(importFolder, targetFolder, txtFileName.getText(), comboConfig.getSelectionModel().getSelectedItem());
             model.getBatchModel().addToBatches(tempBacth);
             Window.openSnack("New bacth " + tempBacth.getName() + " was created", bPane, "blue");
-        } catch (BEException ex) {
-            Logger.getLogger(BatchWindowController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GUIException ex) {
             Logger.getLogger(BatchWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }

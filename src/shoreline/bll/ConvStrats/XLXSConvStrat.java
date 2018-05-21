@@ -40,7 +40,7 @@ public class XLXSConvStrat implements ConvStrategy {
         Callable call = (Callable) () -> {
             TitleImpl impl = new TitleImpl(new XLSXTitleStrat());
             HashMap<String, Integer> cellIndexMap = impl.getTitles(task.getSource());
-            task.getConfig().setCellIndexMap(cellIndexMap);
+            task.getConfig().setTitleIndexMap(cellIndexMap);
             wb = (XSSFWorkbook) reader.read(task.getSource());
             // XLSX files can contain more sheets, this gets the one at index 0
             sheet1 = wb.getSheetAt(0);
@@ -77,22 +77,20 @@ public class XLXSConvStrat implements ConvStrategy {
     private String getSheetdata(String header, int rowNumber, ConvTask task) {
 
         Config config = task.getConfig();
-        HashMap<String, Integer> cellIndexMap = config.getCellIndexMap();
-        HashMap<String, String> headers = config.getHeaderMap();
-        HashMap<String, String> second = config.getSecondPriority();
+        HashMap<String, Integer> cellIndexMap = config.getTitleIndexMap();
+        HashMap<String, String> headers = config.getPrimaryHeaders();
+        HashMap<String, String> second = config.getSecondaryHeaders();
         HashMap<String, String> defaultValues = config.getDefaultValues();
         String rtn;
         if (headers.get(header) != null) {
             rtn = getCellData(rowNumber, cellIndexMap, headers.get(header));
             if (!rtn.isEmpty()) {
-                System.out.println("inside headerRtn");
                 return rtn;
             }
         }
         if (second.get(header) != null) {
             rtn = getCellData(rowNumber, cellIndexMap, second.get(header));
             if (!rtn.isEmpty()) {
-                System.out.println("inside secondRtn");
                 return rtn;
             }
         }
@@ -140,7 +138,7 @@ public class XLXSConvStrat implements ConvStrategy {
         JSONObject jOb = new JSONObject();
         JSONObject planning = new JSONObject();
 
-        task.getConfig().getHeaderMap().forEach((key, value) -> {
+        task.getConfig().getPrimaryHeaders().forEach((key, value) -> {
             switch (key) {
                 case "earliestStartDate":
                 case "latestFinishDate":

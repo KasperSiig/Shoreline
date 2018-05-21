@@ -47,26 +47,24 @@ public class ConfigDAO {
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
-                HashMap hm = new HashMap();
-                HashMap sm = new HashMap();
-                HashMap dm = new HashMap();
+                HashMap primaryHeaders = new HashMap();
+                HashMap secondaryHeaders = new HashMap();
+                HashMap defaultValues = new HashMap();
                 sql = "SELECT * FROM MapTable WHERE cfgId = ?";
                 statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 statement.setInt(1, rs.getInt("id"));
                 ResultSet rsMap = statement.executeQuery();
                 while (rsMap.next()) {
-                    hm.put(rsMap.getString("targetName"), rsMap.getString("sourceName"));
+                    primaryHeaders.put(rsMap.getString("targetName"), rsMap.getString("sourceName"));
                     if(rsMap.getString("source2Name") != null){
-                        sm.put(rsMap.getString("targetName"), rsMap.getString("source2Name"));
+                        secondaryHeaders.put(rsMap.getString("targetName"), rsMap.getString("source2Name"));
                     }
                     if(rsMap.getString("defaultName") != null){
-                        dm.put(rsMap.getString("targetName"), rsMap.getString("defaultName"));
+                        defaultValues.put(rsMap.getString("targetName"), rsMap.getString("defaultName"));
                     }
                 }
-                Config cfg = new Config(rs.getString("name"), rs.getString("extension"), hm);
-                cfg.setDefaultValues(dm);
-                cfg.setSecondPriority(sm);
-                configs.add(cfg);
+                Config config = new Config(rs.getString("name"), rs.getString("extension"), primaryHeaders, secondaryHeaders, defaultValues);
+                configs.add(config);
             }
         } catch (SQLException ex) {
             throw new DALException("SQL Error.", ex);
@@ -103,9 +101,9 @@ public class ConfigDAO {
             final int fid = id;
             
             HashMap<String, String> def = config.getDefaultValues();
-            HashMap<String, String> sec = config.getSecondPriority();
+            HashMap<String, String> sec = config.getSecondaryHeaders();
             
-            config.getHeaderMap().forEach((String k, String v) -> {
+            config.getPrimaryHeaders().forEach((String k, String v) -> {
                 try {
                     saveMap(con, k, v, sec, def, fid);
                 } catch (DALException ex) {

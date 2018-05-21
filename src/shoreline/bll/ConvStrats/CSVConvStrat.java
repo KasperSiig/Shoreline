@@ -7,10 +7,12 @@ package shoreline.bll.ConvStrats;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.concurrent.Callable;
 import javafx.application.Platform;
 import org.json.JSONObject;
 import shoreline.be.CSVSheet;
+import shoreline.be.Config;
 import shoreline.be.ConvTask;
 import shoreline.bll.ThreadPool;
 import shoreline.dal.Readers.InputReader;
@@ -32,7 +34,6 @@ public class CSVConvStrat implements ConvStrategy {
         // Creates the Callable, that's going to be added to the ConvTask
         Callable call = (Callable) () -> {
             sheet = (CSVSheet) reader.read(task.getSource());
-            System.out.println("after reader");
             // XLSX files can contain more sheets, this gets the one at index 0
             System.out.println(sheet);
             writeJson(task, writer);
@@ -56,7 +57,7 @@ public class CSVConvStrat implements ConvStrategy {
             task.setTarget(checkForExistingFile(task.getTarget()));
             writer.write(task.getTarget(), "[");
         }
-        for (int i = task.getProgress(); i < sheet.getSize(); i++) {
+        for (int i = task.getProgress(); i < sheet.getRowCount(); i++) {
             if (task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
                 JSONObject jOb = createJSONObject(i, task);
                 task.setProgress(i + 1);
@@ -66,7 +67,7 @@ public class CSVConvStrat implements ConvStrategy {
                 }
                 writer.write(task.getTarget(), seperator + jOb.toString());
             }
-            if (i == sheet.getSize() - 1) {
+            if (i == sheet.getRowCount() - 1) {
                 writer.write(task.getTarget(), "\n]");
             }
         }
@@ -77,18 +78,18 @@ public class CSVConvStrat implements ConvStrategy {
         JSONObject jOb = new JSONObject();
         JSONObject planning = new JSONObject();
 
-        task.getConfig().getHeaderMap().forEach((key, value) -> {
+        task.getConfig().getPrimaryHeaders().forEach((key, value) -> {
             switch (key) {
                 case "earliestStartDate":
                 case "latestFinishDate":
                 case "latestStartDate":
-                    planning.put(key, sheet.getSheetData(i, value));
+                    planning.put(key, getSheetdata(key, i, task));
                     break;
                 case "estimatedTime":
-                    planning.put("estimatedTime", sheet.getSheetData(i, value));
+                    planning.put("estimatedTime", getSheetdata(key, i, task));
                     break;
                 default:
-                    jOb.put(key, sheet.getSheetData(i, value));
+                    jOb.put(key, getSheetdata(key, i, task));
                     break;
             }
         });
@@ -96,6 +97,31 @@ public class CSVConvStrat implements ConvStrategy {
         jOb.put("createdBy", "SAP");
         jOb.put("planning", planning);
         return jOb;
+    }
+    
+    private String getSheetdata(String header, int rowNumber, ConvTask task) {
+
+        Config config = task.getConfig();
+        HashMap<String, String> headers = config.getPrimaryHeaders();
+        HashMap<String, String> second = config.getSecondaryHeaders();
+        HashMap<String, String> defaultValues = config.getDefaultValues();
+        String rtn;
+        if (headers.get(header) != null) {
+            rtn = sheet.getSheetData(rowNumber, headers.get(header));
+            if (!rtn.isEmpty()) {
+                return rtn;
+            }
+        }
+        if (second.get(header) != null) {
+            rtn = sheet.getSheetData(rowNumber, second.get(header));
+            if (!rtn.isEmpty()) {
+                return rtn;
+            }
+        }
+        if (defaultValues.get(header) != null) {
+            return defaultValues.get(header);
+        }
+        return "";
     }
 
     private File checkForExistingFile(File file) {

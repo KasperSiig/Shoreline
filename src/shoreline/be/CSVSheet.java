@@ -1,44 +1,58 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.be;
 
 import java.util.HashMap;
 
 /**
- *
- * @author Kasper Siig
+ * Holds all data in a given CSV File
+ * 
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class CSVSheet {
 
-    private HashMap<String, Integer> headers;
+    private HashMap<String, Integer> titleIndexMap;
     private String[][] sheet;
 
-    public CSVSheet(HashMap<String, Integer> headers, String[][] sheet) {
-        this.headers = headers;
+    /**
+     * Constructor for CSVSheet
+     * 
+     * @param titleIndexMap HashMap of h
+     * @param sheet 
+     */
+    public CSVSheet(HashMap<String, Integer> titleIndexMap, String[][] sheet) {
+        this.titleIndexMap = titleIndexMap;
         this.sheet = sheet;
     }
 
-    public HashMap<String, Integer> getHeaders() {
-        return headers;
+    /**
+     * @return HashMap with indexes of different titles in sheet
+     */
+    public HashMap<String, Integer> getTitleIndexMap() {
+        return titleIndexMap;
     }
 
+    /**
+     * @param row Row to get data from
+     * @param column Column to get data from
+     * @return String from given row and column
+     */
     public String getSheetData(int row, int column) {
         return sheet[row][column];
     }
 
+    /**
+     * @param row Row to get data from
+     * @param column Column header to get data from
+     * @return String from given row and column header
+     */
     public String getSheetData(int row, String column) {
-        return sheet[row][headers.get(column)];
+        return sheet[row][titleIndexMap.get(column)];
     }
 
-    public int getSize() {
+    /**
+     * @return Row count of CSVSheet
+     */
+    public int getRowCount() {
         return sheet.length;
-    }
-
-    public String[] getRow(int i) {
-        return sheet[i];
     }
 
 }

@@ -381,7 +381,7 @@ public class ConfigWindowController implements Initializable, IController {
                 }
                 mappingList.clear();
                 JSONmap.clear();
-                JSONmap.putAll(config.getHeaderMap());
+                JSONmap.putAll(config.getPrimaryHeaders());
                 setInfoInlvMap(JSONmap);
                 Window.openSnack("Config " + config.getName() + " was loaded", bPane, "blue");
             });
@@ -508,9 +508,7 @@ public class ConfigWindowController implements Initializable, IController {
         if (i > 0) {
             extension = file.getAbsolutePath().substring(i + 1);
         }
-        Config config = new Config(name, extension, cellMap);
-        config.setSecondPriority(secondPriMap);
-        config.setDefaultValues(defaultValuesMap);
+        Config config = new Config(name, extension, cellMap, secondPriMap, defaultValuesMap);
         try {
             model.getConfigModel().addToConfigList(config);
         } catch (GUIException ex) {
