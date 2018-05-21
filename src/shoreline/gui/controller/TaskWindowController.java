@@ -137,7 +137,6 @@ public class TaskWindowController implements Initializable, IController {
                         Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
                     }
                 });
-//                tasks.clear();
             } else {
                 return true;
             }
@@ -151,7 +150,6 @@ public class TaskWindowController implements Initializable, IController {
                 tp.pauseTask(task);
             }
             toggleSelected(tasks.get(0), false);
-//            tasks.clear();
             try {
                 model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has paused task " + task.getName());
             } catch (GUIException ex) {
@@ -169,7 +167,6 @@ public class TaskWindowController implements Initializable, IController {
         createTasksListener(selectedPenTasks, model.getTaskModel().getPendingTasks(), vBoxPen);
         createTasksListener(selectedFinTasks, model.getTaskModel().getFinishedTasks(), vBoxFin);
         createTasksListener(selectedCanTasks, model.getTaskModel().getCancelledTasks(), vBoxCan);
-    
 
         genRightClickStart();
         genRightClickDel();
@@ -188,20 +185,9 @@ public class TaskWindowController implements Initializable, IController {
                     if (taskView.getLblTaskName().isEmpty()) {
                         setTaskView(taskView, vBox);
                     } else {
-//                        vBox.getChildren().add(c.getAddedSubList().get(0));
                         vBox.getChildren().add(c.getAddedSubList().get(0));
                     }
-                    
-                }
-            }
-        });
-    }
-    
-    private void moveTasksListener(ObservableList<TaskView> tasks, VBox vBox) {
-        tasks.addListener((ListChangeListener.Change<? extends TaskView> c) -> {
-            while (c.next()) {
-                if (c.wasAdded()) {
-                    vBox.getChildren().add(c.getAddedSubList().get(0));
+
                 }
             }
         });
@@ -233,11 +219,6 @@ public class TaskWindowController implements Initializable, IController {
             private void handleSecondaryButoon(MouseEvent event) {
                 if (event.getButton().equals(MouseButton.SECONDARY)) {
                     cMenu.show(vBoxPen, event.getScreenX(), event.getScreenY());
-                    if (!taskView.getCurList().contains(taskView)) {
-                        toggleSelected(taskView, false);
-                    } else {
-                        toggleSelected(taskView,  true);
-                    }
                 }
             }
 
@@ -257,7 +238,6 @@ public class TaskWindowController implements Initializable, IController {
                         if (taskView.getCurList().size() > 1) {
                             int id2 = Integer.valueOf(taskView.getCurList().get(taskView.getCurList().size() - 1).getId());
 
-                            //TO BE DONE!
                             List<TaskView> allTasks = new ArrayList();
 
                             vBox.getChildren().forEach((node) -> {
@@ -294,8 +274,8 @@ public class TaskWindowController implements Initializable, IController {
                     }
                 }
             }
-        }
-        );
+        });
+
         return taskView;
     }
 
@@ -340,8 +320,6 @@ public class TaskWindowController implements Initializable, IController {
             if (selectedPenTasks.size() > 1) {
                 if (openConfirmWindow("Are you sure you want to delete " + selectedPenTasks.size() + " tasks?", false)) {
                     delSelectedTask();
-                } else {
-                    return;
                 }
             } else {
                 delSelectedTask();
@@ -354,7 +332,8 @@ public class TaskWindowController implements Initializable, IController {
         List<TaskView> temp = selectedPenTasks;
         for (TaskView task : temp) {
             try {
-                model.getTaskModel().getPendingTasks().remove(task.getTask());
+                model.getTaskModel().getPendingTasks().remove(task);
+                vBoxPen.getChildren().remove(task);
                 model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getfName() + " has deleted task " + task.getTask().getName());
             } catch (GUIException ex) {
                 Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
@@ -419,7 +398,6 @@ public class TaskWindowController implements Initializable, IController {
 
     @FXML
     private void handleStartAgainFin(ActionEvent event) {
-        System.out.println(selectedFinTasks);
         startTask(selectedFinTasks);
     }
 
