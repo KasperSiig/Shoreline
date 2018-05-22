@@ -16,15 +16,21 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Paint;
 import javafx.stage.DirectoryChooser;
+import javafx.util.Duration;
 import shoreline.be.Batch;
 import shoreline.be.Config;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.ModelManager;
 import shoreline.statics.Styling;
 import shoreline.statics.Window;
+import tray.animations.AnimationType;
+import tray.notification.NotificationType;
+import tray.notification.TrayNotification;
 
 /**
  * FXML Controller class
@@ -90,10 +96,10 @@ public class BatchWindowController implements Initializable, IController {
         try {
             DirectoryChooser dirChooser = new DirectoryChooser();
             File file = dirChooser.showDialog(null);
-            
+
             model.getConfigModel().getAllConfigs();
             comboConfig.setItems(model.getConfigModel().getConfigList());
-            
+
             if (file != null) {
                 importFolder = file;
                 txtImportPath.setText(importFolder.getAbsolutePath());
@@ -112,12 +118,13 @@ public class BatchWindowController implements Initializable, IController {
 
         try {
             Batch tempBacth = new Batch(importFolder, targetFolder, txtFileName.getText(), comboConfig.getSelectionModel().getSelectedItem());
+            addListenerForNotification(tempBacth);
             model.getBatchModel().addToBatches(tempBacth);
             Window.openSnack("New bacth " + tempBacth.getName() + " was created", bPane, "blue");
         } catch (GUIException ex) {
             Logger.getLogger(BatchWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
 
     /**
@@ -160,6 +167,24 @@ public class BatchWindowController implements Initializable, IController {
             Window.openSnack("Could not create task. Missing input is highlighted.", bPane, "red", 4000);
         }
         return hasFailed;
+    }
+
+    private void addListenerForNotification(Batch tempBacth) {
+        tempBacth.getFilesPending().addListener((observable, oldValue, newValue) -> {
+            if (oldValue.intValue() == 0 && newValue.intValue() == 1) {
+                TrayNotification tray = new TrayNotification("Batch: " + tempBacth.getName(), 
+                        "Started converting new files", NotificationType.SUCCESS);
+                tray.setAnimationType(AnimationType.POPUP);
+                tray.showAndDismiss(Duration.seconds(3));
+            }
+            if (oldValue.intValue() == 1 && newValue.intValue() == 0) {
+                TrayNotification tray = new TrayNotification("Batch: " + tempBacth.getName(), 
+                        "Done converting files", NotificationType.SUCCESS);
+                tray.setAnimationType(AnimationType.POPUP);
+                tray.showAndDismiss(Duration.seconds(3));
+            }
+        });
+
     }
 
 }
