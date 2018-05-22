@@ -26,7 +26,7 @@ import shoreline.exceptions.DALException;
  */
 public class CSVReader implements InputReader<CSVSheet> {
 
-    private static final String DELIMITER = ";";
+    private static final String DELIMITER = ",";
 
     @Override
     public CSVSheet read(File file) throws DALException {

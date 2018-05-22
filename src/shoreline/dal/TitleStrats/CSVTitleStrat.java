@@ -20,7 +20,7 @@ import shoreline.exceptions.DALException;
  * @author Kasper Siig
  */
 public class CSVTitleStrat implements TitleStrategy {
-    private static final String DELIMITER = ";";
+    private static final String DELIMITER = ",";
     
     @Override
     public HashMap<String, Integer> getTitles(File file) throws DALException {
