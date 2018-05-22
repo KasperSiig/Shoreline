@@ -34,6 +34,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -589,6 +590,7 @@ public class ConfigWindowController implements Initializable, IController {
             stage.setTitle("Default values");
             stage.setScene(scene);
             stage.setAlwaysOnTop(true);
+            stage.getIcons().add(new Image("/shoreline/res/ShorelineLogo.png"));
             stage.showAndWait();
             defaultValuesMap = dvwc.getDefaultValues();
         } catch (IOException ex) {
