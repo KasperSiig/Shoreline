@@ -555,16 +555,25 @@ public class ConfigWindowController implements Initializable, IController {
         if (JSONmap.containsKey(lvTemplate.getSelectionModel().getSelectedItem())) {
             String inputSelection = lvInput.getSelectionModel().getSelectedItem();
             String templateSelection = lvTemplate.getSelectionModel().getSelectedItem();
-            secondPriMap.put(templateSelection, inputSelection);
+            if (secondPriMap.containsKey(templateSelection) && secondPriMap.containsValue(inputSelection)) {
+                return;
+            } else {
+                secondPriMap.put(templateSelection, inputSelection);
 
-            String temp = null;
-            for (String string : mappingList) {
-                if (string.contains(templateSelection)) {
-                    temp = string;
+                String temp = null;
+                for (String string : mappingList) {
+                    if (string.contains(templateSelection)) {
+                        temp = string;
+                    }
                 }
+                mappingList.remove(temp);
+                if (temp.contains("\n")) {
+                    temp = temp.split("\n")[0];
+                }
+                mappingList.add(temp += "\nSecond: " + inputSelection);
+                System.out.println(secondPriMap);
             }
-            mappingList.remove(temp);
-            mappingList.add(temp += "\nSecond: " + inputSelection);
+
         }
 
     }

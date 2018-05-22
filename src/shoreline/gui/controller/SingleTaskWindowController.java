@@ -8,9 +8,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -65,8 +66,9 @@ public class SingleTaskWindowController implements Initializable, IController {
     @Override
     public void postInit(ModelManager model) {
         this.model = model;
-
-        comboConfig.setItems(model.getConfigModel().getConfigList());
+        
+        ObservableList temp = FXCollections.observableArrayList(model.getConfigModel().getConfigList());
+        comboConfig.setItems(temp);
 
         try {
             Window.openView(model, bPaneSplit, Window.View.TaskView, "center");

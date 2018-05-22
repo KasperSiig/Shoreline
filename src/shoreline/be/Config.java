@@ -84,6 +84,6 @@ public class Config {
 
     @Override
     public String toString() {
-        return name;
+        return extension + ": " + name;
     }
 }
