@@ -125,12 +125,13 @@ public class TaskWindowController implements Initializable, IController {
             if (openConfirmWindow("Are you sure you want to stop " + tasks.size() + " tasks?", false)) {
                 List<TaskView> temp = new ArrayList<>(tasks);
                 temp.forEach((task) -> {
+                    toggleSelected(task, false);
                     if (cancel) {
                         tp.cancelTask(task.getTask());
                     } else {
                         tp.pauseTask(task.getTask());
                     }
-                    toggleSelected(task, false);
+
                     try {
                         model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getFirstName() + " has stopped task " + task.getTask().getName());
                     } catch (GUIException ex) {
@@ -144,12 +145,13 @@ public class TaskWindowController implements Initializable, IController {
             Window.openExceptionWindow("No tasks are selected.");
         } else {
             ConvTask task = tasks.get(0).getTask();
+            toggleSelected(tasks.get(0), false);
             if (cancel) {
                 tp.cancelTask(task);
             } else {
                 tp.pauseTask(task);
             }
-            toggleSelected(tasks.get(0), false);
+
             try {
                 model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getFirstName() + " has paused task " + task.getName());
             } catch (GUIException ex) {
