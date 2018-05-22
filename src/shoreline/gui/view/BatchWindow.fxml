@@ -97,6 +97,9 @@
                            </children>
                         </HBox>
                      </children>
+                     <BorderPane.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </BorderPane.margin>
                   </VBox>
                </center>
                <top>
