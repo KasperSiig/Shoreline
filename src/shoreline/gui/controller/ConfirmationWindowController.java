@@ -89,13 +89,7 @@ public class ConfirmationWindowController implements Initializable, IController 
      */
     public void setInfo(String msg, boolean txtField) {
         lblInfo.setText(msg);
-        if (txtField) {
-            txtInput.requestFocus();
-        } else {
-            txtInput.setDisable(true);
-            txtInput.setPromptText("");
-            btnYes.requestFocus();
-        }
+        btnYes.requestFocus();
     }
 
     /**

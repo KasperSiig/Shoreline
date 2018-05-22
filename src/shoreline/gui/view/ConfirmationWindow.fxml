@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
@@ -22,12 +22,11 @@
             </HBox>
          </center>
          <top>
-            <JFXTextField fx:id="txtInput" onAction="#handleYes" promptText="Enter config name" BorderPane.alignment="CENTER">
-               <BorderPane.margin>
-                  <Insets bottom="5.0" left="20.0" right="20.0" />
-               </BorderPane.margin>
-            </JFXTextField>
+            <Separator prefWidth="200.0" BorderPane.alignment="CENTER" />
          </top>
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
       </BorderPane>
    </bottom>
    <padding>
