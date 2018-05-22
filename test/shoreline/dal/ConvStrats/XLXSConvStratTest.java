@@ -16,9 +16,13 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import shoreline.be.Config;
 import shoreline.be.ConvTask;
+import shoreline.dal.Readers.XLSXReader;
 import shoreline.dal.TitleStrats.TitleImpl;
 import shoreline.dal.TitleStrats.XLSXTitleStrat;
+import shoreline.dal.Writers.OutputWriter;
+import shoreline.dal.Writers.StringToFile;
 import shoreline.exceptions.DALException;
 
 /**
@@ -77,9 +81,12 @@ public class XLXSConvStratTest {
         mapper.put("latestStartDate", "Latest start");
         mapper.put("estimatedTime", "Work");
         
-        ConvTask task = new ConvTask(cellIndexMap, mapper, "", new File(testFile), new File("C:\\JavaProjects\\Shoreline\\test\\shoreline\\res\\XLSX\\Json.json"));
+        ConvTask task;
+        task = new ConvTask("", new File(testFile), new File("C:\\JavaProjects\\Shoreline\\test\\shoreline\\res\\XLSX\\Json.json"), new Config(userDir, userDir, mapper, mapper, mapper));
         XLXSConvStrat instance = new XLXSConvStrat();
-        instance.addCallable(task);
+        StringToFile stf = new StringToFile();
+        XLSXReader reader = new XLSXReader();
+        instance.addCallable(task, reader, stf);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
         
