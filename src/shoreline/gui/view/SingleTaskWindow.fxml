@@ -88,7 +88,7 @@
                         <HBox alignment="CENTER" spacing="20.0">
                            <children>
                               <JFXTextField fx:id="txtFileName" labelFloat="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" promptText="Enter File Name here.." />
-                              <JFXComboBox fx:id="comboConfig" labelFloat="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" promptText="Choose a config" />
+                              <JFXComboBox fx:id="comboConfig" labelFloat="true" maxHeight="1.7976931348623157E308" maxWidth="175.0" minHeight="0.0" minWidth="0.0" promptText="Choose a config" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">

@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -66,15 +68,14 @@ public class SingleTaskWindowController implements Initializable, IController {
     @Override
     public void postInit(ModelManager model) {
         this.model = model;
-        
-        ObservableList temp = FXCollections.observableArrayList(model.getConfigModel().getConfigList());
-        comboConfig.setItems(temp);
 
         try {
+            comboConfig.getItems().addAll(model.getConfigModel().getAllConfigs());
             Window.openView(model, bPaneSplit, Window.View.TaskView, "center");
         } catch (GUIException ex) {
             Window.openExceptionWindow(ex.getMessage());
         }
+        comboConfig.setDisable(true);
     }
 
     /**
@@ -109,8 +110,8 @@ public class SingleTaskWindowController implements Initializable, IController {
                     }
 
                 }
-                comboConfig.getItems().clear();
-                comboConfig.getItems().addAll(temp);
+                comboConfig.getItems().setAll(temp);
+                comboConfig.setDisable(false);
                 String name = importFile.getName();
                 txtFileName.setText(name.substring(0, name.lastIndexOf('.')));
             } catch (GUIException ex) {

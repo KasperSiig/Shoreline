@@ -248,10 +248,6 @@ public class ConfigWindowController implements Initializable, IController {
 
         if (tempFile != null) {
             try {
-                int i = tempFile.getName().lastIndexOf('.');
-                if (i > 0) {
-                    txtFileName.setText(tempFile.getName().substring(0, i));
-                }
                 lblInfo.setVisible(false);
                 JSONmap.clear();
                 inputList.clear();
@@ -491,7 +487,7 @@ public class ConfigWindowController implements Initializable, IController {
             }
         }
         createConfig(inputFile, tempCellMap, name);
-        Window.openSnack("Config " + name + " was created", bPane, "blue");
+        Window.openSnack("Config " + name + " was saved", bPane, "blue");
     }
 
     @FXML
