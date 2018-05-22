@@ -32,10 +32,13 @@ public class CSVReader implements InputReader<CSVSheet> {
     public CSVSheet read(File file) throws DALException {
         CSVSheet sheet = null;
         try {
+            Thread.sleep(50);
             Scanner scanner = new Scanner(file);
             TitleImpl impl = new TitleImpl(new CSVTitleStrat());
             HashMap<String, Integer> headerMap = impl.getTitles(file);
+            System.out.println("before count");
             int count = countLines(file);
+            System.out.println("after count");
             String[][] input = new String[count - 1][headerMap.size()];
             int i = 0;
             scanner.nextLine();
@@ -49,6 +52,8 @@ public class CSVReader implements InputReader<CSVSheet> {
             sheet = new CSVSheet(headerMap, input);
         } catch (FileNotFoundException ex) {
             throw new DALException("Error reading CSV File", ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(CSVReader.class.getName()).log(Level.SEVERE, null, ex);
         }
         return sheet;
     }

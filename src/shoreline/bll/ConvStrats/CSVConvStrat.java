@@ -35,7 +35,6 @@ public class CSVConvStrat implements ConvStrategy {
         Callable call = (Callable) () -> {
             sheet = (CSVSheet) reader.read(task.getSource());
             // XLSX files can contain more sheets, this gets the one at index 0
-            System.out.println(sheet);
             writeJson(task, writer);
             if (task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
                 Platform.runLater(() -> {
@@ -44,6 +43,12 @@ public class CSVConvStrat implements ConvStrategy {
                 threadPool.removeFromRunning(task);
                 threadPool.addToFinished(task);
                 task.setProgress(0);
+                if (task.getBatch() != null) {
+                    Platform.runLater(() -> {
+                        task.getBatch().decrement(task.getBatch().getFilesPending());
+                        task.getBatch().increment(task.getBatch().getFilesHandled());
+                    });
+                }
             }
             return null;
         };

@@ -118,22 +118,6 @@ public class ConfirmationWindowController implements Initializable, IController 
                         return;
                     }
                 }
-                if (file != null) {
-//                    try {
-//                        String extension = "";
-//                        
-//                        int i = file.getAbsolutePath().lastIndexOf('.');
-//                        if (i > 0) {
-//                            extension = file.getAbsolutePath().substring(i + 1);
-//                        }
-//                        Config config = new Config(name, extension, map);
-//                        model.getConfigModel().addToConfigList(config);
-//                        stage = (Stage) lblInfo.getScene().getWindow();
-//                        stage.close();
-//                    } catch (GUIException ex) {
-//                        Window.openExceptionWindow(ex.getMessage());
-//                    }
-                }
             }
         } else {
             confirmation = true;

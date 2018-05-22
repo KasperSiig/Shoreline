@@ -35,7 +35,7 @@ public class XLSXTitleStrat implements TitleStrategy {
     @Override
     public HashMap<String, Integer> getTitles(File file) throws DALException {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(50);
             fin = new FileInputStream(file);
             wb = new XSSFWorkbook(fin);
             sheet1 = wb.getSheetAt(0);

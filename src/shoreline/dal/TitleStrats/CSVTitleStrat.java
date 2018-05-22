@@ -26,6 +26,7 @@ public class CSVTitleStrat implements TitleStrategy {
     public HashMap<String, Integer> getTitles(File file) throws DALException {
         HashMap<String, Integer> headerMap = null;
         try {
+            Thread.sleep(50);
             Scanner scanner = new Scanner(file);
             String firstLine = scanner.nextLine();
             String[] headers = splitLine(firstLine, DELIMITER);
@@ -45,7 +46,7 @@ public class CSVTitleStrat implements TitleStrategy {
                     }
                 }
             }
-        } catch (FileNotFoundException ex) {
+        } catch (FileNotFoundException | InterruptedException ex) {
             Logger.getLogger(CSVTitleStrat.class.getName()).log(Level.SEVERE, null, ex);
         }
         return headerMap;

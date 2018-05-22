@@ -1,18 +1,19 @@
 package shoreline.be;
 
-import shoreline.exceptions.BEException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
 /**
  * Business Entity for Batch conversion
- * 
+ *
  * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class Batch {
+
     private File sourceDir, targetDir, failedDir;
     private String name;
     private Config config;
@@ -21,11 +22,11 @@ public class Batch {
 
     /**
      * Constructor for Batch
-     * 
+     *
      * @param sourceDir Folder to convert from
      * @param targetDir Folder to convert to
      * @param name Name of Batch
-     * @param config Configuration to use when converting 
+     * @param config Configuration to use when converting
      */
     public Batch(File sourceDir, File targetDir, String name, Config config) {
         this.sourceDir = sourceDir;
@@ -41,7 +42,7 @@ public class Batch {
 
     /**
      * Creates a "Failed" folder, if it doesn't already exists
-     * 
+     *
      * @param targetDir Folder to create "Failed" folder in
      * @return File to "Failed" folder
      */
@@ -59,7 +60,7 @@ public class Batch {
     }
 
     /**
-     * @return Target Directory 
+     * @return Target Directory
      */
     public File getTargetDir() {
         return targetDir;
@@ -85,7 +86,7 @@ public class Batch {
     public Config getConfig() {
         return config;
     }
-    
+
     /**
      * @return IntegerProperty of filesPending
      */
@@ -116,42 +117,48 @@ public class Batch {
 
     /**
      * Removes ConvTask from pendingTasks
-     * 
+     *
      * @param task ConvTask to be removed
      */
     public void removeFromPending(ConvTask task) {
         pendingTasks.remove(task);
     }
-    
+
     /**
      * Adds ConvTask to pendingTasks and increments filesPending
-     * 
+     *
      * @param task ConvTask to be added
      */
     public void addToPending(ConvTask task) {
         pendingTasks.add(task);
         increment(filesPending);
     }
-    
+
     /**
      * Increments IntegerProperty
-     * 
+     *
      * @param prop IntegerProperty to be incremented
      */
     public void increment(IntegerProperty prop) {
-        prop.setValue(prop.intValue() + 1);
+        Platform.runLater(() -> {
+            prop.setValue(prop.intValue() + 1);
+        });
     }
-    
+
     /**
      * Decrements IntegerProperty
+     *
      * @param prop IntegerProperty to be decremented
      */
     public void decrement(IntegerProperty prop) {
-        prop.setValue(prop.intValue() - 1);
+        Platform.runLater(() -> {
+            prop.setValue(prop.intValue() - 1);
+        });
+        
     }
-    
+
     @Override
     public String toString() {
         return "Batch{" + "sourceDir=" + sourceDir + ", targetDir=" + targetDir + ", name=" + name + ", pendingTasks=" + pendingTasks + '}';
-    }    
+    }
 }
