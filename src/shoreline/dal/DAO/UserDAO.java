@@ -53,26 +53,27 @@ public class UserDAO {
      * @return
      * @throws DALException
      */
-    public int createUser(String username, String password, String firstname, String lastname, Connection con) throws DALException {
+    public User createUser(User user, String password, Connection con) throws DALException {
         String sql = "INSERT INTO UserTable VALUES(?,?,?,?)";
         try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            statement.setString(1, username);
-            statement.setString(2, firstname);
-            statement.setString(3, lastname);
+            statement.setString(1, user.getUserName());
+            statement.setString(2, user.getFirstName());
+            statement.setString(3, user.getLastName());
             statement.setString(4, password);
 
             if (statement.executeUpdate() == 1) {
                 ResultSet rs = statement.getGeneratedKeys();
                 rs.next();
-                return rs.getInt(1);
+                user.setId(rs.getInt(1));
+                return user;
             }
         } catch (SQLServerException ex) {
             throw new DALException("Error saving new user in DB.", ex);
         } catch (SQLException ex) {
             throw new DALException("Error saving new user in DB.", ex);
         }
-        return 0;
+        return null;
     }
 
     public User getUser(String userName, String password, Connection con) throws DALException {

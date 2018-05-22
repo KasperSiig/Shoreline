@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.bll.ConvStrats;
 
 import java.io.File;
@@ -20,8 +15,9 @@ import shoreline.dal.Writers.OutputWriter;
 import shoreline.exceptions.DALException;
 
 /**
+ * Handles conversion for CSV files
  *
- * @author Kasper Siig
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class CSVConvStrat implements ConvStrategy {
 
@@ -34,8 +30,9 @@ public class CSVConvStrat implements ConvStrategy {
         // Creates the Callable, that's going to be added to the ConvTask
         Callable call = (Callable) () -> {
             sheet = (CSVSheet) reader.read(task.getSource());
-            // XLSX files can contain more sheets, this gets the one at index 0
             writeJson(task, writer);
+            /* The callable will reach this even if the task is paused, so a check is
+               to verify that it is done */
             if (task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
                 Platform.runLater(() -> {
                     task.setStatus(ConvTask.Status.Finished);
@@ -43,6 +40,7 @@ public class CSVConvStrat implements ConvStrategy {
                 threadPool.removeFromRunning(task);
                 threadPool.addToFinished(task);
                 task.setProgress(0);
+                // Checks to see if the task is part of a batch
                 if (task.getBatch() != null) {
                     Platform.runLater(() -> {
                         task.getBatch().decrement(task.getBatch().getFilesPending());
@@ -57,21 +55,39 @@ public class CSVConvStrat implements ConvStrategy {
         task.setCallable(call);
     }
 
+    /**
+     * Handles the overall writing of input to .json file.
+     *
+     * @param task
+     * @param writer
+     * @throws DALException
+     */
     private void writeJson(ConvTask task, OutputWriter writer) throws DALException {
+        // If task is started from beginning, and not being resumed, create the new file
         if (task.getProgress() == 0) {
             task.setTarget(checkForExistingFile(task.getTarget()));
+            /* Input is being written to JSONObjects, and then stored in a JSONArray.
+               This starts the JSONArray in the output file */
             writer.write(task.getTarget(), "[");
         }
         for (int i = task.getProgress(); i < sheet.getRowCount(); i++) {
             if (task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
-                JSONObject jOb = createJSONObject(i, task);
-                task.setProgress(i + 1);
+                JSONObject jOb = createJSONObject(task);
+
+                /* JSONObjects need to be seperated with a comma.
+                   '\n' is purely for aesthetic reasons */
                 String seperator = "\n,";
                 if (i == 0) {
                     seperator = "\n";
                 }
+
                 writer.write(task.getTarget(), seperator + jOb.toString());
+                task.setProgress(i + 1);
+            } else {
+                break;
             }
+
+            // If the last object has been written, end the JSONArray
             if (i == sheet.getRowCount() - 1) {
                 writer.write(task.getTarget(), "\n]");
             }
@@ -79,22 +95,27 @@ public class CSVConvStrat implements ConvStrategy {
 
     }
 
-    private JSONObject createJSONObject(int i, ConvTask task) {
+    /**
+     * Creates JSONObject from a headers, defined in ConvTask
+     *
+     * @param task Task to get headers from
+     * @return JSONObject created from a row in CSV file
+     */
+    private JSONObject createJSONObject(ConvTask task) {
         JSONObject jOb = new JSONObject();
         JSONObject planning = new JSONObject();
 
         task.getConfig().getPrimaryHeaders().forEach((key, value) -> {
+            // Checks the key, since certain values needs to be put into its own JSONObject
             switch (key) {
                 case "earliestStartDate":
                 case "latestFinishDate":
                 case "latestStartDate":
-                    planning.put(key, getSheetdata(key, i, task));
-                    break;
                 case "estimatedTime":
-                    planning.put("estimatedTime", getSheetdata(key, i, task));
+                    planning.put(key, getSheetdata(key, task.getProgress(), task.getConfig()));
                     break;
                 default:
-                    jOb.put(key, getSheetdata(key, i, task));
+                    jOb.put(key, getSheetdata(key, task.getProgress(), task.getConfig()));
                     break;
             }
         });
@@ -103,37 +124,56 @@ public class CSVConvStrat implements ConvStrategy {
         jOb.put("planning", planning);
         return jOb;
     }
-    
-    private String getSheetdata(String header, int rowNumber, ConvTask task) {
 
-        Config config = task.getConfig();
+    /**
+     * Gets the value needed for creating JSONObject, from either primaryHeaders,
+     * secondaryHeaders or defaultValues
+     * 
+     * @param header Header in CSV sheet to get data from
+     * @param rowNumber Row number to get data
+     * @param config Config to get HashMaps of headers from
+     * @return String needed for creating JSONObject
+     */
+    private String getSheetdata(String header, int rowNumber, Config config) {
+        
         HashMap<String, String> headers = config.getPrimaryHeaders();
         HashMap<String, String> second = config.getSecondaryHeaders();
         HashMap<String, String> defaultValues = config.getDefaultValues();
         String rtn;
+        // Checks if header in HashMap, otherwise there will be nothing to get data from
         if (headers.get(header) != null) {
             rtn = sheet.getSheetData(rowNumber, headers.get(header));
+            // If cell contains anything, return the value
             if (!rtn.isEmpty()) {
                 return rtn;
             }
         }
+        
         if (second.get(header) != null) {
             rtn = sheet.getSheetData(rowNumber, second.get(header));
             if (!rtn.isEmpty()) {
                 return rtn;
             }
         }
+        
         if (defaultValues.get(header) != null) {
             return defaultValues.get(header);
         }
+        
         return "";
     }
 
+    /**
+     * Checks if file already exists. If it does, appends (i) to filename
+     * @param file File to check for existence
+     * @return File including filename not occupied
+     */
     private File checkForExistingFile(File file) {
         int i = 1;
         File tempFile = file;
+        /* Runs in a while(true), since it will break at some point, when an
+           available file name has been found */
         while (true) {
-            System.out.println(tempFile.getAbsolutePath());
             if (!tempFile.isFile()) {
                 return tempFile;
             }

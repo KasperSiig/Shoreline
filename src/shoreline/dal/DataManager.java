@@ -60,11 +60,11 @@ public class DataManager {
         return pass;
     }
 
-    public int createUser(String username, String password, String firstname, String lastname) throws DALException {
+    public User createUser(User user, String password) throws DALException {
         Connection con = conPool.checkOut();
-        int id = userDAO.createUser(username, password, firstname, lastname, con);
+        User userRtn = userDAO.createUser(user, password, con);
         conPool.checkIn(con);
-        return id;
+        return userRtn;
     }
 
     public User getUser(String userName, String password) throws DALException {
@@ -74,9 +74,9 @@ public class DataManager {
         return user;
     }
 
-    public void addLog(int userId, Alert.AlertType type, String message) throws DALException {
+    public void addLog(User user, Alert.AlertType type, String message) throws DALException {
         Connection con = conPool.checkOut();
-        logDAO.addLog(userId, type, message, con);
+        logDAO.addLog(user, type, message, con);
         conPool.checkIn(con);
     }
 
@@ -127,26 +127,4 @@ public class DataManager {
         }
         return impl.getTitles(file);
     }
-
-    public void addCallableToTask(ConvTask task) throws DALException {
-        String extension = "";
-
-        int i = task.getSource().getAbsolutePath().lastIndexOf('.');
-        if (i > 0) {
-            extension = task.getSource().getAbsolutePath().substring(i + 1);
-        }
-        ConvImpl impl;
-        switch (extension) {
-            case "xlsx":
-                impl = new ConvImpl(new XLXSConvStrat(), new XLSXReader(), new StringToFile());
-                break;
-            case "csv":
-                impl = new ConvImpl(new CSVConvStrat(), new CSVReader(), new StringToFile());
-                break;
-            default:
-                throw new IllegalArgumentException();
-        }
-        impl.addCallable(task);
-    }
-
 }

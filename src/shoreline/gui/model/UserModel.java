@@ -53,9 +53,9 @@ public class UserModel {
      * @return Boolean whether the user was successfully created or not
      * @throws GUIException
      */
-    public int create(String username, String password, String firstname, String lastname) throws GUIException {
+    public User create(User user, String password) throws GUIException {
         try {
-            return logic.getUserLogic().createUser(username, hashString(password), firstname, lastname);
+            return logic.getUserLogic().createUser(user, hashString(password));
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }

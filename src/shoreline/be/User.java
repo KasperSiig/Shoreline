@@ -51,5 +51,13 @@ public class User {
      */
     public int getId() {
         return id;
-    }    
+    }
+
+    /**
+     * Sets the id of User
+     * @param id Id to be set
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
 }

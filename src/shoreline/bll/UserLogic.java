@@ -12,6 +12,11 @@ public class UserLogic {
     
     private LogicManager logicManager;
 
+    /**
+     * Constructor for UserLogic
+     *
+     * @param logicManager Reference back to the LogicManager
+     */
     public UserLogic(LogicManager logicManager) {
         this.logicManager = logicManager;
     }
@@ -39,16 +44,14 @@ public class UserLogic {
     /**
      * Creates new user
      * 
-     * @param username Username
+     * @param user User to create
      * @param password Password
-     * @param firstname First Name
-     * @param lastname Last Name
      * @return Whether the user was created or not
      * @throws BLLException 
      */
-    public int createUser(String username, String password, String firstname, String lastname) throws BLLException {
+    public User createUser(User user, String password) throws BLLException {
         try {
-            return logicManager.getDataManager().createUser(username, password, firstname, lastname);
+            return logicManager.getDataManager().createUser(user, password);
         } catch (DALException ex) {
             throw new BLLException(ex);
         }

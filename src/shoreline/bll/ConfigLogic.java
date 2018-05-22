@@ -1,6 +1,5 @@
 package shoreline.bll;
 
-import java.util.HashMap;
 import java.util.List;
 import shoreline.be.Config;
 import shoreline.exceptions.BLLException;
@@ -13,6 +12,11 @@ import shoreline.exceptions.DALException;
 public class ConfigLogic {
     private LogicManager logicManager;
 
+    /**
+     * Constructor for ConfigLogic
+     * 
+     * @param logicManager Reference back to the LogicManager
+     */
     public ConfigLogic(LogicManager logicManager) {
         this.logicManager = logicManager;
     }
@@ -30,11 +34,9 @@ public class ConfigLogic {
     }
 
     /**
-     * Saves config in database
+     * Saves Config in database
      * 
-     * @param name Name of config
-     * @param extension Filetype that config is used for
-     * @param map 
+     * @param config Config to be saved
      * @throws BLLException 
      */
     public void saveConfig(Config config) throws BLLException {

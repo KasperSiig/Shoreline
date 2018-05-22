@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.control.Alert;
 import shoreline.be.LogItem;
+import shoreline.be.User;
 import shoreline.exceptions.DALException;
 
 /**
@@ -99,12 +100,12 @@ public class LoggingDAO {
      * @param message
      * @throws DALException
      */
-    public void addLog(int userId, Alert.AlertType at, String message, Connection con) throws DALException {
+    public void addLog(User user, Alert.AlertType at, String message, Connection con) throws DALException {
         String sql = "INSERT INTO LogTable VALUES(?,?,GETDATE(),?)";
         try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setString(1, at.toString());
-            statement.setInt(2, userId);
+            statement.setInt(2, user.getId());
             statement.setString(3, message);
             statement.executeUpdate();
         } catch (SQLException ex) {

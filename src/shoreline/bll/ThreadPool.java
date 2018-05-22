@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.bll;
 
 import java.util.ArrayList;
@@ -15,7 +10,7 @@ import shoreline.be.ConvTask;
 
 /**
  *
- * @author Kasper Siig
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class ThreadPool {
 
@@ -33,8 +28,6 @@ public class ThreadPool {
     private List<ConvTask> pending;
     private List<ConvTask> running;
     private List<ConvTask> finished;
-    private Long cur;
-    private boolean started = false;
 
     /**
      * Instantiates the 3 ArrayLists, and sets the ThreadPool to the max number
@@ -44,7 +37,7 @@ public class ThreadPool {
         pending = new ArrayList();
         running = new ArrayList();
         finished = new ArrayList();
-        this.threadPool = Executors.newFixedThreadPool(4);
+        this.threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     }
 
     /**
@@ -72,10 +65,6 @@ public class ThreadPool {
      */
     public void addToFinished(ConvTask task) {
         finished.add(task);
-        if (running.isEmpty()) {
-            System.out.println(System.currentTimeMillis() - cur);
-            started = false;
-        }
     }
 
     /**
@@ -94,15 +83,11 @@ public class ThreadPool {
      * @param task
      */
     public void startTask(ConvTask task) {
-        if (!started) {
-            cur = System.currentTimeMillis();
-        }
         task.setStatus(ConvTask.Status.Running);
         Future future = threadPool.submit(task.getCallable());
         task.setFuture(future);
         pending.remove(task);
         running.add(task);
-        started = true;
     }
 
     /**
@@ -143,9 +128,14 @@ public class ThreadPool {
      * Shuts down the ExecutorSerivce
      */
     public void closeThreadPool() {
-        threadPool.shutdown();
+        threadPool.shutdownNow();
     }
     
+    /**
+     * Gives the ability to submit any given callable to ThreadPool
+     * 
+     * @param callable Callable to add to ThreadPool
+     */
     public void addCallableToPool(Callable callable) {
         threadPool.submit(callable);
     }

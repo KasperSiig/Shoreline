@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -16,6 +18,7 @@ import shoreline.dal.Readers.InputReader;
 import shoreline.dal.TitleStrats.TitleImpl;
 import shoreline.dal.TitleStrats.XLSXTitleStrat;
 import shoreline.dal.Writers.OutputWriter;
+import shoreline.exceptions.BLLException;
 import shoreline.exceptions.DALException;
 
 /**
@@ -32,7 +35,7 @@ public class XLXSConvStrat implements ConvStrategy {
     private XSSFSheet sheet1;
 
     @Override
-    public void addCallable(ConvTask task, InputReader reader, OutputWriter writer) {
+    public void addCallable(ConvTask task, InputReader reader, OutputWriter writer) throws BLLException {
         // Gets the instance of the ThreadPool object
         ThreadPool threadPool = ThreadPool.getInstance();
         threadPool.addToPending(task);
@@ -48,6 +51,8 @@ public class XLXSConvStrat implements ConvStrategy {
             // XLSX files can contain more sheets, this gets the one at index 0
             sheet1 = wb.getSheetAt(0);
             writeJson(task, writer);
+            /* The callable will reach this even if the task is paused, so a check is
+               to verify that it is done */
             if (task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
                 Platform.runLater(() -> {
                     task.setStatus(ConvTask.Status.Finished);
@@ -55,6 +60,7 @@ public class XLXSConvStrat implements ConvStrategy {
                 threadPool.removeFromRunning(task);
                 threadPool.addToFinished(task);
                 task.setProgress(0);
+                // Checks to see if the task is part of a batch
                 if (task.getBatch() != null) {
                     Platform.runLater(() -> {
                         task.getBatch().decrement(task.getBatch().getFilesPending());
@@ -129,28 +135,34 @@ public class XLXSConvStrat implements ConvStrategy {
      * @param writer How the information should be written
      * @throws DALException If there was a problem writing to the file
      */
-    private void writeJson(ConvTask task, OutputWriter writer) throws DALException {
-        // If task is starting, and not continuing from a pause, create new file
-        if (task.getProgress() == 0) {
-            task.setTarget(checkForExistingFile(task.getTarget()));
-            writer.write(task.getTarget(), "[");
-        }
-        // Is being used to keep track of what row to pull data from
-        int i = task.getProgress() + 1;
-        while (sheet1.getRow(i) != null
-                && task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
-            JSONObject jOb = createJSONObject(i, task);
-            task.setProgress(i);
-            String seperator = "\n,";
-            if (i == 1) {
-                seperator = "\n";
+    private void writeJson(ConvTask task, OutputWriter writer) throws BLLException {
+        try {
+            // If task is starting, and not continuing from a pause, create new file
+            if (task.getProgress() == 0) {
+
+                task.setTarget(checkForExistingFile(task.getTarget()));
+                writer.write(task.getTarget(), "[");
+
             }
-            writer.write(task.getTarget(), seperator + jOb.toString(4));
-            i++;
-        }
-        // If the last row has been written, close the JSONArray
-        if (i == sheet1.getLastRowNum() + 1) {
-            writer.write(task.getTarget(), "\n]");
+            // Is being used to keep track of what row to pull data from
+            int i = task.getProgress() + 1;
+            while (sheet1.getRow(i) != null
+                    && task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
+                JSONObject jOb = createJSONObject(i, task);
+                task.setProgress(i);
+                String seperator = "\n,";
+                if (i == 1) {
+                    seperator = "\n";
+                }
+                writer.write(task.getTarget(), seperator + jOb.toString(4));
+                i++;
+            }
+            // If the last row has been written, close the JSONArray
+            if (i == sheet1.getLastRowNum() + 1) {
+                writer.write(task.getTarget(), "\n]");
+            }
+        } catch (DALException ex) {
+            throw new BLLException(ex);
         }
     }
 
@@ -180,7 +192,7 @@ public class XLXSConvStrat implements ConvStrategy {
                     break;
             }
         });
-        
+
         jOb.put("createdOn", Calendar.getInstance().getTime());
         jOb.put("createdBy", "SAP");
         jOb.put("planning", planning);
@@ -189,7 +201,7 @@ public class XLXSConvStrat implements ConvStrategy {
 
     /**
      * Check if filename already exists. If it does, append (i) to the end.
-     * 
+     *
      * @param file File to check for existence
      * @return File containing available filename
      */

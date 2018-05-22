@@ -2,14 +2,13 @@ package shoreline.gui.model;
 
 import java.util.List;
 import java.util.Timer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
 import shoreline.be.LogItem;
+import shoreline.be.User;
 import shoreline.bll.LogicManager;
 import shoreline.exceptions.BLLException;
 import shoreline.exceptions.GUIException;
@@ -47,9 +46,9 @@ public class LogModel {
      * @param message Log message
      * @throws GUIException
      */
-    public void add(int userId, Alert.AlertType type, String message) throws GUIException {
+    public void add(User user, Alert.AlertType type, String message) throws GUIException {
         try {
-            logic.getLogLogic().addLog(userId, type, message);
+            logic.getLogLogic().addLog(user, type, message);
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
@@ -76,7 +75,7 @@ public class LogModel {
      * @throws GUIException
      */
     private void startTimer() throws GUIException {
-        logic.getLogLogic().logTimer();
+        logic.getLogLogic().startLogTimer();
         addLogListener();
     }
 
@@ -94,7 +93,7 @@ public class LogModel {
      * @return
      */
     public Timer getTimer() {
-        return logic.getLogLogic().getTimer();
+        return logic.getLogLogic().getLogTimer();
     }
 
     /**

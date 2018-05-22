@@ -95,7 +95,7 @@ public class TaskWindowController implements Initializable, IController {
             model.getTaskModel().start(taskView.getTask());
             toggleSelected(taskView, false);
             try {
-                model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getFirstName() + " has started task " + taskView.getTask().getName());
+                model.getLogModel().add(model.getUserModel().getUser(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getFirstName() + " has started task " + taskView.getTask().getName());
             } catch (GUIException ex) {
                 Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
             }
@@ -133,7 +133,7 @@ public class TaskWindowController implements Initializable, IController {
                     }
 
                     try {
-                        model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getFirstName() + " has stopped task " + task.getTask().getName());
+                        model.getLogModel().add(model.getUserModel().getUser(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getFirstName() + " has stopped task " + task.getTask().getName());
                     } catch (GUIException ex) {
                         Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
                     }
@@ -153,7 +153,7 @@ public class TaskWindowController implements Initializable, IController {
             }
 
             try {
-                model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getFirstName() + " has paused task " + task.getName());
+                model.getLogModel().add(model.getUserModel().getUser(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getFirstName() + " has paused task " + task.getName());
             } catch (GUIException ex) {
                 Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
             }
@@ -336,7 +336,7 @@ public class TaskWindowController implements Initializable, IController {
             try {
                 model.getTaskModel().getPendingTasks().remove(task);
                 vBoxPen.getChildren().remove(task);
-                model.getLogModel().add(model.getUserModel().getUser().getId(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getFirstName() + " has deleted task " + task.getTask().getName());
+                model.getLogModel().add(model.getUserModel().getUser(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getFirstName() + " has deleted task " + task.getTask().getName());
             } catch (GUIException ex) {
                 Window.openExceptionWindow("There was a problem with a log", ex.getStackTrace());
             }
