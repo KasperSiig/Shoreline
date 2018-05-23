@@ -37,7 +37,8 @@ public class Window {
         SingleTask("SingleTaskWindow.fxml"),
         Batch("BatchWindow.fxml"),
         BatchTask("BatchTaskWindow.fxml"),
-        defaultValue("DefaultValueWindow.fxml");
+        defaultValue("DefaultValueWindow.fxml"),
+        setting("SettingsWindow.fxml");
 
         String view;
 

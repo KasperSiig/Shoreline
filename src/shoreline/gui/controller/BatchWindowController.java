@@ -125,6 +125,12 @@ public class BatchWindowController implements Initializable, IController {
             Logger.getLogger(BatchWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        txtFileName.clear();
+        txtImportPath.clear();
+        txtTargetPath.clear();
+        comboConfig.getSelectionModel().clearSelection();
+        comboConfig.setValue(null);
+        
     }
 
     /**

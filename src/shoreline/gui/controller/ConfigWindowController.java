@@ -115,13 +115,6 @@ public class ConfigWindowController implements Initializable, IController {
         generateRightclickMenu();
         lvMappingSetup();
         makeConfigListener();
-        try {
-            tabPane.getTabs().add(makeTab(model, Window.View.SingleTask, "Single task"));
-            tabPane.getTabs().add(makeTab(model, Window.View.Batch, "Batch"));
-            tabPane.getTabs().add(makeTab(model, Window.View.logView, "Log"));
-        } catch (GUIException ex) {
-            Window.openExceptionWindow(ex.getMessage());
-        }
 
 //        TabPaneDetacher.create().makeTabsDetachable(tabPane);
         lvMapOverview.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
@@ -139,26 +132,6 @@ public class ConfigWindowController implements Initializable, IController {
                 };
             }
         });
-    }
-
-    public Tab makeTab(ModelManager model, Window.View view, String name) throws GUIException {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource(view.getView()));
-            Node node = loader.load();
-
-            IController cont = loader.getController();
-            cont.postInit(model);
-
-            Tab tab = new Tab(name);
-
-            tab.setContent(node);
-
-            return tab;
-        } catch (IOException ex) {
-            Window.openExceptionWindow(ex.getMessage());
-        }
-        return null;
     }
 
     /**

@@ -3,6 +3,7 @@ package shoreline.gui.controller;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -16,12 +17,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import shoreline.Main;
 import shoreline.be.ConvTask;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.ModelManager;
@@ -56,6 +62,8 @@ public class SingleTaskWindowController implements Initializable, IController {
     private HBox hBoxImport;
     @FXML
     private HBox hBoxTarget;
+    @FXML
+    private TabPane tabPane;
 
     /**
      * Initializes the controller class.
@@ -76,6 +84,34 @@ public class SingleTaskWindowController implements Initializable, IController {
             Window.openExceptionWindow(ex.getMessage());
         }
         comboConfig.setDisable(true);
+        try {
+            tabPane.getTabs().add(makeTab(model, Window.View.Batch, "Batch"));
+            tabPane.getTabs().add(makeTab(model, Window.View.Config, "Config"));
+            tabPane.getTabs().add(makeTab(model, Window.View.setting, "Settings"));
+            tabPane.getTabs().add(makeTab(model, Window.View.logView, "Log"));
+        } catch (GUIException ex) {
+            Window.openExceptionWindow(ex.getMessage());
+        }
+    }
+
+    public Tab makeTab(ModelManager model, Window.View view, String name) throws GUIException {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource(view.getView()));
+            Node node = loader.load();
+
+            IController cont = loader.getController();
+            cont.postInit(model);
+
+            Tab tab = new Tab(name);
+
+            tab.setContent(node);
+
+            return tab;
+        } catch (IOException ex) {
+            Window.openExceptionWindow(ex.getMessage());
+        }
+        return null;
     }
 
     /**
@@ -175,6 +211,12 @@ public class SingleTaskWindowController implements Initializable, IController {
         } catch (GUIException ex) {
             Window.openExceptionWindow(ex.getMessage());
         }
+
+        txtFileName.clear();
+        txtImportPath.clear();
+        txtTargetPath.clear();
+        comboConfig.getSelectionModel().clearSelection();
+        comboConfig.setValue(null);
 
     }
 
