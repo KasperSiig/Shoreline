@@ -120,7 +120,6 @@ public class CSVConvStrat implements ConvStrategy {
             }
         });
         jOb.put("createdOn", Calendar.getInstance().getTime());
-        jOb.put("createdBy", "SAP");
         jOb.put("planning", planning);
         return jOb;
     }

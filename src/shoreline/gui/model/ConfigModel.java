@@ -31,7 +31,7 @@ public class ConfigModel {
             
             this.templateList = FXCollections.observableArrayList("siteName", "assetSerialNumber",
                     "type", "externalWorkOrderId", "systemStatus", "userStatus", "name", "priority",
-                    "latestFinishDate", "earliestStartDate", "latestStartDate", "estimatedTime");
+                    "latestFinishDate", "earliestStartDate", "latestStartDate", "estimatedTime", "createdBy", "status");
             this.configList = FXCollections.observableArrayList(getAllConfigs());
     }
 

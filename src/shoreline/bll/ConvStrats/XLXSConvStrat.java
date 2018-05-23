@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -194,7 +192,6 @@ public class XLXSConvStrat implements ConvStrategy {
         });
 
         jOb.put("createdOn", Calendar.getInstance().getTime());
-        jOb.put("createdBy", "SAP");
         jOb.put("planning", planning);
         return jOb;
     }

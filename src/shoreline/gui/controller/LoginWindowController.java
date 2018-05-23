@@ -2,25 +2,17 @@ package shoreline.gui.controller;
 
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
-import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import shoreline.be.CSVSheet;
 import shoreline.bll.ThreadPool;
-import shoreline.dal.Readers.CSVReader;
-import shoreline.exceptions.DALException;
 import shoreline.exceptions.GUIException;
-import shoreline.gui.MenuBarFactory;
 import shoreline.gui.model.ModelManager;
 import shoreline.statics.Window;
 
