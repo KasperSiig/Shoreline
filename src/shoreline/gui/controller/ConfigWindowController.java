@@ -323,7 +323,7 @@ public class ConfigWindowController implements Initializable, IController {
      * @param event
      */
     @FXML
-    private void handleInputFile(MouseEvent event) {
+    private void handleInputListClick(MouseEvent event) {
         if (lvInput.getItems().isEmpty()) {
             handelInputFile(new ActionEvent());
         }
