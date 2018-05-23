@@ -327,6 +327,11 @@ public class ConfigWindowController implements Initializable, IController {
         if (lvInput.getItems().isEmpty()) {
             handelInputFile(new ActionEvent());
         }
+        
+        if (!lvInput.getItems().isEmpty()) {
+            doubleClickMap(event);
+        }
+        
     }
 
     /**
