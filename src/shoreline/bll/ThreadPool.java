@@ -83,6 +83,7 @@ public class ThreadPool {
      * @param task
      */
     public void startTask(ConvTask task) {
+        System.out.println("started task - threadpool");
         task.setStatus(ConvTask.Status.Running);
         Future future = threadPool.submit(task.getCallable());
         task.setFuture(future);

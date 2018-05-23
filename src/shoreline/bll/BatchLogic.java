@@ -53,7 +53,7 @@ public class BatchLogic extends LogicClass {
      */
     public void addToBatchList(Batch batch) throws BLLException {
         batches.add(batch);
-        addToPendingInBatch(batch);
+        addExistingFilesToBatch(batch);
         runBatch(batch);
         addFolderListener(batch);
     }
@@ -74,7 +74,9 @@ public class BatchLogic extends LogicClass {
      * @throws BLLException if there was a problem running the tasks
      */
     public void runBatch(Batch batch) throws BLLException {
+        System.out.println("runs batch");
         List<ConvTask> tasks = new ArrayList(batch.getPendingTasks());
+        System.out.println(tasks);
         for (ConvTask task : tasks) {
             batch.removeFromPending(task);
             logicManager.getTaskLogic().addCallableToTask(task);
@@ -87,7 +89,7 @@ public class BatchLogic extends LogicClass {
      *
      * @param batch Batch to add files to
      */
-    private void addToPendingInBatch(Batch batch) {
+    private void addExistingFilesToBatch(Batch batch) {
         List<File> filesInBatch = getFilesInBatch(batch);
         filesInBatch.forEach((file) -> {
             ConvTask task = createTask(batch, file);
@@ -113,6 +115,7 @@ public class BatchLogic extends LogicClass {
 
         ConvTask task = new ConvTask(name, file, tempFile, batch.getConfig());
         task.setBatch(batch);
+        System.out.println("set batch");
         return task;
     }
 
@@ -152,13 +155,15 @@ public class BatchLogic extends LogicClass {
                     key = watcher.take();
                     for (WatchEvent<?> event : key.pollEvents()) {
                         
-                        @SuppressWarnings("unchecked")
+//                        @SuppressWarnings("unchecked")
                         WatchEvent<Path> ev = (WatchEvent<Path>) event;
                         Path fileName = ev.context();
 
                         String extension = batch.getConfig().getExtension();
                         if (fileName.toString().endsWith(extension)) {
-                            createTask(batch, new File(batch.getSourceDir() + "\\" + fileName.toString()));
+                            System.out.println("found new file");
+                            ConvTask task = createTask(batch, new File(batch.getSourceDir() + "\\" + fileName.toString()));
+                            batch.addToPending(task);
                             runBatch(batch);
                         }
                     }
