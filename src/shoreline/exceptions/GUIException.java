@@ -2,7 +2,7 @@ package shoreline.exceptions;
 
 /**
  *
- * @author
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class GUIException extends Exception {
 
