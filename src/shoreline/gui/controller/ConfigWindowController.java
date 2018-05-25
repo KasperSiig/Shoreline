@@ -384,6 +384,9 @@ public class ConfigWindowController implements Initializable, IController {
                 mappingList.clear();
                 JSONmap.clear();
                 JSONmap.putAll(config.getPrimaryHeaders());
+                System.out.println(config.getPrimaryHeaders());
+                System.out.println(config.getSecondaryHeaders());
+                System.out.println(config.getDefaultValues());
                 setInfoInlvMap(JSONmap);
                 Window.openSnack("Config " + config.getName() + " was loaded", bPane, "blue");
             });

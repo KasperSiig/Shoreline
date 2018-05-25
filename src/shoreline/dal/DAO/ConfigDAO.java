@@ -1,11 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.dal.DAO;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,16 +8,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import shoreline.be.Config;
-import shoreline.dal.DataBaseConnector;
 import shoreline.exceptions.DALException;
 
 /**
  *
- * @author kenne
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class ConfigDAO {
 
@@ -33,7 +25,7 @@ public class ConfigDAO {
     /**
      * Fetches all configurations from the DB.
      *
-     * @param con
+     * @param con Connection to database
      * @return
      * @throws DALException
      */
@@ -41,25 +33,27 @@ public class ConfigDAO {
         List<Config> configs = new ArrayList();
         String sql = "SELECT * FROM ConfigTable";
         try {
-
             PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
-                HashMap primaryHeaders = new HashMap();
-                HashMap secondaryHeaders = new HashMap();
-                HashMap defaultValues = new HashMap();
+                HashMap<String, String> primaryHeaders = new HashMap();
+                HashMap<String, String> secondaryHeaders = new HashMap();
+                HashMap<String, String> defaultValues = new HashMap();
+
                 sql = "SELECT * FROM MapTable WHERE cfgId = ?";
                 statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 statement.setInt(1, rs.getInt("id"));
                 ResultSet rsMap = statement.executeQuery();
+
                 while (rsMap.next()) {
-                    primaryHeaders.put(rsMap.getString("targetName"), rsMap.getString("sourceName"));
-                    if(rsMap.getString("source2Name") != null){
+                    if (rsMap.getString("sourceName") != null) {
+                        primaryHeaders.put(rsMap.getString("targetName"), rsMap.getString("sourceName"));
+                    }
+                    if (rsMap.getString("source2Name") != null) {
                         secondaryHeaders.put(rsMap.getString("targetName"), rsMap.getString("source2Name"));
                     }
-                    if(rsMap.getString("defaultName") != null){
+                    if (rsMap.getString("defaultName") != null) {
                         defaultValues.put(rsMap.getString("targetName"), rsMap.getString("defaultName"));
                     }
                 }
@@ -77,17 +71,14 @@ public class ConfigDAO {
     /**
      * Saves the configuration to ConfigTable in the DB.
      *
-     * @param name
-     * @param extension
-     * @param map
+     * @param config Config to be saved
+     * @param con Connection to database
      * @throws DALException
      */
     public void saveConfig(Config config, Connection con) throws DALException {
-        try {
+        String sql = "INSERT INTO ConfigTable VALUES(?,?)";
+        try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             int id = 0;
-            String sql = "INSERT INTO ConfigTable VALUES(?,?)";
-
-            PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             statement.setString(1, config.getName());
             statement.setString(2, config.getExtension());
@@ -97,44 +88,70 @@ public class ConfigDAO {
                 rs.next();
                 id = rs.getInt(1);
             }
-            
-            final int fid = id;
-            
-            HashMap<String, String> def = config.getDefaultValues();
-            HashMap<String, String> sec = config.getSecondaryHeaders();
-            
-            config.getPrimaryHeaders().forEach((String k, String v) -> {
+
+            // Values used inside lambda expressions have to be final
+            final int fId = id;
+
+            HashMap<String, String> defaultValues = config.getDefaultValues();
+            HashMap<String, String> secondaryHeaders = config.getSecondaryHeaders();
+
+            config.getPrimaryHeaders().forEach((key, value) -> {
                 try {
-                    saveMap(con, k, v, sec, def, fid);
+                    saveMap(con, key, value, secondaryHeaders, defaultValues, fId);
                 } catch (DALException ex) {
-                    Logger.getLogger(ConfigDAO.class.getName()).log(Level.SEVERE, null, ex);
+                    throw new RuntimeException(ex);
                 }
             });
+            setRemainingDefaults(con, defaultValues, id);
         } catch (SQLException ex) {
             throw new DALException("SQL Error.", ex);
         }
     }
 
     /**
+     * Sets all the default values
+     *
+     * @param con Connection to database
+     * @param defaultValues HashMap containg defaultValues
+     * @param configId Id of config in databse
+     */
+    private void setRemainingDefaults(Connection con, HashMap<String, String> defaultValues, int configId) {
+        defaultValues.forEach((key, value) -> {
+            String sql = "INSERT INTO MapTable VALUES(?,?,?,?,?)";
+            try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                statement.setInt(1, configId);
+                statement.setString(2, null);
+                statement.setString(3, key);
+                statement.setString(4, null);
+                statement.setString(5, value);
+                statement.execute();
+            } catch (SQLException ex) {
+                throw new RuntimeException("There was a problem saving default values", ex);
+            }
+        });
+
+    }
+
+    /**
      * Saves the configurations map to MapTable in DB.
      *
-     * @param con
-     * @param k
-     * @param v
+     * @param con Connection to database
+     * @param sourceName
+     * @param targetName
+     * @param secondaryHeaders
+     * @param defaultValues
      * @param id
      * @throws DALException
      */
-    private void saveMap(Connection con,String hK, String hV, HashMap<String, String> second, HashMap<String, String> defaults, int id) throws DALException {
-        try {
-            String sec;
-            String def;
-            String sql = "INSERT INTO MapTable VALUES(?,?,?,?,?)";
-            PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    private void saveMap(Connection con, String sourceName, String targetName,
+            HashMap<String, String> secondaryHeaders, HashMap<String, String> defaultValues, int id) throws DALException {
+        String sql = "INSERT INTO MapTable VALUES(?,?,?,?,?)";
+        try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setInt(1, id);
-            statement.setString(2, hV);
-            statement.setString(3, hK);
-            statement.setString(4, second.get(hK));
-            statement.setString(5, defaults.get(hK));                      
+            statement.setString(2, targetName);
+            statement.setString(3, sourceName);
+            statement.setString(4, secondaryHeaders.get(sourceName));
+            statement.setString(5, defaultValues.get(sourceName));
             statement.execute();
         } catch (SQLException ex) {
             throw new DALException("Error saving config.", ex);

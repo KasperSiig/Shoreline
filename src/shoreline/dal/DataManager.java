@@ -49,10 +49,6 @@ public class DataManager {
         return pDAO.getProperty(key);
     }
 
-    public void setProperty(String key, String input) throws DALException {
-        pDAO.setProperty(key, input);
-    }
-
     public String getPass(String username) throws DALException {
         Connection con = conPool.checkOut();
         String pass = userDAO.getPass(username, con);
@@ -82,7 +78,7 @@ public class DataManager {
 
     public List<LogItem> getAllLogs() throws DALException {
         Connection con = conPool.checkOut();
-        List<LogItem> items = logDAO.getAllLogs(con);
+        List<LogItem> items = logDAO.getExistingLogs(con);
         conPool.checkIn(con);
         return items;
     }

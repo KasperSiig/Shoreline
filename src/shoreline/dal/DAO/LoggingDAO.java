@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.dal.DAO;
 
 import java.sql.Connection;
@@ -20,24 +15,20 @@ import shoreline.exceptions.DALException;
 
 /**
  *
- * @author kenne
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class LoggingDAO {
 
-    private static int currentId = 0;
-
-    public LoggingDAO() {
-
-    }
-
+    private int currentId = 0;
+    
     /**
-     * Fetches all logs, and set currentId to the highest id fetched.
+     * Fetches all existing logs, and set currentId to the highest id fetched.
      *
-     * @param con
-     * @return
+     * @param con Connection to database
+     * @return All logs in database
      * @throws DALException
      */
-    public List<LogItem> getAllLogs(Connection con) throws DALException {
+    public List<LogItem> getExistingLogs(Connection con) throws DALException {
         String sql = "SELECT LT.*, UT.* FROM LogTable LT "
                 + "JOIN UserTable UT ON UT.id = LT.userId "
                 + "ORDER BY UT.id";
@@ -46,16 +37,17 @@ public class LoggingDAO {
 
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                Alert.AlertType at = getAlertType(rs.getString("type"));
+                Alert.AlertType alertType = getAlertType(rs.getString("type"));
                 currentId = rs.getInt("id");
                 Date date = rs.getDate("date");
-                LogItem logItem = new LogItem(currentId, at, rs.getString("message"), rs.getString("firstName") + " " + rs.getString("lastName"), date);
+                LogItem logItem = new LogItem(currentId, alertType, rs.getString("message"), 
+                        rs.getString("firstName") + " " + rs.getString("lastName"), date);
                 logItems.add(logItem);
 
             }
             return logItems;
         } catch (SQLException ex) {
-            throw new DALException("SQL Error.", ex);
+            throw new DALException("Could not get existing logs", ex);
         }
     }
 
@@ -63,8 +55,8 @@ public class LoggingDAO {
      * Fetches logs that has an id higher than currentId and sets currentId to
      * the highest fetched.
      *
-     * @param con
-     * @return
+     * @param con Connection to database
+     * @return New logs
      * @throws DALException
      */
     public List<LogItem> getNewLogs(Connection con) throws DALException {
@@ -93,18 +85,19 @@ public class LoggingDAO {
     }
 
     /**
-     * Adds a log to the DB.
-     *
-     * @param userId
-     * @param at
-     * @param message
-     * @throws DALException
+     * Adds new log to database
+     * 
+     * @param user User connected to the log
+     * @param alertType Type of log
+     * @param message Message in log
+     * @param con Connection to database
+     * @throws DALException 
      */
-    public void addLog(User user, Alert.AlertType at, String message, Connection con) throws DALException {
+    public void addLog(User user, Alert.AlertType alertType, String message, Connection con) throws DALException {
         String sql = "INSERT INTO LogTable VALUES(?,?,GETDATE(),?)";
         try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            statement.setString(1, at.toString());
+            statement.setString(1, alertType.toString());
             statement.setInt(2, user.getId());
             statement.setString(3, message);
             statement.executeUpdate();
@@ -114,10 +107,10 @@ public class LoggingDAO {
     }
 
     /**
-     * Sets logItems' AlertType to the one equal type string in DB.
+     * Returns enum AlertType based on String input
      *
-     * @param type
-     * @return
+     * @param type Type of enum
+     * @return Enum AlertType
      */
     private Alert.AlertType getAlertType(String type) {
         switch (type) {
