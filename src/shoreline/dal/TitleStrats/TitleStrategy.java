@@ -6,7 +6,7 @@ import shoreline.exceptions.DALException;
 
 /**
  *
- * @author 
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public interface TitleStrategy {
     /**

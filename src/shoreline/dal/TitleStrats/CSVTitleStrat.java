@@ -1,36 +1,29 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.dal.TitleStrats;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import shoreline.exceptions.DALException;
 
 /**
  *
- * @author Kasper Siig
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class CSVTitleStrat implements TitleStrategy {
+
     private static final String DELIMITER = ",";
-    
+
     @Override
     public HashMap<String, Integer> getTitles(File file) throws DALException {
-        HashMap<String, Integer> headerMap = null;
-        try {
+        HashMap<String, Integer> headerMap = new HashMap();
+        try (Scanner scanner = new Scanner(file)) {
             Thread.sleep(50);
-            Scanner scanner = new Scanner(file);
+
             String firstLine = scanner.nextLine();
             String[] headers = splitLine(firstLine, DELIMITER);
-            headerMap= new HashMap();
+
+            // Puts the headers into headerMap, appending an int if already exists
             for (int i = 0; i < headers.length; i++) {
                 String tempName = headers[i];
                 if (!headerMap.containsKey(tempName)) {
@@ -47,18 +40,25 @@ public class CSVTitleStrat implements TitleStrategy {
                 }
             }
         } catch (FileNotFoundException | InterruptedException ex) {
-            Logger.getLogger(CSVTitleStrat.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DALException("Could not get titles from CSV sheet", ex);
         }
         return headerMap;
     }
-    
+
+    /**
+     * Use regex to split line, as to not split on fields containing delimiter
+     *
+     * @param line Line to be split
+     * @param delimiter Delimiter to split by
+     * @return Array containing the split up line
+     */
     private String[] splitLine(String firstLine, String delimiter) {
         String[] line = firstLine.split(delimiter + "(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
         for (int i = 0; i < line.length; i++) {
-                if (line[i].contains("\"")) {
-                    line[i] = line[i].substring(1, line[i].length() - 1);
-                }
+            if (line[i].contains("\"")) {
+                line[i] = line[i].substring(1, line[i].length() - 1);
             }
+        }
         return line;
     }
 
