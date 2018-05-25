@@ -9,11 +9,10 @@ import shoreline.exceptions.DALException;
 
 /**
  *
- * @author Kasper Siig
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class ConnectionPool extends ObjectPool<Connection>{
 
-    private Connection con;
     private DataBaseConnector dbConnect;
 
     /**
@@ -22,6 +21,7 @@ public class ConnectionPool extends ObjectPool<Connection>{
      * @throws DALException 
      */
     public ConnectionPool() throws DALException {
+        // Call to constructor in ObjectPool
         super();
         try {
             this.dbConnect = new DataBaseConnector();

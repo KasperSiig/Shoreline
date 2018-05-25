@@ -6,7 +6,7 @@ import shoreline.exceptions.DALException;
 
 /**
  *
- * @author Kasper Siig
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  * @param <T> The type of Object to be pooled
  */
 public abstract class ObjectPool<T> {
@@ -23,6 +23,7 @@ public abstract class ObjectPool<T> {
         locked = new ConcurrentHashMap();
         unlocked = new ConcurrentHashMap();
     }
+    
     /**
      * Creates a new Object
      * 

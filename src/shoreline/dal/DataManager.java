@@ -10,19 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import javafx.scene.control.Alert;
 import shoreline.be.Config;
-import shoreline.be.ConvTask;
 import shoreline.be.LogItem;
 import shoreline.be.User;
-import shoreline.bll.ConvStrats.CSVConvStrat;
-import shoreline.bll.ConvStrats.ConvImpl;
-import shoreline.bll.ConvStrats.XLXSConvStrat;
 import shoreline.dal.ObjectPool.ConnectionPool;
-import shoreline.dal.Readers.CSVReader;
-import shoreline.dal.Readers.XLSXReader;
 import shoreline.dal.TitleStrats.CSVTitleStrat;
 import shoreline.dal.TitleStrats.TitleImpl;
 import shoreline.dal.TitleStrats.XLSXTitleStrat;
-import shoreline.dal.Writers.StringToFile;
 import shoreline.exceptions.DALException;
 
 /**
