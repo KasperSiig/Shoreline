@@ -1,19 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.dal.Readers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 import shoreline.be.CSVSheet;
 import shoreline.dal.TitleStrats.CSVTitleStrat;
@@ -22,7 +14,7 @@ import shoreline.exceptions.DALException;
 
 /**
  *
- * @author Kasper Siig
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class CSVReader implements InputReader<CSVSheet> {
 
@@ -31,15 +23,17 @@ public class CSVReader implements InputReader<CSVSheet> {
     @Override
     public CSVSheet read(File file) throws DALException {
         CSVSheet sheet = null;
-        try {
-            Thread.sleep(50);
-            Scanner scanner = new Scanner(file);
+        try (Scanner scanner = new Scanner(file)) {
+
+            // Get titleIndexMap
             TitleImpl impl = new TitleImpl(new CSVTitleStrat());
             HashMap<String, Integer> headerMap = impl.getTitles(file);
-            System.out.println("before count");
+
+            // Initialize inputArray
             int count = countLines(file);
-            System.out.println("after count");
             String[][] input = new String[count - 1][headerMap.size()];
+
+            // copy from input file to inputArray
             int i = 0;
             scanner.nextLine();
             while (scanner.hasNextLine()) {
@@ -52,30 +46,41 @@ public class CSVReader implements InputReader<CSVSheet> {
             sheet = new CSVSheet(headerMap, input);
         } catch (FileNotFoundException ex) {
             throw new DALException("Error reading CSV File", ex);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(CSVReader.class.getName()).log(Level.SEVERE, null, ex);
         }
         return sheet;
     }
 
-    private int countLines(File file) {
+    /**
+     * Get number of lines in file
+     *
+     * @param file File to count lines from
+     * @return number of lines in file
+     */
+    private int countLines(File file) throws DALException {
         int count = 0;
         try (Stream<String> lines = Files.lines(file.toPath())) {
             count = (int) lines.count();
         } catch (IOException ex) {
-            Logger.getLogger(CSVReader.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DALException("Error counting lines from CSV file", ex);
         }
         return count;
     }
 
-    private String[] splitLine(String firstLine, String delimiter) {
-        String[] line = firstLine.split(delimiter + "(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-        for (int i = 0; i < line.length; i++) {
-            if (line[i].contains("\"")) {
-                line[i] = line[i].substring(1, line[i].length() - 1);
+    /**
+     * Use regex to split line, as to not split on fields containing delimiter
+     *
+     * @param line Line to be split
+     * @param delimiter Delimiter to split by
+     * @return Array containing the split up line
+     */
+    private String[] splitLine(String line, String delimiter) {
+        String[] splitLine = line.split(delimiter + "(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+        for (int i = 0; i < splitLine.length; i++) {
+            if (splitLine[i].contains("\"")) {
+                splitLine[i] = splitLine[i].substring(1, splitLine[i].length() - 1);
             }
         }
-        return line;
+        return splitLine;
     }
 
 }

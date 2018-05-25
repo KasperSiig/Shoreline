@@ -161,9 +161,11 @@ public class BatchLogic extends LogicClass {
 
                         String extension = batch.getConfig().getExtension();
                         if (fileName.toString().endsWith(extension)) {
-                            System.out.println("found new file");
                             ConvTask task = createTask(batch, new File(batch.getSourceDir() + "\\" + fileName.toString()));
                             batch.addToPending(task);
+                            /* Has to sleep, otherwise it starts converting, before data
+                               has been written to the new file */
+                            Thread.sleep(50);
                             runBatch(batch);
                         }
                     }
