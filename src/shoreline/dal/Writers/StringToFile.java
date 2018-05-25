@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.dal.Writers;
 
 import java.io.File;
@@ -13,7 +8,7 @@ import shoreline.exceptions.DALException;
 /**
  * Writes a given string, to a given output
  *
- * @author Kasper Siig
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class StringToFile implements OutputWriter<String> {
 

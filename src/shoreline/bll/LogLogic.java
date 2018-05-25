@@ -56,7 +56,7 @@ public class LogLogic {
      */
     public List<LogItem> getAllLogs() throws BLLException {
         try {
-            return logicManager.getDataManager().getAllLogs();
+            return logicManager.getDataManager().getExistingLogs();
         } catch (DALException ex) {
             throw new BLLException(ex);
         }

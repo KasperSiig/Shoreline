@@ -1,7 +1,6 @@
 package shoreline.dal.ObjectPool;
 
 import com.microsoft.sqlserver.jdbc.SQLServerException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import shoreline.dal.DataBaseConnector;
@@ -11,25 +10,21 @@ import shoreline.exceptions.DALException;
  *
  * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
-public class ConnectionPool extends ObjectPool<Connection>{
+public class ConnectionPool extends ObjectPool<Connection> {
 
     private DataBaseConnector dbConnect;
 
     /**
      * Instantiates the ConnectionPool
-     * 
-     * @throws DALException 
+     *
+     * @throws DALException
      */
     public ConnectionPool() throws DALException {
         // Call to constructor in ObjectPool
         super();
-        try {
-            this.dbConnect = new DataBaseConnector();
-        } catch (IOException ex) {
-            throw new DALException("Error creating Connection Pool", ex);
-        }
+        this.dbConnect = new DataBaseConnector();
     }
-    
+
     @Override
     protected Connection create() throws DALException {
         try {
@@ -56,5 +51,5 @@ public class ConnectionPool extends ObjectPool<Connection>{
             throw new DALException("Could not close connection", ex);
         }
     }
-    
+
 }
