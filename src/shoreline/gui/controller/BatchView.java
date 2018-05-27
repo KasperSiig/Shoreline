@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.gui.controller;
 
 import java.io.IOException;
@@ -13,10 +8,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import shoreline.be.Batch;
 import shoreline.gui.model.ModelManager;
+import shoreline.statics.Window;
 
 /**
  *
- * @author madst
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class BatchView extends BorderPane implements IController {
 
@@ -46,7 +42,7 @@ public class BatchView extends BorderPane implements IController {
             loader.load();
             this.batch = batch;
         } catch (IOException ex) {
-            //to be done 
+            Window.openExceptionWindow("Could not create batch view");
         }
     }
 
@@ -55,36 +51,36 @@ public class BatchView extends BorderPane implements IController {
         this.model = model;
         setInfo(batch);
         setWidthListener();
-//        lblTaskName.setWrapText(false);
         lblTaskName.prefWidthProperty().bind(vBox.widthProperty());
     }
 
+    /**
+     * Sets the visual info in the BatchView
+     * 
+     * @param batch Batch to get info from
+     */
     private void setInfo(Batch batch) {
         pathName(vBox.getWidth(), lblTargetDir, batch.getSourceDir().getAbsolutePath());
         pathName(vBox.getWidth(), lblInputDir, batch.getTargetDir().getAbsolutePath());
         lblTaskName.setText(batch.getName());
 
-        addIntListener(batch);
+        bindTextProperties(batch);
     }
 
-    private void addIntListener(Batch batch) {
-        lblPending.setText(String.valueOf(batch.getFilesPending().getValue()));
-        lblFailed.setText(String.valueOf(batch.getFilesFailed().getValue()));
-        lblHandled.setText(String.valueOf(batch.getFilesHandled().getValue()));
-        batch.getFilesPending().addListener((observable, oldValue, newValue) -> {
-            lblPending.setText(String.valueOf(newValue));
-        });
-        batch.getFilesHandled().addListener((observable, oldValue, newValue) -> {
-            lblHandled.setText(String.valueOf(newValue));
-        });
-        batch.getFilesFailed().addListener((observable, oldValue, newValue) -> {
-            lblFailed.setText(String.valueOf(newValue));
-        });  
-//        lblPending.textProperty().bind(batch.getFilesPending().asString());
-//        lblFailed.textProperty().bind(batch.getFilesFailed().asString());
-//        lblHandled.textProperty().bind(batch.getFilesHandled().asString());
+    /**
+     * Binds the text properties in BatchView
+     * 
+     * @param batch 
+     */
+    private void bindTextProperties(Batch batch) {
+        lblPending.textProperty().bind(batch.getFilesPending().asString());
+        lblFailed.textProperty().bind(batch.getFilesFailed().asString());
+        lblHandled.textProperty().bind(batch.getFilesHandled().asString());
     }
 
+    /**
+     * Sets a listener on the width, resizing the pathName
+     */
     private void setWidthListener() {
         vBox.widthProperty().addListener((observable, oldValue, newValue) -> {
             pathName(newValue, lblTargetDir, batch.getSourceDir().getAbsolutePath());
@@ -92,17 +88,26 @@ public class BatchView extends BorderPane implements IController {
         });
     }
 
+    /**
+     * Gets the short version of pathName, from given number
+     * 
+     * @param size
+     * @param lbl
+     * @param path 
+     */
     private void pathName(Number size, Label lbl, String path) {
-        // 7 PIXELS PER BOGSTAV
         int iSize = size.intValue();
         int characters = (iSize / 9);
         String root = path.substring(0, 3);
         if (path.length() > characters) {
-            path = root + ".." + path.substring(path.length() - characters);
+            path = root + "..." + path.substring(path.length() - characters);
         }
         lbl.setText(path);
     }
 
+    /**
+     * @return Get Batch contained in BatchView
+     */
     public Batch getBatch() {
         return batch;
     }

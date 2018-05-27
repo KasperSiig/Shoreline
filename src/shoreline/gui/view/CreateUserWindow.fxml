@@ -34,12 +34,12 @@
                <children>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <JFXButton onAction="#onCreateAction" text="Create user" />
+                        <JFXButton onAction="#handleCreateUser" text="Create user" />
                      </children>
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <JFXButton onAction="#onCancelAction" text="Cancel" />
+                        <JFXButton onAction="#handleCancel" text="Cancel" />
                      </children>
                   </VBox>
                </children>

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.gui.controller;
 
 import java.net.URL;
@@ -30,21 +25,12 @@ public class LogWindowController implements Initializable, IController {
     private ModelManager model;
 
     @FXML
-    private TableView<LogItem> tv;
+    private TableView<LogItem> tableView;
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
     }
 
-    /**
-     * Runs before the rest of the class.
-     * 
-     * @param model 
-     */
     @Override
     public void postInit(ModelManager model) {
         this.model = model;
@@ -53,10 +39,8 @@ public class LogWindowController implements Initializable, IController {
     }
 
     /**
-     * Creates the columns for the table view
-     * and set a max width on them.
+     * Creates the columns for the table view and sets a max width on them.
      * then adds them to the table view.
-     * 
      */
     private void makeTable() {
         TableColumn typeCol = new TableColumn("Type");
@@ -74,47 +58,34 @@ public class LogWindowController implements Initializable, IController {
         userCol.setCellValueFactory(new PropertyValueFactory<LogItem, String>("User"));
         userCol.setMaxWidth(1500);
 
-        tv.getColumns().addAll(typeCol, userCol, messageCol, dateCol);
+        tableView.getColumns().addAll(typeCol, userCol, messageCol, dateCol);
     }
 
     
     /**
-     * makes a temp observable list then
-     * sorts it.
-     * runes the LogListListener method
-     * then sets the table view to be 
-     * the content of the temp list.
-     * 
+     * Sets table with existing logs and sorts them. Then starts listener on new logs
      */
     private void setTable() {
         ObservableList temp = FXCollections.observableArrayList(model.getLogModel().getList());
 
         FXCollections.sort(temp, (LogItem t, LogItem t1) -> {
-            if (t.getId() < t1.getId()) {
-                return 1;
-            } else {
-                return 0;
-            }
+            return t.getId() < t1.getId() ? 1 : 0;
         });
-        logListListener();
+        startLogListener();
 
-        tv.setItems(temp);
+        tableView.setItems(temp);
     }
 
     /**
-     * Adds a listener to the loglist in model
-     * if there is any change in the list it
-     * runs the setTable method again
+     * Adds a listener to the loglist in model. If there is any change in the list 
+     * it runs the setTable method again
      * 
      */
-    private void logListListener() {
-        model.getLogModel().getList().addListener(new ListChangeListener<LogItem>() {
-            @Override
-            public void onChanged(ListChangeListener.Change<? extends LogItem> c) {
-                c.next();
-                if (c.wasAdded() || c.wasRemoved() || c.wasReplaced() || c.wasUpdated()) {
-                    setTable();
-                }
+    private void startLogListener() {
+        model.getLogModel().getList().addListener((ListChangeListener.Change<? extends LogItem> c) -> {
+            c.next();
+            if (c.wasAdded() || c.wasRemoved() || c.wasReplaced() || c.wasUpdated()) {
+                setTable();
             }
         });
 

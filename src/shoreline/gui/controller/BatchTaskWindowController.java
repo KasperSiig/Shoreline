@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.gui.controller;
 
 import java.awt.Desktop;
@@ -40,7 +35,7 @@ import shoreline.statics.Window;
 /**
  * FXML Controller class
  *
- * @author madst
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class BatchTaskWindowController implements Initializable, IController {
 
@@ -49,22 +44,18 @@ public class BatchTaskWindowController implements Initializable, IController {
     @FXML
     private VBox vBoxPen;
 
-    /* Java Variables */
     private List<BatchView> selectedBatches;
-    private ContextMenu cMenu;
+    private ContextMenu contextMenu;
     private ModelManager model;
 
     public BatchTaskWindowController() {
-        this.cMenu = new ContextMenu();
+        this.contextMenu = new ContextMenu();
         this.selectedBatches = new ArrayList();
     }
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+
     }
 
     @Override
@@ -75,19 +66,26 @@ public class BatchTaskWindowController implements Initializable, IController {
         genRightClickDel();
     }
 
-    private void setBatches(List<BatchView> selected, ObservableList<Batch> batches, VBox vBox) {
-        setBatchView(selected, batches, vBox);
+    /**
+     * Generates all batches, and adds a listener to them
+     *
+     * @param selectedBatches
+     * @param batches
+     * @param vBox
+     */
+    private void setBatches(List<BatchView> selectedBatches, ObservableList<Batch> batches, VBox vBox) {
+        setBatchView(selectedBatches, batches, vBox);
         batches.addListener((ListChangeListener.Change<? extends Batch> c) -> {
             while (c.next()) {
-                if (c.wasAdded() || c.wasPermutated() || c.wasRemoved() || c.wasReplaced() || c.wasUpdated()) {
-                    setBatchView(selected, batches, vBox);
+                if (c.wasAdded()) {
+                    setBatchView(selectedBatches, batches, vBox);
                 }
             }
         });
     }
 
     /**
-     * Generates BatchViews for List
+     * Generates BatchViews for List of batches
      *
      * @param model
      */
@@ -102,28 +100,46 @@ public class BatchTaskWindowController implements Initializable, IController {
         }
     }
 
-    private BatchView makeBatchView(List<BatchView> selectedb, VBox vBox, Batch batch) {
+    /**
+     * Sets up visual information, and sets OnClick action
+     *
+     * @param selectedBatches
+     * @param vBox
+     * @param batch
+     * @return
+     */
+    private BatchView makeBatchView(List<BatchView> selectedBatches, VBox vBox, Batch batch) {
         BatchView batchView = new BatchView(batch);
         batchView.postInit(model);
-        Tooltip tt = new Tooltip(batch.getTargetDir().toString());
-        Tooltip.install(batchView, tt);
+        Tooltip toolTip = new Tooltip(batch.getTargetDir().toString());
+        Tooltip.install(batchView, toolTip);
         batchView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                handleSelectionMethods(event);
-                handleDoubleClick(event);
                 handleRightClick(event);
+                handleDoubleClick(event);
+                handleSelectionMethods(event);
             }
 
+            /**
+             * Handles opening contextMenu when right clicking
+             *
+             * @param event
+             */
             private void handleRightClick(MouseEvent event) {
                 if (event.getButton().equals(MouseButton.SECONDARY)) {
-                    cMenu.show(vBox, event.getScreenX(), event.getScreenY());
-                    if (!selectedb.contains(batchView)) {
-                        toggleSelected(batchView, selectedb, true);
+                    contextMenu.show(vBox, event.getScreenX(), event.getScreenY());
+                    if (!selectedBatches.contains(batchView)) {
+                        toggleSelected(batchView, selectedBatches, true);
                     }
                 }
             }
 
+            /**
+             * Handles double clicking
+             *
+             * @param event
+             */
             private void handleDoubleClick(MouseEvent event) {
                 if (event.getClickCount() % 2 == 0) {
                     try {
@@ -131,51 +147,68 @@ public class BatchTaskWindowController implements Initializable, IController {
                         temp = temp.replaceAll("\\\\", "/");
                         Desktop.getDesktop().browse(new URI(temp));
                     } catch (URISyntaxException | IOException ex) {
-                        Logger.getLogger(TaskWindowController.class.getName()).log(Level.SEVERE, null, ex);
+                        Window.openExceptionWindow("Something went wrong opening folder");
                     }
                 }
             }
 
-            private void handleSelectionMethods(MouseEvent event) throws NumberFormatException {
+            /**
+             * Handles everything related to selection model
+             *
+             * @param event
+             */
+            private void handleSelectionMethods(MouseEvent event) {
                 if (event.getButton().equals(MouseButton.PRIMARY)) {
-                    cMenu.hide();
+                    contextMenu.hide();
                     if (event.isControlDown()) {
-                        if (selectedb.contains(batchView)) {
-                            toggleSelected(batchView, selectedb, false);
-                        } else {
-                            toggleSelected(batchView, selectedb, true);
-                        }
+                        handleCtrlDown();
                     } else if (event.isShiftDown()) {
-                        toggleSelected(batchView, selectedb, true);
-                        int id1 = Integer.valueOf(selectedb.get(0).getId());
-
-                        if (selectedb.size() > 1) {
-                            int id2 = Integer.valueOf(selectedb.get(selectedb.size() - 1).getId());
-
-                            List<BatchView> allBatches = new ArrayList();
-
-                            vBox.getChildren().forEach((node) -> {
-                                allBatches.add((BatchView) node);
-                            });
-
-                            for (BatchView batch : allBatches) {
-                                if (Integer.valueOf(batch.getId()) > id1 && Integer.valueOf(batch.getId()) < id2) {
-                                    toggleSelected(batch, selectedb, true);
-                                } else if (Integer.valueOf(batch.getId()) < id1 && Integer.valueOf(batch.getId()) > id2) {
-                                    toggleSelected(batch, selectedb, true);
-                                }
-                            }
-                        }
-
+                        handleShiftDown();
                     } else {
-                        if (selectedb.contains(batchView)) {
-                            clearSelected(selectedb);
-
+                        if (selectedBatches.contains(batchView)) {
+                            clearSelected(selectedBatches);
                         } else {
-                            clearSelected(selectedb);
-                            toggleSelected(batchView, selectedb, true);
+                            clearSelected(selectedBatches);
+                            toggleSelected(batchView, selectedBatches, true);
                         }
                     }
+                }
+            }
+
+            /**
+             * Handles what happens when shift is down
+             */
+            private void handleShiftDown() {
+                toggleSelected(batchView, selectedBatches, true);
+                int id1 = Integer.valueOf(selectedBatches.get(0).getId());
+
+                if (selectedBatches.size() > 1) {
+                    int id2 = Integer.valueOf(selectedBatches.get(selectedBatches.size() - 1).getId());
+
+                    List<BatchView> allBatches = new ArrayList();
+
+                    vBox.getChildren().forEach((node) -> {
+                        allBatches.add((BatchView) node);
+                    });
+
+                    allBatches.forEach((batch) -> {
+                        if (Integer.valueOf(batch.getId()) > id1 && Integer.valueOf(batch.getId()) < id2) {
+                            toggleSelected(batch, selectedBatches, true);
+                        } else if (Integer.valueOf(batch.getId()) < id1 && Integer.valueOf(batch.getId()) > id2) {
+                            toggleSelected(batch, selectedBatches, true);
+                        }
+                    });
+                }
+            }
+
+            /**
+             * Handles what happens when Ctrl is down
+             */
+            private void handleCtrlDown() {
+                if (selectedBatches.contains(batchView)) {
+                    toggleSelected(batchView, selectedBatches, false);
+                } else {
+                    toggleSelected(batchView, selectedBatches, true);
                 }
             }
         }
@@ -183,6 +216,13 @@ public class BatchTaskWindowController implements Initializable, IController {
         return batchView;
     }
 
+    /**
+     * Toggle the BatchView selection on or off
+     *
+     * @param batchView BatchView to toggle selection on
+     * @param selectedBatches List of selected tasks
+     * @param selected Whether to toggle it selected or not
+     */
     private void toggleSelected(BatchView batchView, List<BatchView> selectedBatches, boolean selected) {
         if (selected) {
             selectedBatches.add(batchView);
@@ -193,6 +233,11 @@ public class BatchTaskWindowController implements Initializable, IController {
         }
     }
 
+    /**
+     * Toggles selection off for all selected views
+     *
+     * @param batchView
+     */
     private void clearSelected(List<BatchView> batchView) {
         List<BatchView> temp = new ArrayList(batchView);
         temp.forEach((batchViewTemp) -> {
@@ -207,16 +252,14 @@ public class BatchTaskWindowController implements Initializable, IController {
         MenuItem delItem = new MenuItem("Delete selected batch");
         delItem.setOnAction((event) -> {
             if (selectedBatches.size() > 1) {
-                if (openConfirmWindow("Are you sure you want to delete " + selectedBatches.size() + " batches?", false)) {
+                if (openConfirmWindow("Are you sure you want to delete " + selectedBatches.size() + " batches?")) {
                     delSelectedBatches();
-                } else {
-                    return;
                 }
             } else {
                 delSelectedBatches();
             }
         });
-        cMenu.getItems().add(delItem);
+        contextMenu.getItems().add(delItem);
     }
 
     private void delSelectedBatches() {
@@ -234,11 +277,11 @@ public class BatchTaskWindowController implements Initializable, IController {
     /**
      * Open confirm window
      *
-     * @param msg
-     * @param txtField
+     * @param message 
      * @return
      */
-    private boolean openConfirmWindow(String msg, boolean txtField) {
+    private boolean openConfirmWindow(String message) {
+        boolean yes = false;
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(Window.View.Confirm.getView()));
@@ -246,7 +289,7 @@ public class BatchTaskWindowController implements Initializable, IController {
 
             ConfirmationWindowController cwc = fxmlLoader.getController();
             cwc.postInit(model);
-            cwc.setInfo(msg, txtField);
+            cwc.setInfo(message);
 
             Scene scene = new Scene(root);
             Stage stage = new Stage();
@@ -254,11 +297,11 @@ public class BatchTaskWindowController implements Initializable, IController {
             stage.setScene(scene);
             stage.setAlwaysOnTop(true);
             stage.showAndWait();
-            return cwc.getConfirmation();
+            yes = cwc.getConfirmation();
         } catch (IOException ex) {
             Window.openExceptionWindow("Couldn't open confirmation window.");
         }
-        return false;
+        return yes;
     }
 
 }

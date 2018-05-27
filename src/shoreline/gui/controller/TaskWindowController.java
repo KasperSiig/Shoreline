@@ -79,6 +79,23 @@ public class TaskWindowController implements Initializable, IController {
     public void initialize(URL url, ResourceBundle rb) {
     }
 
+    @Override
+    public void postInit(ModelManager model) {
+        this.model = model;
+        tabPane.tabMinWidthProperty().bind(tabPane.widthProperty().divide(tabPane.getTabs().size()).subtract(20));
+
+        createTasksListener(selectedPenTasks, model.getTaskModel().getPendingTasks(), vBoxPen);
+        createTasksListener(selectedFinTasks, model.getTaskModel().getFinishedTasks(), vBoxFin);
+        createTasksListener(selectedCanTasks, model.getTaskModel().getCancelledTasks(), vBoxCan);
+
+        genRightClickStart();
+        genRightClickDel();
+        genRightClickPause();
+        genRightClickStop();
+
+        idCount = 0;
+    }
+    
     /**
      * Starts all the selected tasks
      *
@@ -89,6 +106,11 @@ public class TaskWindowController implements Initializable, IController {
         startTask(selectedPenTasks);
     }
 
+    /**
+     * Starts conversion of ConvTask
+     * 
+     * @param selectedTasks 
+     */
     private void startTask(List<TaskView> selectedTasks) {
         List<TaskView> temp = new ArrayList(selectedTasks);
         temp.forEach((taskView) -> {
@@ -109,24 +131,24 @@ public class TaskWindowController implements Initializable, IController {
      */
     @FXML
     private void handleTaskPause(ActionEvent event) {
-        pauseOrCancelTask(selectedPenTasks, false);
+        pauseOrCancelTask(selectedPenTasks, "pause");
     }
 
     /**
      * Stops or cancels the task, based on cancel parameter
-     *
-     * @param tasks List of tasks to be paused or canceled
-     * @param cancel true for cancel, false for pause
-     * @return
+     * 
+     * @param tasks List of selected TaskViews
+     * @param pauseOrCancel Parameter to decide on pause or cancel
+     * @return 
      */
-    private boolean pauseOrCancelTask(List<TaskView> tasks, boolean cancel) {
+    private boolean pauseOrCancelTask(List<TaskView> tasks, String pauseOrCancel) {
         ThreadPool tp = ThreadPool.getInstance();
         if (tasks.size() > 1) {
-            if (openConfirmWindow("Are you sure you want to stop " + tasks.size() + " tasks?", false)) {
+            if (openConfirmWindow("Are you sure you want to stop " + tasks.size() + " tasks?")) {
                 List<TaskView> temp = new ArrayList<>(tasks);
                 temp.forEach((task) -> {
                     toggleSelected(task, false);
-                    if (cancel) {
+                    if (pauseOrCancel.equals("cancel")) {
                         tp.cancelTask(task.getTask());
                     } else {
                         tp.pauseTask(task.getTask());
@@ -146,7 +168,7 @@ public class TaskWindowController implements Initializable, IController {
         } else {
             ConvTask task = tasks.get(0).getTask();
             toggleSelected(tasks.get(0), false);
-            if (cancel) {
+            if (pauseOrCancel.equals("cancel")) {
                 tp.cancelTask(task);
             } else {
                 tp.pauseTask(task);
@@ -161,23 +183,13 @@ public class TaskWindowController implements Initializable, IController {
         return false;
     }
 
-    @Override
-    public void postInit(ModelManager model) {
-        this.model = model;
-        tabPane.tabMinWidthProperty().bind(tabPane.widthProperty().divide(tabPane.getTabs().size()).subtract(20));
-
-        createTasksListener(selectedPenTasks, model.getTaskModel().getPendingTasks(), vBoxPen);
-        createTasksListener(selectedFinTasks, model.getTaskModel().getFinishedTasks(), vBoxFin);
-        createTasksListener(selectedCanTasks, model.getTaskModel().getCancelledTasks(), vBoxCan);
-
-        genRightClickStart();
-        genRightClickDel();
-        genRightClickPause();
-        genRightClickStop();
-
-        idCount = 0;
-    }
-
+    /**
+     * Creates listener for TaskViews
+     * 
+     * @param selectedTasks List of selected tasks
+     * @param tasks List of Taskviews
+     * @param vBox VBox to move the TaskView to
+     */
     private void createTasksListener(List<TaskView> selectedTasks, ObservableList<TaskView> tasks, VBox vBox) {
         tasks.addListener((ListChangeListener.Change<? extends TaskView> c) -> {
             while (c.next()) {
@@ -207,6 +219,13 @@ public class TaskWindowController implements Initializable, IController {
         vBox.getChildren().add(taskView);
     }
 
+    /**
+     * Handles making a new TaskView, when added to pending
+     * 
+     * @param vBox
+     * @param taskView
+     * @return 
+     */
     private TaskView makeTaskView(VBox vBox, TaskView taskView) {
         taskView.postInit(model);
         Tooltip tt = new Tooltip(taskView.getTask().getTarget().toString());
@@ -281,6 +300,12 @@ public class TaskWindowController implements Initializable, IController {
         return taskView;
     }
 
+    /**
+     * Toggle the TaskView selection on or off
+     * 
+     * @param taskView TaskView to be toggled
+     * @param selected Whether toggled on or off
+     */
     private void toggleSelected(TaskView taskView, boolean selected) {
         if (selected) {
             taskView.getCurList().add(taskView);
@@ -292,7 +317,12 @@ public class TaskWindowController implements Initializable, IController {
             taskView.setStyle("-fx-border-color: transparent");
         }
     }
-
+    
+    /**
+     * Clear all selected TaskViews
+     * 
+     * @param taskViews List of TaskViews to be cleared
+     */
     private void clearSelected(List<TaskView> taskViews) {
         List<TaskView> temp = new ArrayList(taskViews);
         temp.forEach((taskView) -> {
@@ -320,7 +350,7 @@ public class TaskWindowController implements Initializable, IController {
         MenuItem delItem = new MenuItem("Delete selected task");
         delItem.setOnAction((event) -> {
             if (selectedPenTasks.size() > 1) {
-                if (openConfirmWindow("Are you sure you want to delete " + selectedPenTasks.size() + " tasks?", false)) {
+                if (openConfirmWindow("Are you sure you want to delete " + selectedPenTasks.size() + " tasks?")) {
                     delSelectedTask();
                 }
             } else {
@@ -330,6 +360,9 @@ public class TaskWindowController implements Initializable, IController {
         cMenu.getItems().add(delItem);
     }
 
+    /**
+     * Deletes selected tasks
+     */
     private void delSelectedTask() {
         List<TaskView> temp = selectedPenTasks;
         for (TaskView task : temp) {
@@ -350,15 +383,18 @@ public class TaskWindowController implements Initializable, IController {
     private void genRightClickPause() {
         MenuItem item = new MenuItem("Pause selected task");
         item.setOnAction((event) -> {
-            pauseOrCancelTask(selectedPenTasks, false);
+            pauseOrCancelTask(selectedPenTasks, "pause");
         });
         cMenu.getItems().add(item);
     }
 
+    /**
+     * Generates right-click menu for stopping
+     */
     private void genRightClickStop() {
         MenuItem item = new MenuItem("Stop selected task");
         item.setOnAction((event) -> {
-            pauseOrCancelTask(selectedPenTasks, true);
+            pauseOrCancelTask(selectedPenTasks, "cancel");
         });
         cMenu.getItems().add(item);
     }
@@ -370,7 +406,7 @@ public class TaskWindowController implements Initializable, IController {
      * @param txtField
      * @return
      */
-    private boolean openConfirmWindow(String msg, boolean txtField) {
+    private boolean openConfirmWindow(String msg) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(Window.View.Confirm.getView()));
@@ -378,7 +414,7 @@ public class TaskWindowController implements Initializable, IController {
 
             ConfirmationWindowController cwc = fxmlLoader.getController();
             cwc.postInit(model);
-            cwc.setInfo(msg, txtField);
+            cwc.setInfo(msg);
 
             Scene scene = new Scene(root);
             Stage stage = new Stage();
@@ -393,16 +429,31 @@ public class TaskWindowController implements Initializable, IController {
         return false;
     }
 
+    /**
+     * Handles cancelling a task
+     * 
+     * @param event 
+     */
     @FXML
     private void handleTaskCancel(ActionEvent event) {
-        pauseOrCancelTask(selectedPenTasks, true);
+        pauseOrCancelTask(selectedPenTasks, "cancel");
     }
 
+    /**
+     * Handles starting a task again
+     * 
+     * @param event 
+     */
     @FXML
     private void handleStartAgainFin(ActionEvent event) {
         startTask(selectedFinTasks);
     }
 
+    /**
+     * Handles starting task again
+     * 
+     * @param event 
+     */
     @FXML
     private void handleStartAgainCan(ActionEvent event) {
         startTask(selectedCanTasks);

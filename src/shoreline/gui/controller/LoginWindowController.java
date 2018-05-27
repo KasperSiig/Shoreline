@@ -73,7 +73,7 @@ public class LoginWindowController implements Initializable, IController {
         try {
             if (model.getUserModel().validatePassword(txtUserName.getText(), txtPassword.getText())) {
                 model.getUserModel().setUser(model.getUserModel().getUserOnLogin(txtUserName.getText(), txtPassword.getText()));
-                Window.openView(model, model.getBorderPane(), Window.View.Config, "center");
+                Window.openView(model, model.getBorderPane(), Window.View.SingleTask, "center");
             } else {
                 lblError.setText("Incorrect credentials. Please try again.");
                 txtUserName.requestFocus();

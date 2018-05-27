@@ -3,6 +3,7 @@ package shoreline.gui.controller;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -10,18 +11,19 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import shoreline.Main;
 import shoreline.be.ConvTask;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.ModelManager;
@@ -56,13 +58,12 @@ public class SingleTaskWindowController implements Initializable, IController {
     private HBox hBoxImport;
     @FXML
     private HBox hBoxTarget;
+    @FXML
+    private TabPane tabPane;
 
-    /**
-     * Initializes the controller class.
-     */
+  
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
     }
 
     @Override
@@ -76,6 +77,43 @@ public class SingleTaskWindowController implements Initializable, IController {
             Window.openExceptionWindow(ex.getMessage());
         }
         comboConfig.setDisable(true);
+        try {
+            tabPane.getTabs().add(makeTab(model, Window.View.Batch, "Batch"));
+            tabPane.getTabs().add(makeTab(model, Window.View.Config, "Config"));
+            tabPane.getTabs().add(makeTab(model, Window.View.logView, "Log"));
+        } catch (GUIException ex) {
+            Window.openExceptionWindow(ex.getMessage());
+        }
+    }
+    
+    /**
+     * Creates tabs for the other views
+     * 
+     * @param model ModelManager
+     * @param view View to be opened
+     * @param name Name of the tab
+     * @return Newly created Tab
+     * @throws GUIException 
+     */
+    public Tab makeTab(ModelManager model, Window.View view, String name) throws GUIException {
+        Tab tab = null;
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource(view.getView()));
+            Node node = loader.load();
+
+            IController cont = loader.getController();
+            cont.postInit(model);
+
+            tab = new Tab(name);
+
+            tab.setContent(node);
+
+            return tab;
+        } catch (IOException ex) {
+            Window.openExceptionWindow(ex.getMessage());
+        }
+        return tab;
     }
 
     /**
@@ -120,11 +158,20 @@ public class SingleTaskWindowController implements Initializable, IController {
         }
     }
 
+    /**
+     * Handles input file choice
+     * 
+     * @param event 
+     */
     @FXML
-    private void handleImportFileBtn(ActionEvent event) {
+    private void handleInputFileBtn(ActionEvent event) {
         chooseFile();
     }
 
+    /**
+     * Handles target folder choice
+     * @param event 
+     */
     @FXML
     private void handleTargetFolderBtn(ActionEvent event) {
         chooseTarget();
@@ -143,6 +190,11 @@ public class SingleTaskWindowController implements Initializable, IController {
         }
     }
 
+    /**
+     * Handles creating a task
+     * 
+     * @param event 
+     */
     @FXML
     private void handleCreateTask(ActionEvent event) {
         createTask();

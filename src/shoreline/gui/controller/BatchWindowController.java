@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.gui.controller;
 
 import com.jfoenix.controls.JFXComboBox;
@@ -16,10 +11,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Paint;
 import javafx.stage.DirectoryChooser;
 import javafx.util.Duration;
 import shoreline.be.Batch;
@@ -35,12 +28,12 @@ import tray.notification.TrayNotification;
 /**
  * FXML Controller class
  *
- * @author madst
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class BatchWindowController implements Initializable, IController {
 
     @FXML
-    private BorderPane bPane;
+    private BorderPane borderPane;
     @FXML
     private HBox hBoxImport;
     @FXML
@@ -58,14 +51,10 @@ public class BatchWindowController implements Initializable, IController {
 
     private ModelManager model;
     private File targetFolder;
-    private File importFolder;
+    private File inputFolder;
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
     }
 
     @Override
@@ -80,6 +69,11 @@ public class BatchWindowController implements Initializable, IController {
         comboConfig.setDisable(true);
     }
 
+    /**
+     * Handles choosing target folder
+     *
+     * @param event
+     */
     @FXML
     private void handleTargetFolderBtn(ActionEvent event) {
         DirectoryChooser dirChooser = new DirectoryChooser();
@@ -91,8 +85,13 @@ public class BatchWindowController implements Initializable, IController {
         }
     }
 
+    /**
+     * Handles choosing input folder
+     *
+     * @param event
+     */
     @FXML
-    private void handleImportFolderBtn(ActionEvent event) {
+    private void handleInputFolderBtn(ActionEvent event) {
         try {
             DirectoryChooser dirChooser = new DirectoryChooser();
             File file = dirChooser.showDialog(null);
@@ -101,15 +100,20 @@ public class BatchWindowController implements Initializable, IController {
             comboConfig.setItems(model.getConfigModel().getConfigList());
 
             if (file != null) {
-                importFolder = file;
-                txtImportPath.setText(importFolder.getAbsolutePath());
+                inputFolder = file;
+                txtImportPath.setText(inputFolder.getAbsolutePath());
             }
             comboConfig.setDisable(false);
         } catch (GUIException ex) {
-            Logger.getLogger(BatchWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            Window.openExceptionWindow("Error choosing input folder");
         }
     }
 
+    /**
+     * Handles creating new batch
+     * 
+     * @param event 
+     */
     @FXML
     private void handleCreateBatch(ActionEvent event) {
         if (checkRequired()) {
@@ -117,26 +121,27 @@ public class BatchWindowController implements Initializable, IController {
         }
 
         try {
-            Batch tempBacth = new Batch(importFolder, targetFolder, txtFileName.getText(), comboConfig.getSelectionModel().getSelectedItem());
-            addListenerForNotification(tempBacth);
-            model.getBatchModel().addToBatches(tempBacth);
-            Window.openSnack("New bacth " + tempBacth.getName() + " was created", bPane, "blue");
+            Batch batch = new Batch(inputFolder, targetFolder, txtFileName.getText(), comboConfig.getSelectionModel().getSelectedItem());
+            addListenerForNotification(batch);
+            model.getBatchModel().addToBatches(batch);
+            Window.openSnack("New bacth " + batch.getName() + " was created", borderPane, "blue");
         } catch (GUIException ex) {
-            Logger.getLogger(BatchWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            Window.openExceptionWindow("Error creating new batch");
         }
 
     }
 
     /**
-     * Checks if there is an input file. Checks if the JSONmap is empty. Checks
-     * if there is a file name. Checks if there is a target path.
+     * Checks if there is an input file. 
+     * Checks if the JSONmap is empty. 
+     * Checks if there is a file name. 
+     * Checks if there is a target path.
      *
      * @return
      */
     private boolean checkRequired() {
         boolean hasFailed = false;
-        if (importFolder == null) {
-            // Window.openSnack("Please choose an input file", bPane, "red");
+        if (inputFolder == null) {
             Styling.redOutline(hBoxImport);
             hasFailed = true;
         } else {
@@ -144,41 +149,44 @@ public class BatchWindowController implements Initializable, IController {
         }
         if (txtFileName.getText().equals("")) {
             Styling.redOutline(txtFileName);
-            //Window.openSnack("Please enter a file name", bPane, "red");
             hasFailed = true;
         } else {
             Styling.clearRedOutline(txtFileName);
         }
-        if (importFolder == null) {
+        if (inputFolder == null) {
             Styling.redOutline(hBoxTarget);
-            //Window.openSnack("Please choose a target folder", bPane, "red");
             hasFailed = true;
         } else {
             Styling.clearRedOutline(hBoxTarget);
         }
         if (comboConfig.getSelectionModel().getSelectedItem() == null) {
             Styling.redOutline(comboConfig);
-            //Window.openSnack("Please select a config", bPane, "red");
             hasFailed = true;
         } else {
             Styling.clearRedOutline(comboConfig);
         }
         if (hasFailed) {
-            Window.openSnack("Could not create task. Missing input is highlighted.", bPane, "red", 4000);
+            Window.openSnack("Could not create task. Missing input is highlighted.", borderPane, "red", 4000);
         }
         return hasFailed;
     }
 
-    private void addListenerForNotification(Batch tempBacth) {
-        tempBacth.getFilesPending().addListener((observable, oldValue, newValue) -> {
+    /**
+     * Adds listener to show notifications, when new files are added to batch
+     * and when all files are done
+     * 
+     * @param batch 
+     */
+    private void addListenerForNotification(Batch batch) {
+        batch.getFilesPending().addListener((observable, oldValue, newValue) -> {
             if (oldValue.intValue() == 0 && newValue.intValue() == 1) {
-                TrayNotification tray = new TrayNotification("Batch: " + tempBacth.getName(), 
+                TrayNotification tray = new TrayNotification("Batch: " + batch.getName(),
                         "Started converting new files", NotificationType.SUCCESS);
                 tray.setAnimationType(AnimationType.POPUP);
                 tray.showAndDismiss(Duration.seconds(3));
             }
             if (oldValue.intValue() == 1 && newValue.intValue() == 0) {
-                TrayNotification tray = new TrayNotification("Batch: " + tempBacth.getName(), 
+                TrayNotification tray = new TrayNotification("Batch: " + batch.getName(),
                         "Done converting files", NotificationType.SUCCESS);
                 tray.setAnimationType(AnimationType.POPUP);
                 tray.showAndDismiss(Duration.seconds(3));

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.gui.controller;
 
 import com.jfoenix.controls.JFXSpinner;
@@ -20,7 +15,7 @@ import shoreline.statics.Window;
 
 /**
  *
- * @author madst
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class TaskView extends BorderPane implements IController {
 
@@ -36,6 +31,7 @@ public class TaskView extends BorderPane implements IController {
     @FXML
     private VBox vBox;
     
+    // The selectedTasks list the TaskView is in
     private List<TaskView> curList;
 
     public TaskView(ConvTask task) {
@@ -58,9 +54,14 @@ public class TaskView extends BorderPane implements IController {
         lblTaskName.prefWidthProperty().bind(vBox.widthProperty());
     }
 
+    /**
+     * Sets info in the visual TaskView
+     * 
+     * @param task ConvTask to get info from
+     */
     private void setInfo(ConvTask task) {
         lblStatus.textProperty().bind(task.getStatus());
-        task.getStatus().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+        task.getStatus().addListener((observable, oldValue, newValue) -> {
             if (task.getStatus().getValue().equals(ConvTask.Status.Running.getValue())) {
                 JFXSpinner spin = new JFXSpinner();
                 vBox.getChildren().set(0, spin);
@@ -68,41 +69,63 @@ public class TaskView extends BorderPane implements IController {
                 vBox.getChildren().set(0, lblStatus);
             }
         });
-
-        pathName(vBox.getWidth());
+        lblTargetDir.setText(pathName(vBox.getWidth()));
         lblTaskName.setText(task.getName());
 
     }
 
+    /**
+     * Adds to the width, resizing the TaskView correctly
+     */
     private void setWidthListener() {
         vBox.widthProperty().addListener((observable, oldValue, newValue) -> {
-            pathName(newValue);
+            lblTargetDir.setText(pathName(vBox.getWidth()));
         });
     }
 
-    private void pathName(Number size) {
+    /**
+     * Gets pathName, according to the size given
+     * 
+     * @param size Size to resize by
+     * @return 
+     */
+    private String pathName(Number size) {
         int iSize = size.intValue();
         int characters = (iSize / 9);
         String path = task.getTarget().getAbsolutePath();
         String root = path.substring(0, 3);
         if (path.length() > characters) {
-            path = root + ".." + path.substring(path.length() - characters);
+            path = root + "..." + path.substring(path.length() - characters);
         }
-        lblTargetDir.setText(path);
+        return path;
     }
 
+    /**
+     * @return ConvTask contained in TaskView
+     */
     public ConvTask getTask() {
         return task;
     }
 
+    /**
+     * @return Get text from lblTaskName
+     */
     public String getLblTaskName() {
         return lblTaskName.getText();
     }
 
+    /**
+     * @return Get the selectedTasks list the TaskView is in
+     */
     public List<TaskView> getCurList() {
         return curList;
     }
 
+    /**
+     * Set what selectedTasks list the TaskView is in
+     * 
+     * @param curList 
+     */
     public void setCurList(List<TaskView> curList) {
         this.curList = curList;
     }

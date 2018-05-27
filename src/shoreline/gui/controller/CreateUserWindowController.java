@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.gui.controller;
 
 import com.jfoenix.controls.JFXPasswordField;
@@ -39,21 +34,17 @@ public class CreateUserWindowController implements Initializable, IController {
     @FXML
     private Label lblError;
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
     }
 
     /**
-     * Creates a new user login
+     * Creates a new User
      *
      * @param event
      */
     @FXML
-    private void onCreateAction(ActionEvent event) throws InterruptedException {
+    private void handleCreateUser(ActionEvent event) throws InterruptedException {
         if (checkEmptyFields()) {
             try {
                 User user = new User(txtLastname.getText(), txtFirstname.getText(), txtUsername.getText(), 0);
@@ -74,7 +65,7 @@ public class CreateUserWindowController implements Initializable, IController {
      * @param event
      */
     @FXML
-    private void onCancelAction(ActionEvent event) {
+    private void handleCancel(ActionEvent event) {
         try {
             Window.openView(model, model.getBorderPane(), Window.View.Login, "center");
         } catch (GUIException ex) {
@@ -82,11 +73,6 @@ public class CreateUserWindowController implements Initializable, IController {
         }
     }
 
-    /**
-     * Loads data after initialization
-     *
-     * @param model
-     */
     @Override
     public void postInit(ModelManager model) {
         this.model = model;
