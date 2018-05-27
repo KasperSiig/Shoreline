@@ -1,24 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.gui.model;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.BorderPane;
 import shoreline.be.Batch;
-import shoreline.be.ConvTask;
 import shoreline.bll.LogicManager;
 import shoreline.exceptions.BLLException;
 import shoreline.exceptions.GUIException;
 
 /**
  *
- * @author madst
+ * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class BatchModel {
  
@@ -28,9 +20,7 @@ public class BatchModel {
 
     public BatchModel(BorderPane borderPane, LogicManager logic) {
         this.logic = logic;
-
         this.batches = FXCollections.observableArrayList(logic.getBatchLogic().getBatches());
-
     }
 
     public ObservableList<Batch> getBatches() {

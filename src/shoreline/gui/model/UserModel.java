@@ -46,10 +46,8 @@ public class UserModel {
     /**
      * Hashes password and parses data through to BLL
      *
-     * @param username Username entered
-     * @param password Password entered
-     * @param firstname First Name entered
-     * @param lastname Last Name entered
+     * @param user User to create
+     * @param password Password from user
      * @return Boolean whether the user was successfully created or not
      * @throws GUIException
      */
@@ -71,7 +69,7 @@ public class UserModel {
      */
     public User getUserOnLogin(String username, String password) throws GUIException {
         try {
-            return logic.getUserLogic().getUser(username, hashString(password).toString());
+            return logic.getUserLogic().getUser(username, hashString(password));
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
@@ -117,7 +115,7 @@ public class UserModel {
             }
             return hexString.toString();
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-            throw new GUIException(ex);
+            throw new GUIException("Error hashing password", ex);
         }
     }
 }

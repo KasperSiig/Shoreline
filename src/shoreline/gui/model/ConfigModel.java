@@ -26,13 +26,13 @@ public class ConfigModel {
     private ObservableList<String> templateList;
 
     public ConfigModel(BorderPane borderPane, LogicManager logic) throws GUIException {
-            this.borderPane = borderPane;
-            this.logic = logic;
-            
-            this.templateList = FXCollections.observableArrayList("siteName", "assetSerialNumber",
-                    "type", "externalWorkOrderId", "systemStatus", "userStatus", "name", "priority",
-                    "latestFinishDate", "earliestStartDate", "latestStartDate", "estimatedTime", "createdBy", "status");
-            this.configList = FXCollections.observableArrayList(getAllConfigs());
+        this.borderPane = borderPane;
+        this.logic = logic;
+
+        this.templateList = FXCollections.observableArrayList("siteName", "assetSerialNumber",
+                "type", "externalWorkOrderId", "systemStatus", "userStatus", "name", "priority",
+                "latestFinishDate", "earliestStartDate", "latestStartDate", "estimatedTime", "createdBy", "status");
+        this.configList = FXCollections.observableArrayList(getAllConfigs());
     }
 
     /**
@@ -53,19 +53,15 @@ public class ConfigModel {
      * Adds a configuration to the configuration list
      *
      * @param config Configuration to be added
+     * @throws GUIException
      */
     public void addToConfigList(Config config) throws GUIException {
-        try {
-            this.configList.add(config);
-            save(config);
-        } catch (BLLException ex) {
-            throw new GUIException(ex);
-        }
+        save(config);
     }
 
     /**
      * @return List of all Configurations
-     * @throws BLLException
+     * @throws GUIException
      */
     public List<Config> getAllConfigs() throws GUIException {
         try {
@@ -79,12 +75,17 @@ public class ConfigModel {
      * Save new configuration
      *
      * @param config Config to be saved
-     * @throws BLLException
+     * @throws GUIException
      */
-    public void save(Config config) throws BLLException {
-        logic.getConfigLogic().saveConfig(config);
+    public void save(Config config) throws GUIException {
+        try {
+            this.configList.add(config);
+            logic.getConfigLogic().saveConfig(config);
+        } catch (BLLException ex) {
+            throw new GUIException(ex);
+        }
     }
-    
+
     /**
      * @param file File to get titles from
      * @return Titles from a given file

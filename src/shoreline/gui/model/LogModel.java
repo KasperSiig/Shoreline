@@ -41,7 +41,7 @@ public class LogModel {
     /**
      * Adds log to database
      *
-     * @param userId The user who made an action
+     * @param user User associated with log
      * @param type Type of log to be logged
      * @param message Log message
      * @throws GUIException
@@ -62,8 +62,8 @@ public class LogModel {
      */
     public List<LogItem> getAll() throws GUIException {
         try {
-            startTimer();
-            return logic.getLogLogic().getAllLogs();
+            startLogTimer();
+            return logic.getLogLogic().getAll();
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
@@ -74,9 +74,9 @@ public class LogModel {
      *
      * @throws GUIException
      */
-    private void startTimer() throws GUIException {
+    private void startLogTimer() throws GUIException {
         logic.getLogLogic().startLogTimer();
-        addLogListener();
+        addListener();
     }
 
     /**
@@ -99,7 +99,7 @@ public class LogModel {
     /**
      * Adds listener to Log List in BLL
      */
-    private void addLogListener() {
+    private void addListener() {
         logic.getLogLogic().getTempLog().addListener((ListChangeListener.Change<? extends LogItem> c) -> {
             c.next();
             if (c.wasAdded() || c.wasRemoved() || c.wasReplaced() || c.wasUpdated()) {
