@@ -16,6 +16,11 @@ and open the template in the editor.
     -fx-background-color: white;
 }
 
+/* root */
+.root {
+    -fx-focus-color: transparent;
+}
+
 /* AnchorPane */
 .anchorPane {
     -fx-background-color: white;
@@ -345,5 +350,42 @@ and open the template in the editor.
 }
 
 .VBox {
+    -fx-background-color: white;
+}
+
+.split-menu-button-thingy {
+    -fx-background-color: transparent; 
+    -fx-background-insets: 0 0 -1 0, 0;
+    -fx-background-radius: 0;
+    -fx-padding: 0;
+}
+
+.split-menu-button-thingy .label {
+    -fx-background-color: #337ab7;
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 11pt;
+    -fx-text-fill: white;
+    -fx-opacity: 2;
+    -fx-border-radius: 2 0 0 2, 1 0 0 1;
+    -fx-border-color: #2e6da4;
+}
+
+.split-menu-button-thingy .arrow-button {
+    -fx-border-color: #2e6da4;
+    -fx-border-radius: 0 2 2 0, 0 1 1 0;
+    -fx-background-color: #337ab7;
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 11pt;
+    -fx-text-fill: white;
+}
+
+.split-menu-button-thingy .label:hover {
+    -fx-background-color: #2e6ea5;
+}
+.split-menu-button-thingy .arrow-button:hover {
+    -fx-background-color: #2e6ea5;
+}
+
+.split-menu-button-thingy .arrow-button .arrow {
     -fx-background-color: white;
 }

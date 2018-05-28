@@ -28,20 +28,20 @@
             </HBox>
             <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <children>
-                  <SplitMenuButton mnemonicParsing="false" onAction="#handleMap" text="Link">
+                  <SplitMenuButton mnemonicParsing="false" onAction="#handleMap" popupSide="TOP" styleClass="split-menu-button-thingy" text="Link">
                      <items>
-                        <MenuItem mnemonicParsing="false" onAction="#handleSecondPri" text="2. Priority" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleSecondPri" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-border-color: transparent;" text="2. Priority" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleDefaultValue" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-border-color: transparent;" text="Default values" />
                      </items>
                   </SplitMenuButton>
-                  <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleDefaultValue" text="Default Value" />
-                  <SplitMenuButton mnemonicParsing="false" onAction="#delMap" text="Remove">
+                  <SplitMenuButton mnemonicParsing="false" onAction="#delMap" popupSide="TOP" styleClass="split-menu-button-thingy" text="Remove">
                     <items>
-                      <MenuItem mnemonicParsing="false" onAction="#handleDelMap" text="Delete Map" />
+                      <MenuItem mnemonicParsing="false" onAction="#handleDelMap" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-border-color: transparent;" text="Delete Map" />
                     </items>
                   </SplitMenuButton>
-                  <SplitMenuButton mnemonicParsing="false" onAction="#handleCreateConfig" text="Save config">
+                  <SplitMenuButton mnemonicParsing="false" onAction="#handleCreateConfig" popupSide="TOP" styleClass="split-menu-button-thingy" text="Save config">
                      <items>
-                        <Menu fx:id="configMenu" mnemonicParsing="false" text="Load config" />
+                        <Menu fx:id="configMenu" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-border-color: transparent;" text="Load config" />
                      </items>
                   </SplitMenuButton>
                </children>
