@@ -37,7 +37,8 @@ public class ThreadPool {
         pending = new ArrayList();
         running = new ArrayList();
         finished = new ArrayList();
-        this.threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        this.threadPool = Executors.newFixedThreadPool(
+                Runtime.getRuntime().availableProcessors());
     }
 
     /**
@@ -83,7 +84,6 @@ public class ThreadPool {
      * @param task
      */
     public void startTask(ConvTask task) {
-        System.out.println("started task - threadpool");
         task.setStatus(ConvTask.Status.Running);
         Future future = threadPool.submit(task.getCallable());
         task.setFuture(future);
@@ -126,10 +126,17 @@ public class ThreadPool {
     }
 
     /**
-     * Shuts down the ExecutorSerivce
+     * Shuts down the ExecutorSerivce, cancelling everything running
      */
-    public void closeThreadPool() {
+    public void shutdownNow() {
         threadPool.shutdownNow();
+    }
+    
+    /**
+     * Shuts down the ExecutorService, letting things finish
+     */
+    public void shutdown() {
+        threadPool.shutdown();
     }
     
     /**

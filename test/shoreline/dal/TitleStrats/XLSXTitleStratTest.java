@@ -9,10 +9,10 @@ import java.io.File;
 import java.util.HashMap;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -21,10 +21,12 @@ import static org.junit.Assert.*;
 public class XLSXTitleStratTest {
     
     private String userDir = System.getProperty("user.dir");
-    private String testFile;
+    private String testFilePath;
+    private File file;
     
     public XLSXTitleStratTest() {
-        testFile = userDir + "\\test\\shoreline\\res\\XLSX\\Import_data.xlsx";
+        testFilePath = userDir + "\\test\\shoreline\\res\\XLSX\\Import_data.xlsx";
+        file = new File(testFilePath);
     }
     
     @BeforeClass
@@ -48,24 +50,18 @@ public class XLSXTitleStratTest {
      */
     @Test
     public void testGetTitles() throws Exception {
-        File file = new File(testFile);
         XLSXTitleStrat instance = new XLSXTitleStrat();
         
-        HashMap<String, Integer> expResult = new HashMap<>();
-        expResult.put("MaintActivType", 11);
-        expResult.put("Description", 5);
-        expResult.put("Group Counter", 15);
-        expResult.put("Functional Loc.", 4);
-        expResult.put("Bas. start date", 29);
-        expResult.put("Opr. short text", 22);
+        HashMap<String, Integer> titleIndexMap = instance.getTitles(file);
+        int expectedSize = 41;
+        int count = titleIndexMap.size();
+        assertEquals(expectedSize, count);
         
-        HashMap<String, Integer> result = instance.getTitles(file);
-        assertEquals(expResult.get("Description"), result.get("Description"));
-        assertEquals(expResult.get("MaintActivType"), result.get("MaintActivType"));
-        assertEquals(expResult.get("Group Counter"), result.get("Group Counter"));
-        assertEquals(expResult.get("Functional Loc."), result.get("Functional Loc."));
-        assertEquals(expResult.get("Bas. start date"), result.get("Bas. start date"));
-        assertEquals(expResult.get("Opr. short text"), result.get("Opr. short text"));
+        assertEquals(6, titleIndexMap.get("Equipment"), 0);
+        assertEquals(7, titleIndexMap.get("Description1"), 0);
+        assertEquals(22, titleIndexMap.get("Opr. short text"), 0);
+        assertEquals(14, titleIndexMap.get("Group"), 0);
+        assertEquals(27, titleIndexMap.get("Actual work"), 0);
     }
     
 }

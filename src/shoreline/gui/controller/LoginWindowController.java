@@ -92,7 +92,7 @@ public class LoginWindowController implements Initializable, IController {
         Platform.runLater(() -> {
             model.getBorderPane().getScene().getWindow().setOnCloseRequest((event) -> {
                 ThreadPool tPool = ThreadPool.getInstance();
-                tPool.closeThreadPool();
+                tPool.shutdownNow();
                 model.getLogModel().getTimer().cancel();
             });
         });
