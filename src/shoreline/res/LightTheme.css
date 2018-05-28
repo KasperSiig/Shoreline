@@ -347,3 +347,15 @@ and open the template in the editor.
 .VBox {
     -fx-background-color: white;
 }
+
+.dropdown-btn-left {
+    -fx-border-width: 1px 0px 1px 1px;
+    -fx-border-radius: 4px 0px 0px 4px;
+    -fx-background-radius: 4px 0px 0px 4px;
+}
+
+.dropdown-btn-right {
+    -fx-border-width: 1px 1px 1px 1px;
+    -fx-border-radius: 0px 4px 4px 0px;
+    -fx-background-radius: 0px 4px 4px 0px;
+}

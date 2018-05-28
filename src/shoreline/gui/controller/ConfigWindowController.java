@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -29,9 +32,12 @@ import javafx.scene.control.SelectionModel;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import shoreline.be.Config;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.ModelManager;
@@ -76,6 +82,21 @@ public class ConfigWindowController implements Initializable, IController {
     private JFXButton btnInput;
     @FXML
     private Label lblInfo;
+    @FXML
+    private JFXButton btnMenuLink;
+    private VBox vBoxLink;
+
+    private JFXButton btnSecond;
+    private JFXButton btnDefault;
+    private JFXButton btnRemove;
+    private JFXButton btnLoad;
+
+    @FXML
+    private HBox hBoxBtns;
+    @FXML
+    private JFXButton btnMenuDelete;
+    @FXML
+    private JFXButton btnMenuConfig;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -93,17 +114,32 @@ public class ConfigWindowController implements Initializable, IController {
         lvMapOverview.setDisable(true);
         lvMapSetup();
         makeConfigListener();
+        createButtons();
 
         lvMapOverview.setCellFactory((final ListView<String> list) -> new ListCell<String>() {
             {
                 Text text = new Text();
                 text.wrappingWidthProperty().bind(list.widthProperty().subtract(15));
                 text.textProperty().bind(itemProperty());
-                
+
                 setPrefWidth(0);
                 setGraphic(text);
             }
         });
+    }
+
+    private void createButtons() {
+        btnSecond = new JFXButton("Second Priority");
+        btnSecond.setUserData(false);
+
+        btnDefault = new JFXButton("Default Values");
+        btnDefault.setUserData(false);
+
+        btnRemove = new JFXButton("Remove");
+        btnRemove.setUserData(false);
+
+        btnLoad = new JFXButton("Load Config");
+        btnLoad.setUserData(false);
     }
 
     /**
@@ -183,7 +219,6 @@ public class ConfigWindowController implements Initializable, IController {
      *
      * @param event
      */
-    @FXML
     private void handleSecondaryHeaders(ActionEvent event) {
         if (primaryHeaders.containsKey(lvTemplate.getSelectionModel().getSelectedItem())) {
             String inputSelection = lvInput.getSelectionModel().getSelectedItem();
@@ -202,7 +237,7 @@ public class ConfigWindowController implements Initializable, IController {
      */
     private void insertSecondaryHeader(String templateSelection, String inputSelection) {
         secondaryHeaders.put(templateSelection, inputSelection);
-        
+
         // Checks if templateSelection is already chosen
         String temp = null;
         for (String string : mappingList) {
@@ -219,7 +254,6 @@ public class ConfigWindowController implements Initializable, IController {
         mappingList.add(index, temp += "\nSecond: " + inputSelection);
     }
 
-    @FXML
     private void handleDefaultValue(ActionEvent event) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
@@ -229,7 +263,6 @@ public class ConfigWindowController implements Initializable, IController {
             DefaultVauleWindowController dvwc = fxmlLoader.getController();
             dvwc.setInfo(defaultValues);
             dvwc.postInit(model);
-            
 
             Scene scene = new Scene(root);
             Stage stage = new Stage();
@@ -552,4 +585,87 @@ public class ConfigWindowController implements Initializable, IController {
             }
         });
     }
+
+    @FXML
+    private void handleShowLinkOptions(ActionEvent event) {
+        if ((boolean) btnRemove.getUserData()) {
+            slideOut(btnRemove);
+        }
+        if ((boolean) btnLoad.getUserData()) {
+            slideOut(btnLoad);
+        }
+        
+        if (!(boolean) btnSecond.getUserData()) {
+            slideIn(btnSecond, 0);
+            slideIn(btnDefault, 1);
+        } else {
+            slideOut(btnSecond);
+            slideOut(btnDefault);
+        }
+    }
+
+    @FXML
+    private void handleShowDeleteOptions(ActionEvent event) {
+        if ((boolean) btnSecond.getUserData()) {
+            slideOut(btnSecond);
+            slideOut(btnDefault);
+        }
+        if ((boolean) btnLoad.getUserData()) {
+            slideOut(btnLoad);
+        }
+        
+        if (!(boolean) btnRemove.getUserData()) {
+            slideIn(btnRemove, 1);
+        } else {
+            slideOut(btnRemove);
+        }
+    }
+
+    @FXML
+    private void handleShowConfigOptions(ActionEvent event) {
+        if ((boolean) btnSecond.getUserData()) {
+            slideOut(btnSecond);
+            slideOut(btnDefault);
+        }
+        if ((boolean) btnRemove.getUserData()) {
+            slideOut(btnRemove);
+        }
+        
+        if (!(boolean) btnLoad.getUserData()) {
+            slideIn(btnLoad, 2);
+        } else {
+            slideOut(btnLoad);
+        }
+    }
+
+    private void slideIn(JFXButton button, int pos) {
+        hBoxBtns.getChildren().add(pos, button);
+        button.setUserData(true);
+        button.setId(String.valueOf(pos));
+        double width = button.getWidth() == 0.0 ? 145 : button.getWidth();
+
+        button.setTranslateX(Math.abs(width * (pos - 1)) + width);
+        System.out.println(button.getWidth());
+        Timeline timeLine = new Timeline();
+        timeLine.setCycleCount(1);
+        timeLine.setAutoReverse(true);
+        timeLine.getKeyFrames().add(new KeyFrame(Duration.millis(500), new KeyValue(button.translateXProperty(), 0)));
+        timeLine.play();
+    }
+
+    private void slideOut(JFXButton button) {
+        int pos = Integer.parseInt(button.getId());
+        double width = button.getWidth();
+        Timeline timeLine = new Timeline();
+        timeLine.setCycleCount(1);
+        timeLine.setAutoReverse(true);
+        timeLine.getKeyFrames().add(new KeyFrame(Duration.millis(500), new KeyValue(button.translateXProperty(), Math.abs(width * (pos - 1)) + width + (width / 10))));
+        timeLine.play();
+        timeLine.setOnFinished((event) -> {
+            hBoxBtns.getChildren().remove(button);
+            button.setUserData(false);
+        });
+
+    }
+
 }

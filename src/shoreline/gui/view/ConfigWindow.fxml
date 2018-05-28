@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane fx:id="borderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="shoreline.gui.controller.ConfigWindowController">
    <bottom>
@@ -25,13 +26,38 @@
                   <JFXButton fx:id="btnInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onAction="#handelInputFile" text="Choose input file" />
                </children>
             </HBox>
-            <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <HBox fx:id="hBoxBtns" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <children>
-                  <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onAction="#handlePrimaryHeaders" text="Link" />
-                  <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleSecondaryHeaders" text="2. priority" />
-                  <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleDefaultValue" text="Default value" />
-                  <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleDelMap" text="Delete Map" />
-                  <JFXButton onAction="#handleCreateConfig" text="Save Config" />
+                  <HBox>
+                     <children>
+                        <JFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onAction="#handlePrimaryHeaders" styleClass="dropdown-btn-left" text="Link" />
+                        <JFXButton fx:id="btnMenuLink" onAction="#handleShowLinkOptions" styleClass="dropdown-btn-right" text="▼">
+                           <font>
+                              <Font size="10.0" />
+                           </font>
+                        </JFXButton>
+                     </children>
+                  </HBox>
+                  <HBox>
+                     <children>
+                        <JFXButton alignment="BOTTOM_CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleDelMap" styleClass="dropdown-btn-left" text="Delete Map" />
+                        <JFXButton fx:id="btnMenuDelete" onAction="#handleShowDeleteOptions" styleClass="dropdown-btn-right" text="▼">
+                           <font>
+                              <Font size="10.0" />
+                           </font>
+                        </JFXButton>
+                     </children>
+                  </HBox>
+                  <HBox>
+                     <children>
+                        <JFXButton onAction="#handleCreateConfig" styleClass="dropdown-btn-left" text="Save Config" />
+                        <JFXButton fx:id="btnMenuConfig" onAction="#handleShowConfigOptions" styleClass="dropdown-btn-right" text="▼">
+                           <font>
+                              <Font size="10.0" />
+                           </font>
+                        </JFXButton>
+                     </children>
+                  </HBox>
                </children>
             </HBox>
          </children>
