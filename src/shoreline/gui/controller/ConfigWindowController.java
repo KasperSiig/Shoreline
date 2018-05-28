@@ -86,13 +86,9 @@ public class ConfigWindowController implements Initializable, IController {
     @FXML
     private Menu configMenu;
     @FXML
-    private MenuItem Delete1;
-    @FXML
     private JFXButton btnInput;
     @FXML
     private Label lblInfo;
-    @FXML
-    private TabPane tabPane;
 
     /**
      * Initializes the controller class.
@@ -439,7 +435,6 @@ public class ConfigWindowController implements Initializable, IController {
      *
      * @param event
      */
-    @FXML
     private void HandleCreateConfig(ActionEvent event) {
         validateCreateConfig();
     }
