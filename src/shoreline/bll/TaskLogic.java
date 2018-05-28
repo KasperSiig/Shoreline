@@ -67,10 +67,12 @@ public class TaskLogic {
         ConvImpl impl;
         switch (extension) {
             case "xlsx":
-                impl = new ConvImpl(new XLXSConvStrat(), new XLSXReader(), new StringToFile());
+                impl = new ConvImpl(new XLXSConvStrat(), 
+                        new XLSXReader(), new StringToFile());
                 break;
             case "csv":
-                impl = new ConvImpl(new CSVConvStrat(), new CSVReader(), new StringToFile());
+                impl = new ConvImpl(new CSVConvStrat(), 
+                        new CSVReader(), new StringToFile());
                 break;
             default:
                 throw new IllegalArgumentException();

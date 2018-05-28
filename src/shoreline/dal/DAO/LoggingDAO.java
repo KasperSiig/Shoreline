@@ -93,10 +93,10 @@ public class LoggingDAO {
      * @param con Connection to database
      * @throws DALException 
      */
-    public void addLog(User user, Alert.AlertType alertType, String message, Connection con) throws DALException {
+    public void addLog(User user, Alert.AlertType alertType, 
+            String message, Connection con) throws DALException {
         String sql = "INSERT INTO LogTable VALUES(?,?,GETDATE(),?)";
         try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
             statement.setString(1, alertType.toString());
             statement.setInt(2, user.getId());
             statement.setString(3, message);

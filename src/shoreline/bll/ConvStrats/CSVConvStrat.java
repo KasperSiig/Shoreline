@@ -139,7 +139,7 @@ public class CSVConvStrat implements ConvStrategy {
         HashMap<String, String> second = config.getSecondaryHeaders();
         HashMap<String, String> defaultValues = config.getDefaultValues();
         String rtn;
-        // Checks if header in HashMap, otherwise there will be nothing to get data from
+        // Checks if header is in HashMap, otherwise there will be nothing to get data from
         if (headers.get(header) != null) {
             rtn = sheet.getSheetData(rowNumber, headers.get(header));
             // If cell contains anything, return the value

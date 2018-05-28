@@ -74,9 +74,7 @@ public class BatchLogic extends LogicClass {
      * @throws BLLException if there was a problem running the tasks
      */
     public void runBatch(Batch batch) throws BLLException {
-        System.out.println("runs batch");
         List<ConvTask> tasks = new ArrayList(batch.getPendingTasks());
-        System.out.println(tasks);
         for (ConvTask task : tasks) {
             batch.removeFromPending(task);
             logicManager.getTaskLogic().addCallableToTask(task);
@@ -115,7 +113,6 @@ public class BatchLogic extends LogicClass {
 
         ConvTask task = new ConvTask(name, file, tempFile, batch.getConfig());
         task.setBatch(batch);
-        System.out.println("set batch");
         return task;
     }
 
@@ -155,7 +152,7 @@ public class BatchLogic extends LogicClass {
                     key = watcher.take();
                     for (WatchEvent<?> event : key.pollEvents()) {
                         
-//                        @SuppressWarnings("unchecked")
+                        @SuppressWarnings("unchecked")
                         WatchEvent<Path> ev = (WatchEvent<Path>) event;
                         Path fileName = ev.context();
 
