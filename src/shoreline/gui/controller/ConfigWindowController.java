@@ -64,11 +64,9 @@ public class ConfigWindowController implements Initializable, IController {
     private JFXListView<String> lvMapOverview;
     @FXML
     private JFXListView<String> lvTemplate;
-    @FXML
     private BorderPane borderPane;
     @FXML
     private JFXTextField txtFileName;
-    @FXML
     private MenuItem remove;
     @FXML
     private Menu configMenu;
@@ -76,6 +74,10 @@ public class ConfigWindowController implements Initializable, IController {
     private JFXButton btnInput;
     @FXML
     private Label lblInfo;
+    @FXML
+    private BorderPane bPane;
+    @FXML
+    private MenuItem Delete;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -140,7 +142,6 @@ public class ConfigWindowController implements Initializable, IController {
      *
      * @param event
      */
-    @FXML
     private void handlePrimaryHeaders(ActionEvent event) {
 
         SelectionModel<String> inputSelection = lvInput.getSelectionModel();
@@ -171,7 +172,6 @@ public class ConfigWindowController implements Initializable, IController {
      *
      * @param event
      */
-    @FXML
     private void handleDoubleClickLink(MouseEvent event) {
         if (event.getClickCount() % 2 == 0) {
             handlePrimaryHeaders(new ActionEvent());
@@ -183,7 +183,6 @@ public class ConfigWindowController implements Initializable, IController {
      *
      * @param event
      */
-    @FXML
     private void handleSecondaryHeaders(ActionEvent event) {
         if (primaryHeaders.containsKey(lvTemplate.getSelectionModel().getSelectedItem())) {
             String inputSelection = lvInput.getSelectionModel().getSelectedItem();
@@ -426,7 +425,6 @@ public class ConfigWindowController implements Initializable, IController {
      *
      * @param event
      */
-    @FXML
     private void deleteSelectedLink(ActionEvent event) {
         deleteSelection();
     }
@@ -551,5 +549,21 @@ public class ConfigWindowController implements Initializable, IController {
                 insertSecondaryHeader(key, secondaryHeaders.get(key));
             }
         });
+    }
+
+    @FXML
+    private void handleSecondPri(ActionEvent event) {
+    }
+
+    @FXML
+    private void handleMap(ActionEvent event) {
+    }
+
+    @FXML
+    private void delMap(ActionEvent event) {
+    }
+
+    @FXML
+    private void doubleClickMap(MouseEvent event) {
     }
 }
