@@ -6,6 +6,7 @@ import shoreline.be.ConvTask;
 import shoreline.bll.ConvStrats.CSVConvStrat;
 import shoreline.bll.ConvStrats.ConvImpl;
 import shoreline.bll.ConvStrats.XLXSConvStrat;
+import shoreline.dal.DataManager;
 import shoreline.dal.Readers.CSVReader;
 import shoreline.dal.Readers.XLSXReader;
 import shoreline.dal.Writers.StringToFile;
@@ -16,14 +17,13 @@ import shoreline.exceptions.DALException;
  *
  * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
-public class TaskLogic {
-    private LogicManager logicManager;
+public class TaskLogic extends LogicClass{
 
     /**
-     * @param logicManager Reference back to the LogicManager
+     * @param dataManager Holds a reference to DataManager
      */
-    public TaskLogic(LogicManager logicManager) {
-        this.logicManager = logicManager;
+    public TaskLogic(DataManager dataManager) {
+        super(dataManager);
     }
     
     /**
@@ -35,7 +35,7 @@ public class TaskLogic {
      */
     public HashMap<String, Integer> getTitles(File file) throws BLLException {
         try {
-            return logicManager.getDataManager().getTitles(file);
+            return dataManager.getTitles(file);
         } catch (DALException ex) {
             throw new BLLException("File format not supported.", ex);
         }

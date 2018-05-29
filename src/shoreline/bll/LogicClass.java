@@ -1,14 +1,17 @@
 package shoreline.bll;
 
+import shoreline.dal.DataManager;
+
 /**
  * Holds information that all Logic Classes should have
  * 
  * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public abstract class LogicClass {
-    protected LogicManager logicManager;
+    protected DataManager dataManager;
 
-    public LogicClass(LogicManager logicManager) {
-        this.logicManager = logicManager;
+    public LogicClass(DataManager dataManager) {
+        this.dataManager = dataManager;
     }
+    
 }

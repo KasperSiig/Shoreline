@@ -1,6 +1,7 @@
 package shoreline.bll;
 
 import shoreline.be.User;
+import shoreline.dal.DataManager;
 import shoreline.exceptions.BLLException;
 import shoreline.exceptions.DALException;
 
@@ -8,17 +9,15 @@ import shoreline.exceptions.DALException;
  *
  * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
-public class UserLogic {
-    
-    private LogicManager logicManager;
+public class UserLogic extends LogicClass {
 
     /**
      * Constructor for UserLogic
      *
-     * @param logicManager Reference back to the LogicManager
+     * @param dataManager Holds a reference to DataManager
      */
-    public UserLogic(LogicManager logicManager) {
-        this.logicManager = logicManager;
+    public UserLogic(DataManager dataManager) {
+        super(dataManager);
     }
     
     /**
@@ -31,7 +30,7 @@ public class UserLogic {
      */
     public boolean validateLogin(String username, String pass) throws BLLException {
         try {
-            String hashPass = logicManager.getDataManager().getPass(username);
+            String hashPass = dataManager.getPass(username);
             if (hashPass == null) {
                 return false;
             }
@@ -51,7 +50,7 @@ public class UserLogic {
      */
     public User createUser(User user, String password) throws BLLException {
         try {
-            return logicManager.getDataManager().createUser(user, password);
+            return dataManager.createUser(user, password);
         } catch (DALException ex) {
             throw new BLLException(ex);
         }
@@ -67,7 +66,7 @@ public class UserLogic {
      */
     public User getUser(String username, String password) throws BLLException {
         try {
-            return logicManager.getDataManager().getUser(username, password);
+            return dataManager.getUser(username, password);
         } catch (DALException ex) {
             throw new BLLException(ex);
         }

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import shoreline.be.Batch;
 import shoreline.be.ConvTask;
+import shoreline.dal.DataManager;
 import shoreline.exceptions.BLLException;
 
 /**
@@ -25,16 +26,19 @@ import shoreline.exceptions.BLLException;
  */
 public class BatchLogic extends LogicClass {
 
+    private TaskLogic taskLogic;
     private List<Batch> batches;
 
     /**
      * Constructor for BatchLogic
      *
-     * @param logicManager Reference back to the LogicManager
+     * @param dataManager Holds a reference to DataManager
+     * @param taskLogic Holds a reference to TaskLogic
      */
-    public BatchLogic(LogicManager logicManager) {
-        super(logicManager);
+    public BatchLogic(DataManager dataManager, TaskLogic taskLogic) {
+        super(dataManager);
         this.batches = new ArrayList();
+        this.taskLogic = taskLogic;
     }
 
     /**
@@ -77,8 +81,8 @@ public class BatchLogic extends LogicClass {
         List<ConvTask> tasks = new ArrayList(batch.getPendingTasks());
         for (ConvTask task : tasks) {
             batch.removeFromPending(task);
-            logicManager.getTaskLogic().addCallableToTask(task);
-            logicManager.getTaskLogic().startTask(task);
+            taskLogic.addCallableToTask(task);
+            taskLogic.startTask(task);
         }
     }
 

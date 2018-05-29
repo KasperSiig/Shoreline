@@ -2,6 +2,7 @@ package shoreline.bll;
 
 import java.util.List;
 import shoreline.be.Config;
+import shoreline.dal.DataManager;
 import shoreline.exceptions.BLLException;
 import shoreline.exceptions.DALException;
 
@@ -9,16 +10,15 @@ import shoreline.exceptions.DALException;
  *
  * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
-public class ConfigLogic {
-    private LogicManager logicManager;
+public class ConfigLogic extends LogicClass {
 
     /**
      * Constructor for ConfigLogic
      * 
      * @param logicManager Reference back to the LogicManager
      */
-    public ConfigLogic(LogicManager logicManager) {
-        this.logicManager = logicManager;
+    public ConfigLogic(DataManager dataManager) {
+        super(dataManager);
     }
     
     /**
@@ -27,7 +27,7 @@ public class ConfigLogic {
      */
     public List<Config> getAllConfigs() throws BLLException {
         try {
-            return logicManager.getDataManager().getAllConfigs();
+            return dataManager.getAllConfigs();
         } catch (DALException ex) {
             throw new BLLException(ex);
         }
@@ -41,7 +41,7 @@ public class ConfigLogic {
      */
     public void saveConfig(Config config) throws BLLException {
         try {
-            logicManager.getDataManager().saveConfig(config);
+            dataManager.saveConfig(config);
         } catch (DALException ex) {
             throw new BLLException(ex);
         }
