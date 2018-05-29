@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import shoreline.be.LogItem;
 import shoreline.be.User;
+import shoreline.dal.DataManager;
 import shoreline.exceptions.BLLException;
 import shoreline.exceptions.DALException;
 
@@ -15,21 +16,19 @@ import shoreline.exceptions.DALException;
  *
  * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
-public class LogLogic {
-
-    private LogicManager logicManager;
-
+public class LogLogic extends LogicClass {
+    
     private ObservableList<LogItem> tempLog;
     private Timer logTimer;
 
     /**
      * Constructor for LogLogic
      *
-     * @param logicManager Reference back to the LogicManager
+     * @param dataManager Holds a reference to DataManager
      */
-    public LogLogic(LogicManager logicManager) {
+    public LogLogic(DataManager dataManager) {
+        super(dataManager);
         this.tempLog = FXCollections.observableArrayList();
-        this.logicManager = logicManager;
     }
 
     /**
@@ -42,7 +41,7 @@ public class LogLogic {
      */
     public void addLog(User user, Alert.AlertType type, String message) throws BLLException {
         try {
-            logicManager.getDataManager().addLog(user, type, message);
+            dataManager.addLog(user, type, message);
         } catch (DALException ex) {
             throw new BLLException(ex);
         }
@@ -56,7 +55,7 @@ public class LogLogic {
      */
     public List<LogItem> getAll() throws BLLException {
         try {
-            return logicManager.getDataManager().getExistingLogs();
+            return dataManager.getExistingLogs();
         } catch (DALException ex) {
             throw new BLLException(ex);
         }
@@ -89,7 +88,7 @@ public class LogLogic {
      */
     public List<LogItem> getNewLogs() throws BLLException {
         try {
-            return logicManager.getDataManager().getNewLogs();
+            return dataManager.getNewLogs();
         } catch (DALException ex) {
             throw new BLLException(ex);
         }

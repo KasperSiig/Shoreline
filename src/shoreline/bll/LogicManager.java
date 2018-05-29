@@ -26,11 +26,12 @@ public class LogicManager {
             throw new BLLException(ex);
         }
         
-        this.userLogic = new UserLogic(this);
-        this.configLogic = new ConfigLogic(this);
-        this.logLogic = new LogLogic(this);
-        this.batchLogic = new BatchLogic(this);
-        this.taskLogic = new TaskLogic(this);
+        this.userLogic = new UserLogic(dataManager);
+        this.configLogic = new ConfigLogic(dataManager);
+        this.logLogic = new LogLogic(dataManager);
+        this.taskLogic = new TaskLogic(dataManager);
+        this.batchLogic = new BatchLogic(dataManager, taskLogic);
+        
     }
 
     /**
