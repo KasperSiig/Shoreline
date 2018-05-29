@@ -76,6 +76,8 @@ public class ConfigWindowController implements Initializable, IController {
     private JFXButton btnInput;
     @FXML
     private Label lblInfo;
+    @FXML
+    private Menu configMenuRight;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -130,7 +132,8 @@ public class ConfigWindowController implements Initializable, IController {
         model.getConfigModel().getConfigList().addListener((ListChangeListener.Change<? extends Config> c) -> {
             c.next();
             if (c.wasUpdated() || c.wasAdded()) {
-                generateConfigsInRightClick();
+                generateConfigsInMenu(configMenu);
+                generateConfigsInMenu(configMenuRight);
             }
         });
     }
@@ -274,7 +277,8 @@ public class ConfigWindowController implements Initializable, IController {
                 insertInputTitles();
                 Styling.clearRedOutline(lvInput);
                 Styling.clearRedOutline(btnInput);
-                generateConfigsInRightClick();
+                generateConfigsInMenu(configMenu);
+                generateConfigsInMenu(configMenuRight);
             } catch (GUIException ex) {
                 Window.openExceptionWindow(ex.getMessage());
             }
@@ -459,7 +463,7 @@ public class ConfigWindowController implements Initializable, IController {
      * Generates a menuitem for each of the configs in the config list in model.
      *
      */
-    private void generateConfigsInRightClick() {
+    private void generateConfigsInMenu(Menu menu) {
 
         List<Config> temp = new ArrayList();
 
@@ -483,7 +487,7 @@ public class ConfigWindowController implements Initializable, IController {
                 Window.openExceptionWindow(ex.getMessage());
             }
         }
-        configMenu.getItems().clear();
+        menu.getItems().clear();
         temp.forEach((config) -> {
             MenuItem item = new MenuItem(config.getName());
             item.setOnAction((event) -> {
@@ -502,7 +506,7 @@ public class ConfigWindowController implements Initializable, IController {
                 setInfoInlvMap(primaryHeaders);
                 Window.openSnack("Config " + config.getName() + " was loaded", borderPane, "blue");
             });
-            configMenu.getItems().add(item);
+            menu.getItems().add(item);
         });
     }
 
