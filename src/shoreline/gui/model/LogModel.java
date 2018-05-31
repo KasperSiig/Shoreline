@@ -6,7 +6,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
-import javafx.scene.layout.BorderPane;
 import shoreline.be.LogItem;
 import shoreline.be.User;
 import shoreline.bll.LogicManager;
@@ -19,13 +18,11 @@ import shoreline.exceptions.GUIException;
  */
 public class LogModel {
 
-    private BorderPane borderPane;
     private LogicManager logic;
 
     private ObservableList<LogItem> logList;
 
-    public LogModel(BorderPane borderPane, LogicManager logic) throws GUIException {
-        this.borderPane = borderPane;
+    public LogModel(LogicManager logic) throws GUIException {
         this.logic = logic;
 
         this.logList = FXCollections.observableArrayList(getAll());
@@ -48,7 +45,7 @@ public class LogModel {
      */
     public void add(User user, Alert.AlertType type, String message) throws GUIException {
         try {
-            logic.getLogLogic().addLog(user, type, message);
+            logic.getLogLogic().add(user, type, message);
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
@@ -84,7 +81,7 @@ public class LogModel {
      * @throws BLLException
      */
     public List<LogItem> getNew() throws BLLException {
-        return logic.getLogLogic().getNewLogs();
+        return logic.getLogLogic().getNew();
     }
 
     /**

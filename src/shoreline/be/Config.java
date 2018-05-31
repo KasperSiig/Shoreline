@@ -1,6 +1,7 @@
 package shoreline.be;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Holds all data about a configuration
@@ -12,6 +13,7 @@ public class Config {
     private String name, extension; 
     private HashMap<String, Integer> titleIndexMap;
     private HashMap<String, String> primaryHeaders, secondaryHeaders, defaultValues;
+    private List<String> outputHeaders;
 
     /**
      * Constructor for Config
@@ -81,6 +83,24 @@ public class Config {
     public void setTitleIndexMap(HashMap<String, Integer> titleIndexMap) {
         this.titleIndexMap = titleIndexMap;
     }
+
+    /** 
+     * @return List of OutputHeaders
+     */
+    public List<String> getOutputHeaders() {
+        return outputHeaders;
+    }
+
+    /**
+     * Sets List of OutputHeaders
+     * 
+     * @param outputHeaders List to be sets
+     */
+    public void setOutputHeaders(List<String> outputHeaders) {
+        this.outputHeaders = outputHeaders;
+    }
+    
+    
 
     @Override
     public String toString() {

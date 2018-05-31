@@ -15,7 +15,7 @@ public class ConfigLogic extends LogicClass {
     /**
      * Constructor for ConfigLogic
      * 
-     * @param logicManager Reference back to the LogicManager
+     * @param dataManager Holds a reference to DataManager
      */
     public ConfigLogic(DataManager dataManager) {
         super(dataManager);

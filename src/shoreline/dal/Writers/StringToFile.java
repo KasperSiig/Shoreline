@@ -14,15 +14,11 @@ public class StringToFile implements OutputWriter<String> {
 
     @Override
     public void write(File file, String output) throws DALException {
-
         try (FileWriter fileWriter = new FileWriter(file, true)) {
             if (!file.isFile()) {
                 file.createNewFile();
             }
             fileWriter.write(output);
-            fileWriter.flush();
-            fileWriter.close();
-
         } catch (IOException ex) {
             throw new DALException("There was a problem writing output to file", ex);
         }

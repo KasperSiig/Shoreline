@@ -1,6 +1,5 @@
 package shoreline.dal.ObjectPool;
 
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import shoreline.dal.DataBaseConnector;
@@ -27,11 +26,7 @@ public class ConnectionPool extends ObjectPool<Connection> {
 
     @Override
     protected Connection create() throws DALException {
-        try {
-            return dbConnect.getConnection();
-        } catch (SQLServerException ex) {
-            throw new DALException("Error returning new connection", ex);
-        }
+        return dbConnect.getConnection();
     }
 
     @Override

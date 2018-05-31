@@ -36,8 +36,6 @@ public class XLXSConvStrat implements ConvStrategy {
     public void addCallable(ConvTask task, InputReader reader, OutputWriter writer) throws BLLException {
         // Gets the instance of the ThreadPool object
         ThreadPool threadPool = ThreadPool.getInstance();
-        threadPool.addToPending(task);
-
         // Creates the Callable, that's going to be added to the ConvTask
         Callable call = (Callable) () -> {
             // Gets titleIndexMap with XLSXTitleStrat, and sets it in the config
@@ -175,18 +173,18 @@ public class XLXSConvStrat implements ConvStrategy {
         JSONObject jOb = new JSONObject();
         JSONObject planning = new JSONObject();
 
-        task.getConfig().getPrimaryHeaders().forEach((key, value) -> {
-            switch (key) {
+        task.getConfig().getOutputHeaders().forEach((string) -> {
+            switch (string) {
                 case "earliestStartDate":
                 case "latestFinishDate":
                 case "latestStartDate":
-                    planning.put(key, getSheetdata(key, i, task));
+                    planning.put(string, getSheetdata(string, i, task));
                     break;
                 case "estimatedTime":
-                    planning.put("estimatedTime", getSheetdata(key, i, task));
+                    planning.put("estimatedTime", getSheetdata(string, i, task));
                     break;
                 default:
-                    jOb.put(key, getSheetdata(key, i, task));
+                    jOb.put(string, getSheetdata(string, i, task));
                     break;
             }
         });

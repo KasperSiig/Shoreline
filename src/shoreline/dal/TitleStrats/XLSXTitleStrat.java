@@ -32,11 +32,11 @@ public class XLSXTitleStrat implements TitleStrategy {
                     titleIndexMap.put(tempName, i);
                 } else {
                     int j = 0;
-                    boolean done = false;
-                    while (!done) {
-                        if (!titleIndexMap.containsKey(tempName + ++j)) {
-                            titleIndexMap.put(tempName + j, i);
-                            done = true;
+                    String newName;
+                    while ((newName = tempName + ++j) != null) {
+                        if (!titleIndexMap.containsKey(newName)) {
+                            titleIndexMap.put(newName, i);
+                            break;
                         }
                     }
                 }

@@ -18,7 +18,6 @@ public class CSVTitleStrat implements TitleStrategy {
     public HashMap<String, Integer> getTitles(File file) throws DALException {
         HashMap<String, Integer> headerMap = new HashMap();
         try (Scanner scanner = new Scanner(file)) {
-            Thread.sleep(50);
 
             String firstLine = scanner.nextLine();
             String[] headers = splitLine(firstLine, DELIMITER);
@@ -30,16 +29,15 @@ public class CSVTitleStrat implements TitleStrategy {
                     headerMap.put(tempName, i);
                 } else {
                     int j = 0;
-                    boolean done = false;
-                    while (!done) {
-                        if (!headerMap.containsKey(tempName + ++j)) {
-                            headerMap.put(tempName + j, i);
-                            done = true;
+                    String newName;
+                    while ((newName = tempName + ++j) != null) {
+                        if (!headerMap.containsKey(newName)) {
+                            headerMap.put(newName, i);
                         }
                     }
                 }
             }
-        } catch (FileNotFoundException | InterruptedException ex) {
+        } catch (FileNotFoundException ex) {
             throw new DALException("Could not get titles from CSV sheet", ex);
         }
         return headerMap;

@@ -84,9 +84,9 @@ public class TaskWindowController implements Initializable, IController {
         this.model = model;
         tabPane.tabMinWidthProperty().bind(tabPane.widthProperty().divide(tabPane.getTabs().size()).subtract(20));
 
-        createTasksListener(selectedPenTasks, model.getTaskModel().getPendingTasks(), vBoxPen);
-        createTasksListener(selectedFinTasks, model.getTaskModel().getFinishedTasks(), vBoxFin);
-        createTasksListener(selectedCanTasks, model.getTaskModel().getCancelledTasks(), vBoxCan);
+        createTasksListener(selectedPenTasks, model.getTaskModel().getPending(), vBoxPen);
+        createTasksListener(selectedFinTasks, model.getTaskModel().getFinished(), vBoxFin);
+        createTasksListener(selectedCanTasks, model.getTaskModel().getCancelled(), vBoxCan);
 
         genRightClickStart();
         genRightClickDel();
@@ -367,7 +367,7 @@ public class TaskWindowController implements Initializable, IController {
         List<TaskView> temp = selectedPenTasks;
         for (TaskView task : temp) {
             try {
-                model.getTaskModel().getPendingTasks().remove(task);
+                model.getTaskModel().getPending().remove(task);
                 vBoxPen.getChildren().remove(task);
                 model.getLogModel().add(model.getUserModel().getUser(), Alert.AlertType.INFORMATION, model.getUserModel().getUser().getFirstName() + " has deleted task " + task.getTask().getName());
             } catch (GUIException ex) {

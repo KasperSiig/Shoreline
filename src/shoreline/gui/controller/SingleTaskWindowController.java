@@ -212,7 +212,7 @@ public class SingleTaskWindowController implements Initializable, IController {
         String name = txtFileName.getText();
 
         Config config = comboConfig.getSelectionModel().getSelectedItem();
-
+        config.setOutputHeaders(model.getConfigModel().getTemplateList());
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();
         String date = dateFormat.format(cal.getTime());
@@ -222,11 +222,16 @@ public class SingleTaskWindowController implements Initializable, IController {
         try {
             ConvTask task = new ConvTask(name, importFile, tempFile, config);
 
-            model.getTaskModel().addToPendingTasks(new TaskView(task));
+            model.getTaskModel().addToPending(new TaskView(task));
             model.getTaskModel().addCallable(task);
         } catch (GUIException ex) {
             Window.openExceptionWindow(ex.getMessage());
         }
+        txtFileName.clear();
+        txtImportPath.clear();
+        txtTargetPath.clear();
+        comboConfig.getItems().clear();
+        comboConfig.setDisable(true);
 
     }
 

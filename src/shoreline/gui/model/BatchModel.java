@@ -2,7 +2,6 @@ package shoreline.gui.model;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.layout.BorderPane;
 import shoreline.be.Batch;
 import shoreline.bll.LogicManager;
 import shoreline.exceptions.BLLException;
@@ -18,7 +17,7 @@ public class BatchModel {
 
     private ObservableList<Batch> batches;
 
-    public BatchModel(BorderPane borderPane, LogicManager logic) {
+    public BatchModel(LogicManager logic) {
         this.logic = logic;
         this.batches = FXCollections.observableArrayList(logic.getBatchLogic().getBatches());
     }

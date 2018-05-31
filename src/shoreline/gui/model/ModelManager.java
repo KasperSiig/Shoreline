@@ -32,11 +32,11 @@ public class ModelManager {
         try {
             this.logic = new LogicManager();
 
-            taskModel = new TaskModel(borderPane, logic);
-            configModel = new ConfigModel(borderPane, logic);
-            logModel = new LogModel(borderPane, logic);
-            userModel = new UserModel(borderPane, logic);
-            batchModel = new BatchModel(borderPane, logic);
+            taskModel = new TaskModel(logic);
+            configModel = new ConfigModel(logic);
+            logModel = new LogModel(logic);
+            userModel = new UserModel(logic);
+            batchModel = new BatchModel(logic);
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }

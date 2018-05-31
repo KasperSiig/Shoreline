@@ -4,14 +4,15 @@ import com.jfoenix.controls.JFXSnackbar;
 import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.MenuBar;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import shoreline.Main;
 import shoreline.exceptions.GUIException;
-import shoreline.gui.MenuBarFactory;
+import shoreline.gui.controller.ConfirmationWindowController;
 import shoreline.gui.controller.IController;
 import shoreline.gui.model.ModelManager;
 
@@ -86,43 +87,6 @@ public class Window {
 
             IController cont = loader.getController();
             cont.postInit(model);
-            return cont;
-        } catch (IOException e) {
-            throw new GUIException(e);
-        }
-    }
-
-    public static IController openView(ModelManager model, BorderPane borderpane, View view, String pos, MenuBarFactory.MenuType menuType) throws GUIException {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource(view.getView()));
-            Node node = loader.load();
-
-            switch (pos) {
-                case "top":
-                    borderpane.setTop(node);
-                    break;
-                case "center":
-                    borderpane.setCenter(node);
-                    break;
-                case "bottom":
-                    borderpane.setBottom(node);
-                    break;
-                case "left":
-                    borderpane.setLeft(node);
-                    break;
-                case "right":
-                    borderpane.setRight(node);
-                    break;
-            }
-
-            IController cont = loader.getController();
-            cont.postInit(model);
-            MenuBarFactory mbf = new MenuBarFactory();
-            MenuBar mBar = mbf.createMenuBar(menuType, model);
-            AnchorPane aPane = (AnchorPane) model.getBorderPane().getTop();
-//            aPane.getChildren().remove(0);
-            aPane.getChildren().add(0, mBar);
             return cont;
         } catch (IOException e) {
             throw new GUIException(e);

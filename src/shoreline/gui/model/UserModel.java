@@ -3,7 +3,6 @@ package shoreline.gui.model;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import javafx.scene.layout.BorderPane;
 import shoreline.be.User;
 import shoreline.bll.LogicManager;
 import shoreline.exceptions.BLLException;
@@ -17,13 +16,11 @@ import shoreline.exceptions.GUIException;
  */
 public class UserModel {
 
-    private BorderPane borderPane;
     private LogicManager logic;
 
     private User user;
 
-    public UserModel(BorderPane borderPane, LogicManager logic) {
-        this.borderPane = borderPane;
+    public UserModel(LogicManager logic) {
         this.logic = logic;
     }
 

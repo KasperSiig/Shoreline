@@ -38,8 +38,12 @@ public class DataBaseConnector {
 
     }
 
-    public Connection getConnection() throws SQLServerException {
-        return dataSource.getConnection();
+    public Connection getConnection() throws DALException {
+        try {
+            return dataSource.getConnection();
+        } catch (SQLServerException ex) {
+            throw new DALException("Could not retrieve Connection", ex);
+        }
     }
 
 }

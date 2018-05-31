@@ -56,7 +56,6 @@ public class ConfigWindowController implements Initializable, IController {
 
     private ModelManager model;
     private File inputFile;
-    private Parent root;
 
     @FXML
     private JFXListView<String> lvInput;
@@ -227,7 +226,7 @@ public class ConfigWindowController implements Initializable, IController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(Window.View.defaultValue.getView()));
-            root = fxmlLoader.load();
+            Parent root = fxmlLoader.load();
 
             DefaultVauleWindowController dvwc = fxmlLoader.getController();
             dvwc.setInfo(defaultValues);
@@ -522,7 +521,7 @@ public class ConfigWindowController implements Initializable, IController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(Window.View.Confirm.getView()));
-            root = fxmlLoader.load();
+            Parent root = fxmlLoader.load();
 
             ConfirmationWindowController cwc = fxmlLoader.getController();
             cwc.postInit(model);

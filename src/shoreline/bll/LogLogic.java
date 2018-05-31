@@ -39,7 +39,7 @@ public class LogLogic extends LogicClass {
      * @param message Message to be written in log
      * @throws BLLException
      */
-    public void addLog(User user, Alert.AlertType type, String message) throws BLLException {
+    public void add(User user, Alert.AlertType type, String message) throws BLLException {
         try {
             dataManager.addLog(user, type, message);
         } catch (DALException ex) {
@@ -71,7 +71,7 @@ public class LogLogic extends LogicClass {
             public void run() {
                 tempLog.clear();
                 try {
-                    tempLog.addAll(getNewLogs());
+                    tempLog.addAll(getNew());
                 } catch (BLLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -86,7 +86,7 @@ public class LogLogic extends LogicClass {
      * @return
      * @throws BLLException
      */
-    public List<LogItem> getNewLogs() throws BLLException {
+    public List<LogItem> getNew() throws BLLException {
         try {
             return dataManager.getNewLogs();
         } catch (DALException ex) {

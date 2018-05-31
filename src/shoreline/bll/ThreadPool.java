@@ -25,7 +25,6 @@ public class ThreadPool {
     }
     // End Singleton
     private ExecutorService threadPool;
-    private List<ConvTask> pending;
     private List<ConvTask> running;
     private List<ConvTask> finished;
 
@@ -34,29 +33,10 @@ public class ThreadPool {
      * of processors available.
      */
     private ThreadPool() {
-        pending = new ArrayList();
         running = new ArrayList();
         finished = new ArrayList();
         this.threadPool = Executors.newFixedThreadPool(
                 Runtime.getRuntime().availableProcessors());
-    }
-
-    /**
-     * Adds to the pending tasks list
-     *
-     * @param task Task to be added
-     */
-    public void addToPending(ConvTask task) {
-        pending.add(task);
-    }
-
-    /**
-     * Removes from the pending list
-     *
-     * @param task Task to be removed
-     */
-    public void removeFromPending(ConvTask task) {
-        pending.remove(task);
     }
 
     /**
@@ -87,7 +67,6 @@ public class ThreadPool {
         task.setStatus(ConvTask.Status.Running);
         Future future = threadPool.submit(task.getCallable());
         task.setFuture(future);
-        pending.remove(task);
         running.add(task);
     }
 
@@ -119,7 +98,6 @@ public class ThreadPool {
         task.setStatus(ConvTask.Status.Paused);
         if (running.contains(task)) {
             running.remove(task);
-            pending.add(task);
             return task.getFuture().cancel(true);
         }
         return false;

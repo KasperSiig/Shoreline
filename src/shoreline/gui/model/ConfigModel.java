@@ -3,11 +3,8 @@ package shoreline.gui.model;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.layout.BorderPane;
 import shoreline.be.Config;
 import shoreline.bll.LogicManager;
 import shoreline.exceptions.BLLException;
@@ -19,14 +16,12 @@ import shoreline.exceptions.GUIException;
  */
 public class ConfigModel {
 
-    private BorderPane borderPane;
     private LogicManager logic;
 
     private ObservableList<Config> configList;
     private ObservableList<String> templateList;
 
-    public ConfigModel(BorderPane borderPane, LogicManager logic) throws GUIException {
-        this.borderPane = borderPane;
+    public ConfigModel(LogicManager logic) throws GUIException {
         this.logic = logic;
 
         this.templateList = FXCollections.observableArrayList("siteName", "assetSerialNumber",

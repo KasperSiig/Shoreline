@@ -26,7 +26,6 @@ public class CSVConvStrat implements ConvStrategy {
     @Override
     public void addCallable(ConvTask task, InputReader reader, OutputWriter writer) {
         ThreadPool threadPool = ThreadPool.getInstance();
-        threadPool.addToPending(task);
         // Creates the Callable, that's going to be added to the ConvTask
         Callable call = (Callable) () -> {
             sheet = (CSVSheet) reader.read(task.getSource());
@@ -105,17 +104,17 @@ public class CSVConvStrat implements ConvStrategy {
         JSONObject jOb = new JSONObject();
         JSONObject planning = new JSONObject();
 
-        task.getConfig().getPrimaryHeaders().forEach((key, value) -> {
+        task.getConfig().getOutputHeaders().forEach((string) -> {
             // Checks the key, since certain values needs to be put into its own JSONObject
-            switch (key) {
+            switch (string) {
                 case "earliestStartDate":
                 case "latestFinishDate":
                 case "latestStartDate":
                 case "estimatedTime":
-                    planning.put(key, getSheetdata(key, task.getProgress(), task.getConfig()));
+                    planning.put(string, getSheetdata(string, task.getProgress(), task.getConfig()));
                     break;
                 default:
-                    jOb.put(key, getSheetdata(key, task.getProgress(), task.getConfig()));
+                    jOb.put(string, getSheetdata(string, task.getProgress(), task.getConfig()));
                     break;
             }
         });

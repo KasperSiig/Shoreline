@@ -121,14 +121,20 @@ public class BatchWindowController implements Initializable, IController {
         }
 
         try {
-            Batch batch = new Batch(inputFolder, targetFolder, txtFileName.getText(), comboConfig.getSelectionModel().getSelectedItem());
+            Config config = comboConfig.getSelectionModel().getSelectedItem();
+            config.setOutputHeaders(model.getConfigModel().getTemplateList());
+            Batch batch = new Batch(inputFolder, targetFolder, txtFileName.getText(), config);
             addListenerForNotification(batch);
             model.getBatchModel().addToBatches(batch);
-            Window.openSnack("New bacth " + batch.getName() + " was created", borderPane, "blue");
+            Window.openSnack("New batch " + batch.getName() + " was created", borderPane, "blue");
         } catch (GUIException ex) {
             Window.openExceptionWindow("Error creating new batch");
         }
-
+        txtFileName.clear();
+        txtImportPath.clear();
+        txtTargetPath.clear();
+        comboConfig.getItems().clear();
+        comboConfig.setDisable(true);
     }
 
     /**

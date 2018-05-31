@@ -41,7 +41,10 @@
                   </SplitMenuButton>
                   <SplitMenuButton mnemonicParsing="false" onAction="#handleCreateConfig" popupSide="TOP" styleClass="split-menu-button-thingy" text="Save config">
                      <items>
-                        <Menu fx:id="configMenu" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-border-color: transparent;" text="Load config" />
+                        <Menu fx:id="configMenu" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-border-color: transparent;" text="Load config">
+                           <items>
+                              <MenuItem disable="true" mnemonicParsing="false" text="(No Input Loaded)" />
+                           </items></Menu>
                      </items>
                   </SplitMenuButton>
                </children>
