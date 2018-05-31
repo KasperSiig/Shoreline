@@ -87,7 +87,7 @@ public class XLXSConvStrat implements ConvStrategy {
         HashMap<String, String> secondaryHeaders = config.getSecondaryHeaders();
         HashMap<String, String> defaultValues = config.getDefaultValues();
 
-        String rtn;
+        String rtn = "";
 
         // If header exists in primaryHeaders
         if (primaryHeaders.get(header) != null) {
@@ -109,7 +109,7 @@ public class XLXSConvStrat implements ConvStrategy {
             return defaultValues.get(header);
         }
 
-        return "";
+        return rtn;
     }
 
     /**
