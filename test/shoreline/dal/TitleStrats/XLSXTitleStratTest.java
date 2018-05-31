@@ -47,6 +47,7 @@ public class XLSXTitleStratTest {
 
     /**
      * Test of getTitles method, of class XLSXTitleStrat.
+     * @throws java.lang.Exception
      */
     @Test
     public void testGetTitles() throws Exception {

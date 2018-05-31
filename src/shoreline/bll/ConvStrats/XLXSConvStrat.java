@@ -172,7 +172,6 @@ public class XLXSConvStrat implements ConvStrategy {
     private JSONObject createJSONObject(int i, ConvTask task) {
         JSONObject jOb = new JSONObject();
         JSONObject planning = new JSONObject();
-
         task.getConfig().getOutputHeaders().forEach((string) -> {
             switch (string) {
                 case "earliestStartDate":
@@ -188,7 +187,6 @@ public class XLXSConvStrat implements ConvStrategy {
                     break;
             }
         });
-
         jOb.put("createdOn", Calendar.getInstance().getTime());
         jOb.put("planning", planning);
         return jOb;

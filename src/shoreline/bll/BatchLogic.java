@@ -77,7 +77,7 @@ public class BatchLogic extends LogicClass {
      * @param batch Batch to run
      * @throws BLLException if there was a problem running the tasks
      */
-    public void runBatch(Batch batch) throws BLLException {
+    private void runBatch(Batch batch) throws BLLException {
         List<ConvTask> tasks = new ArrayList(batch.getPendingTasks());
         for (ConvTask task : tasks) {
             batch.removeFromPending(task);
@@ -124,7 +124,7 @@ public class BatchLogic extends LogicClass {
      * @param batch Batch to get files from
      * @return List of files already in batch
      */
-    public List<File> getFilesInBatch(Batch batch) {
+    private List<File> getFilesInBatch(Batch batch) {
         File directory = batch.getSourceDir();
 
         List<File> returnList = new ArrayList();
@@ -162,7 +162,8 @@ public class BatchLogic extends LogicClass {
 
                         String extension = batch.getConfig().getExtension();
                         if (fileName.toString().endsWith(extension)) {
-                            ConvTask task = createTask(batch, new File(batch.getSourceDir() + "\\" + fileName.toString()));
+                            ConvTask task = createTask(batch, new File(
+                                    batch.getSourceDir() + "\\" + fileName.toString()));
                             batch.addToPending(task);
                             /* Has to sleep, otherwise it starts converting, before data
                                has been written to the new file */
