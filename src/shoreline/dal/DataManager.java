@@ -176,4 +176,12 @@ public class DataManager {
         conPool.checkIn(con);
     }
     
+    public JSONObject getTemplate() throws DALException {
+        Connection con = conPool.checkOut();
+        JSONObject object = templateDAO.getTemplate(con);
+        conPool.checkIn(con);
+        return object;
+    }
+    
+    
 }

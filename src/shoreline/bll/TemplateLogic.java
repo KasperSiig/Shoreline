@@ -22,4 +22,13 @@ public class TemplateLogic extends LogicClass {
             throw new BLLException(ex);
         }
     }
+    
+    public JSONObject getTemplate() throws BLLException {
+        try {
+            return dataManager.getTemplate();
+        } catch (DALException ex) {
+            throw new BLLException(ex);
+        }
+    }
+    
 }
