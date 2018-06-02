@@ -16,6 +16,11 @@ and open the template in the editor.
     -fx-background-color: white;
 }
 
+/* root */
+.root {
+    -fx-focus-color: transparent;
+}
+
 /* AnchorPane */
 .anchorPane {
     -fx-background-color: white;

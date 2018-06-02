@@ -80,6 +80,7 @@ public class SingleTaskWindowController implements Initializable, IController {
         try {
             tabPane.getTabs().add(makeTab(model, Window.View.Batch, "Batch"));
             tabPane.getTabs().add(makeTab(model, Window.View.Config, "Config"));
+            tabPane.getTabs().add(makeTab(model, Window.View.setting, "Settings"));
             tabPane.getTabs().add(makeTab(model, Window.View.logView, "Log"));
         } catch (GUIException ex) {
             Window.openExceptionWindow(ex.getMessage());
@@ -106,7 +107,6 @@ public class SingleTaskWindowController implements Initializable, IController {
             cont.postInit(model);
 
             tab = new Tab(name);
-
             tab.setContent(node);
 
             return tab;
@@ -232,6 +232,12 @@ public class SingleTaskWindowController implements Initializable, IController {
         txtTargetPath.clear();
         comboConfig.getItems().clear();
         comboConfig.setDisable(true);
+
+        txtFileName.clear();
+        txtImportPath.clear();
+        txtTargetPath.clear();
+        comboConfig.getSelectionModel().clearSelection();
+        comboConfig.setValue(null);
 
     }
 

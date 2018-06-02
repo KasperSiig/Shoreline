@@ -77,8 +77,10 @@ public class ConfigWindowController implements Initializable, IController {
     private JFXButton btnInput;
     @FXML
     private Label lblInfo;
+
     @FXML
     private Menu configMenuRight;
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -363,6 +365,7 @@ public class ConfigWindowController implements Initializable, IController {
         } catch (GUIException ex) {
             Window.openExceptionWindow("Error creating configuration");
         }
+
     }
 
     private void validateAndCreateConfig() throws GUIException {
