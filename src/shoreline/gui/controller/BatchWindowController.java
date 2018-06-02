@@ -122,7 +122,7 @@ public class BatchWindowController implements Initializable, IController {
 
         try {
             Config config = comboConfig.getSelectionModel().getSelectedItem();
-            config.setOutputHeaders(model.getConfigModel().getTemplateList());
+            config.setTemplate(model.getConfigModel().getTemplateJson());
             Batch batch = new Batch(inputFolder, targetFolder, txtFileName.getText(), config);
             addListenerForNotification(batch);
             model.getBatchModel().addToBatches(batch);

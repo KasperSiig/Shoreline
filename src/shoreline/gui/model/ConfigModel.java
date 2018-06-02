@@ -1,10 +1,13 @@
 package shoreline.gui.model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.json.JSONObject;
 import shoreline.be.Config;
 import shoreline.bll.LogicManager;
 import shoreline.exceptions.BLLException;
@@ -20,13 +23,12 @@ public class ConfigModel {
 
     private ObservableList<Config> configList;
     private ObservableList<String> templateList;
+    private JSONObject templateJson;
 
     public ConfigModel(LogicManager logic) throws GUIException {
         this.logic = logic;
 
-        this.templateList = FXCollections.observableArrayList("siteName", "assetSerialNumber",
-                "type", "externalWorkOrderId", "systemStatus", "userStatus", "name", "priority",
-                "latestFinishDate", "earliestStartDate", "latestStartDate", "estimatedTime", "createdBy", "status");
+        this.templateList = FXCollections.observableArrayList(getTemplateListFromDB());
         this.configList = FXCollections.observableArrayList(getAllConfigs());
     }
 
@@ -92,5 +94,36 @@ public class ConfigModel {
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
+    }
+    
+    private List<String> getTemplateListFromDB() throws GUIException {
+        List<String> templateHeaders = new ArrayList();
+        try {
+            JSONObject template = logic.getTemplateLogic().getTemplate();
+            templateJson = template;
+            templateHeaders = getStrings(template.toMap());
+        } catch (BLLException ex) {
+            throw new GUIException(ex);
+        }
+        return templateHeaders;
+    }
+ 
+    private List<String> getStrings(Map<String, Object> JSONMap) {
+        List<String> values = new ArrayList();
+        JSONMap.forEach((key, value) -> {
+            if (value instanceof HashMap) {
+                values.addAll(getStrings((Map) value));
+            } else {
+                String stringValue = (String) value;
+                if (stringValue.isEmpty()) {
+                    values.add(key);
+                }
+            }
+        });
+        return values;
+    }
+
+    public JSONObject getTemplateJson() {
+        return templateJson;
     }
 }

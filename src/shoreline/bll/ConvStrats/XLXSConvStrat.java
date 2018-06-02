@@ -2,6 +2,7 @@ package shoreline.bll.ConvStrats;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 import javafx.application.Platform;
@@ -171,25 +172,46 @@ public class XLXSConvStrat implements ConvStrategy {
      */
     private JSONObject createJSONObject(int i, ConvTask task) {
         JSONObject jOb = new JSONObject();
-        JSONObject planning = new JSONObject();
-        task.getConfig().getOutputHeaders().forEach((string) -> {
-            switch (string) {
-                case "earliestStartDate":
-                case "latestFinishDate":
-                case "latestStartDate":
-                    planning.put(string, getSheetdata(string, i, task));
-                    break;
-                case "estimatedTime":
-                    planning.put("estimatedTime", getSheetdata(string, i, task));
-                    break;
-                default:
-                    jOb.put(string, getSheetdata(string, i, task));
-                    break;
+        task.getConfig().getTemplate().toMap().forEach((key, value) -> {
+            String stringValue = null;
+            if (value instanceof String) {
+                stringValue = (String) value;
+            }
+            if (stringValue != null && !stringValue.isEmpty()) {
+                switch (stringValue) {
+                    case "PRE_Current Time":
+                        Date curTime = Calendar.getInstance().getTime();
+                        jOb.put(key, curTime);
+                        break;
+                    default:
+                        jOb.put(key, stringValue);
+                        break;
+                }
+            } else {
+                putString(jOb, key, value, task);
             }
         });
-        jOb.put("createdOn", Calendar.getInstance().getTime());
-        jOb.put("planning", planning);
+
         return jOb;
+    }
+
+    private void putString(JSONObject jsonObject, String stringKey, Object stringValue, ConvTask task) {
+        if (stringValue instanceof HashMap) {
+            HashMap<String, Object> map = (HashMap) stringValue;
+            map.forEach((key, value) -> {
+                JSONObject json;
+                if (!jsonObject.has(stringKey)) {
+                    json = new JSONObject();
+                    jsonObject.put(stringKey, json);
+                } else {
+                    json = jsonObject.getJSONObject(stringKey);
+                }
+                putString(json, key, value, task);
+                
+            });
+        } else {
+            jsonObject.put(stringKey, getSheetdata(stringKey, task.getProgress(), task));
+        }
     }
 
     /**

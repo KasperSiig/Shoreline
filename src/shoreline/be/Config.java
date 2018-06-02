@@ -2,6 +2,7 @@ package shoreline.be;
 
 import java.util.HashMap;
 import java.util.List;
+import org.json.JSONObject;
 
 /**
  * Holds all data about a configuration
@@ -13,7 +14,7 @@ public class Config {
     private String name, extension; 
     private HashMap<String, Integer> titleIndexMap;
     private HashMap<String, String> primaryHeaders, secondaryHeaders, defaultValues;
-    private List<String> outputHeaders;
+    private JSONObject template;
 
     /**
      * Constructor for Config
@@ -84,24 +85,15 @@ public class Config {
         this.titleIndexMap = titleIndexMap;
     }
 
-    /** 
-     * @return List of OutputHeaders
-     */
-    public List<String> getOutputHeaders() {
-        return outputHeaders;
+    public JSONObject getTemplate() {
+        return template;
     }
 
-    /**
-     * Sets List of OutputHeaders
-     * 
-     * @param outputHeaders List to be sets
-     */
-    public void setOutputHeaders(List<String> outputHeaders) {
-        this.outputHeaders = outputHeaders;
+    public void setTemplate(JSONObject template) {
+        this.template = template;
     }
     
     
-
     @Override
     public String toString() {
         return extension + ": " + name;

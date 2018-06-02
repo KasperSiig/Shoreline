@@ -212,7 +212,7 @@ public class SingleTaskWindowController implements Initializable, IController {
         String name = txtFileName.getText();
 
         Config config = comboConfig.getSelectionModel().getSelectedItem();
-        config.setOutputHeaders(model.getConfigModel().getTemplateList());
+        config.setTemplate(model.getConfigModel().getTemplateJson());
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();
         String date = dateFormat.format(cal.getTime());

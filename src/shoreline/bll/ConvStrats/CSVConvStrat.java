@@ -2,8 +2,10 @@ package shoreline.bll.ConvStrats;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicReference;
 import javafx.application.Platform;
 import org.json.JSONObject;
 import shoreline.be.CSVSheet;
@@ -102,25 +104,46 @@ public class CSVConvStrat implements ConvStrategy {
      */
     private JSONObject createJSONObject(ConvTask task) {
         JSONObject jOb = new JSONObject();
-        JSONObject planning = new JSONObject();
-
-        task.getConfig().getOutputHeaders().forEach((string) -> {
-            // Checks the key, since certain values needs to be put into its own JSONObject
-            switch (string) {
-                case "earliestStartDate":
-                case "latestFinishDate":
-                case "latestStartDate":
-                case "estimatedTime":
-                    planning.put(string, getSheetdata(string, task.getProgress(), task.getConfig()));
-                    break;
-                default:
-                    jOb.put(string, getSheetdata(string, task.getProgress(), task.getConfig()));
-                    break;
+        task.getConfig().getTemplate().toMap().forEach((key, value) -> {
+            String stringValue = null;
+            if (value instanceof String) {
+                stringValue = (String) value;
+            }
+            if (stringValue != null && !stringValue.isEmpty()) {
+                switch (stringValue) {
+                    case "PRE_Current Time":
+                        Date curTime = Calendar.getInstance().getTime();
+                        jOb.put(key, curTime);
+                        break;
+                    default:
+                        jOb.put(key, stringValue);
+                        break;
+                }
+            } else {
+                putString(jOb, key, value, task);
             }
         });
-        jOb.put("createdOn", Calendar.getInstance().getTime());
-        jOb.put("planning", planning);
+
         return jOb;
+    }
+    
+    private void putString(JSONObject jsonObject, String stringKey, Object stringValue, ConvTask task) {
+        if (stringValue instanceof HashMap) {
+            HashMap<String, Object> map = (HashMap) stringValue;
+            map.forEach((key, value) -> {
+                JSONObject json;
+                if (!jsonObject.has(stringKey)) {
+                    json = new JSONObject();
+                    jsonObject.put(stringKey, json);
+                } else {
+                    json = jsonObject.getJSONObject(stringKey);
+                }
+                putString(json, key, value, task);
+                
+            });
+        } else {
+            jsonObject.put((String) stringValue, getSheetdata((String) stringValue, task.getProgress(), task.getConfig()));
+        }
     }
 
     /**
