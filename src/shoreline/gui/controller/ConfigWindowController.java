@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -56,6 +57,7 @@ public class ConfigWindowController implements Initializable, IController {
 
     private ModelManager model;
     private File inputFile;
+    private Config curConfig;
 
     @FXML
     private JFXListView<String> lvInput;
@@ -88,6 +90,7 @@ public class ConfigWindowController implements Initializable, IController {
         this.primaryHeaders = new HashMap<>();
         this.secondaryHeaders = new HashMap<>();
         this.defaultValues = new HashMap<>();
+        this.curConfig = null;
 
         lvInput.setItems(inputList);
         lvTemplate.setItems(model.getConfigModel().getTemplateList());
@@ -100,7 +103,7 @@ public class ConfigWindowController implements Initializable, IController {
                 Text text = new Text();
                 text.wrappingWidthProperty().bind(list.widthProperty().subtract(15));
                 text.textProperty().bind(itemProperty());
-                
+
                 setPrefWidth(0);
                 setGraphic(text);
             }
@@ -204,7 +207,7 @@ public class ConfigWindowController implements Initializable, IController {
      */
     private void insertSecondaryHeader(String templateSelection, String inputSelection) {
         secondaryHeaders.put(templateSelection, inputSelection);
-        
+
         // Checks if templateSelection is already chosen
         String temp = null;
         for (String string : mappingList) {
@@ -231,7 +234,6 @@ public class ConfigWindowController implements Initializable, IController {
             DefaultVauleWindowController dvwc = fxmlLoader.getController();
             dvwc.setInfo(defaultValues);
             dvwc.postInit(model);
-            
 
             Scene scene = new Scene(root);
             Stage stage = new Stage();
@@ -256,6 +258,7 @@ public class ConfigWindowController implements Initializable, IController {
      */
     @FXML
     private void handelInputFile(ActionEvent event) {
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("All supported types", "*.xlsx", "*.csv"),
@@ -267,13 +270,19 @@ public class ConfigWindowController implements Initializable, IController {
 
         if (tempFile != null) {
             try {
+                inputFile = tempFile;
                 lblInfo.setVisible(false);
                 primaryHeaders.clear();
                 inputList.clear();
-                inputFile = tempFile;
                 titleIndexMap = model.getConfigModel().getTitles(inputFile);
                 lvMapOverview.setDisable(false);
                 insertInputTitles();
+                if (curConfig != null) {
+                    if (!checkConfig(curConfig)) {
+                        System.out.println(curConfig);
+                        return;
+                    }
+                }
                 Styling.clearRedOutline(lvInput);
                 Styling.clearRedOutline(btnInput);
                 generateConfigsInMenu(configMenu);
@@ -490,23 +499,67 @@ public class ConfigWindowController implements Initializable, IController {
         temp.forEach((config) -> {
             MenuItem item = new MenuItem(config.getName());
             item.setOnAction((event) -> {
-                if (inputFile == null) {
-                    Styling.redOutline(lvInput);
-                    Window.openSnack("Please select a import file", borderPane, "red");
-                    return;
+                if (!checkConfig(config)) {
+                    // Do nothing
+                } else {
+                    if (inputFile == null) {
+                        Styling.redOutline(lvInput);
+                        Window.openSnack("Please select a import file", borderPane, "red");
+                        return;
+                    }
+                    mappingList.clear();
+                    primaryHeaders.clear();
+                    primaryHeaders.putAll(config.getPrimaryHeaders());
+                    secondaryHeaders.clear();
+                    secondaryHeaders.putAll(config.getSecondaryHeaders());
+                    defaultValues.clear();
+                    defaultValues.putAll(config.getDefaultValues());
+                    setInfoInlvMap(primaryHeaders);
+                    Window.openSnack("Config " + config.getName() + " was loaded", borderPane, "blue");
+                    curConfig = config;
                 }
-                mappingList.clear();
-                primaryHeaders.clear();
-                primaryHeaders.putAll(config.getPrimaryHeaders());
-                secondaryHeaders.clear();
-                secondaryHeaders.putAll(config.getSecondaryHeaders());
-                defaultValues.clear();
-                defaultValues.putAll(config.getDefaultValues());
-                setInfoInlvMap(primaryHeaders);
-                Window.openSnack("Config " + config.getName() + " was loaded", borderPane, "blue");
             });
             menu.getItems().add(item);
         });
+    }
+
+    private boolean checkConfig(Config config) {
+        List<String> primaryList = checkHeaders(config.getPrimaryHeaders(), inputList);
+        List<String> secondaryList = checkHeaders(config.getSecondaryHeaders(), inputList);
+        if (!primaryList.isEmpty() || !secondaryList.isEmpty()) {
+            StringBuilder header = new StringBuilder("Following headers do not exist in input file: \n");
+            primaryList.forEach((string) -> {
+                header.append(string);
+                header.append("\n");
+            });
+
+            secondaryList.forEach((string) -> {
+                header.append(string);
+                header.append("\n");
+            });
+            Window.openExceptionWindow(header.toString());
+            mappingList.clear();
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Checks if headers are valid, according to given inputList
+     *
+     * @param inputHeaders
+     * @param inputList
+     * @return
+     */
+    private List<String> checkHeaders(HashMap<String, String> inputHeaders, List<String> inputList) {
+        List<String> headers = new ArrayList();
+        inputHeaders.forEach((key, value) -> {
+            if (!inputList.contains(value)) {
+                headers.add(value);
+            }
+        });
+        return headers;
     }
 
     /**
@@ -555,4 +608,5 @@ public class ConfigWindowController implements Initializable, IController {
             }
         });
     }
+
 }
