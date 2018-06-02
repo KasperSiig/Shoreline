@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.gui.controller;
 
 import com.jfoenix.controls.JFXButton;
-import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -15,7 +9,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.DirectoryChooser;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.ModelManager;
 import shoreline.statics.Window;
@@ -35,6 +28,8 @@ public class SettingsWindowController implements Initializable, IController {
     private BorderPane borderPane;
     @FXML
     private JFXButton logOutBtn;
+    @FXML
+    private JFXButton bgnConfig;
 
     /**
      * Initializes the controller class.
@@ -62,6 +57,15 @@ public class SettingsWindowController implements Initializable, IController {
     private void handleOpenJSONSetting(ActionEvent event) {
         try {
             Window.openView(model, model.getBorderPane(), Window.View.JSONTemplate, "center");
+        } catch (GUIException ex) {
+            Logger.getLogger(SettingsWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @FXML
+    private void handleOpenConfigSetting(ActionEvent event) {
+        try {
+            Window.openView(model, model.getBorderPane(), Window.View.ConfigSetting, "center");
         } catch (GUIException ex) {
             Logger.getLogger(SettingsWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }

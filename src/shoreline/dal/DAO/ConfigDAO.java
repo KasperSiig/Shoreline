@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import shoreline.be.Config;
 import shoreline.exceptions.DALException;
 
@@ -16,7 +18,7 @@ import shoreline.exceptions.DALException;
  * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class ConfigDAO {
-
+    
     public ConfigDAO() {
     }
 
@@ -33,17 +35,18 @@ public class ConfigDAO {
         try {
             PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ResultSet rs = statement.executeQuery();
-
+            
             while (rs.next()) {
                 HashMap<String, String> primaryHeaders = new HashMap();
                 HashMap<String, String> secondaryHeaders = new HashMap();
                 HashMap<String, String> defaultValues = new HashMap();
-
+                
                 sql = "SELECT * FROM MapTable WHERE cfgId = ?";
                 statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-                statement.setInt(1, rs.getInt("id"));
+                int id = rs.getInt("id");
+                statement.setInt(1, id);
                 ResultSet rsMap = statement.executeQuery();
-
+                
                 while (rsMap.next()) {
                     if (rsMap.getString("sourceName") != null) {
                         primaryHeaders.put(rsMap.getString("targetName"), rsMap.getString("sourceName"));
@@ -56,14 +59,16 @@ public class ConfigDAO {
                     }
                 }
                 Config config = new Config(rs.getString("name"), rs.getString("extension"), primaryHeaders, secondaryHeaders, defaultValues);
+                config.setId(id);
+                System.out.println(config.getId());
                 configs.add(config);
             }
         } catch (SQLException ex) {
             throw new DALException("SQL Error.", ex);
         }
-
+        
         return configs;
-
+        
     }
 
     /**
@@ -77,22 +82,24 @@ public class ConfigDAO {
         String sql = "INSERT INTO ConfigTable VALUES(?,?)";
         try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             int id = 0;
-
+            
             statement.setString(1, config.getName());
             statement.setString(2, config.getExtension());
-
+            
             if (statement.executeUpdate() == 1) {
                 ResultSet rs = statement.getGeneratedKeys();
                 rs.next();
                 id = rs.getInt(1);
+                config.setId(id);
+                System.out.println(config.getId());
             }
 
             // Values used inside lambda expressions have to be final
             final int fId = id;
-
+            
             HashMap<String, String> defaultValues = config.getDefaultValues();
             HashMap<String, String> secondaryHeaders = config.getSecondaryHeaders();
-
+            
             config.getPrimaryHeaders().forEach((key, value) -> {
                 try {
                     saveMap(con, key, value, secondaryHeaders, defaultValues, fId);
@@ -127,7 +134,7 @@ public class ConfigDAO {
                 throw new RuntimeException("There was a problem saving default values", ex);
             }
         });
-
+        
     }
 
     /**
@@ -155,5 +162,22 @@ public class ConfigDAO {
             throw new DALException("Error saving config.", ex);
         }
     }
-
+    
+    public void updateConfig(Config config, Connection con) throws DALException {
+        deleteConfig(config, con);
+        saveConfig(config, con);
+        
+    }
+    
+    public void deleteConfig(Config config, Connection con) throws DALException {
+        String sql = "DELETE FROM MapTable WHERE cfgId = ?; DELETE FROM ConfigTable WHERE id = ?;";
+        try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setInt(1, config.getId());
+            statement.setInt(2, config.getId());
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(TemplateDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
 }

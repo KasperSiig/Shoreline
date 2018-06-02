@@ -52,13 +52,14 @@ public class UserDAO {
      * @throws DALException
      */
     public User createUser(User user, String password, Connection con) throws DALException {
-        String sql = "INSERT INTO UserTable VALUES(?,?,?,?)";
+        String sql = "INSERT INTO UserTable VALUES(?,?,?,?,?)";
         try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setString(1, user.getUserName());
             statement.setString(2, user.getFirstName());
             statement.setString(3, user.getLastName());
             statement.setString(4, password);
+            statement.setInt(5, 0);
 
             if (statement.executeUpdate() == 1) {
                 ResultSet rs = statement.getGeneratedKeys();

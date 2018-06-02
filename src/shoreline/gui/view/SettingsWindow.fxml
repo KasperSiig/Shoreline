@@ -10,6 +10,7 @@
          <children>
             <JFXButton fx:id="logOutBtn" onAction="#handleLogOut" prefHeight="150.0" prefWidth="150.0" text="Log Out" textAlignment="CENTER" />
             <JFXButton fx:id="jsonBtn" onAction="#handleOpenJSONSetting" prefHeight="150.0" prefWidth="150.0" text="JSON Template" textAlignment="CENTER" textOverrun="CLIP" wrapText="true" />
+            <JFXButton fx:id="bgnConfig" onAction="#handleOpenConfigSetting" prefHeight="150.0" prefWidth="150.0" text="Configs" textAlignment="CENTER" textOverrun="CLIP" wrapText="true" />
          </children>
       </JFXMasonryPane>
    </center>

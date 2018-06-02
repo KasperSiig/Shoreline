@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicBoolean;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -80,7 +79,6 @@ public class ConfigWindowController implements Initializable, IController {
 
     @FXML
     private Menu configMenuRight;
-
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -378,6 +376,7 @@ public class ConfigWindowController implements Initializable, IController {
         HashMap<String, String> tempDefaults = new HashMap<>(defaultValues);
 
         String name = txtFileName.getText();
+        String extension = "";
 
         if (name.isEmpty()) {
             Window.openSnack("Please enter config name", borderPane, "red");
@@ -386,13 +385,19 @@ public class ConfigWindowController implements Initializable, IController {
 
             for (Config config : model.getConfigModel().getConfigList()) {
                 if (config.getName().equals(name)) {
-                    Window.openSnack("The name already exists", borderPane, "red");
-                    return;
+                    if (openConfirmWindow("Name already exists, do you wish to overwrite?")) {
+                        config.setPrimaryHeaders(tempPrimary);
+                        config.setSecondaryHeaders(tempSecondary);
+                        config.setDefaultValues(tempDefaults);
+                        model.getConfigModel().updateConfig(config);
+                        Window.openSnack("Config " + name + " was updated", borderPane, "blue");
+                        return;
+                    } else {
+                        return;
+                    }
                 }
             }
         }
-        String extension = "";
-
         int i = inputFile.getAbsolutePath().lastIndexOf('.');
         if (i > 0) {
             extension = inputFile.getAbsolutePath().substring(i + 1);
@@ -510,16 +515,7 @@ public class ConfigWindowController implements Initializable, IController {
                         Window.openSnack("Please select a import file", borderPane, "red");
                         return;
                     }
-                    mappingList.clear();
-                    primaryHeaders.clear();
-                    primaryHeaders.putAll(config.getPrimaryHeaders());
-                    secondaryHeaders.clear();
-                    secondaryHeaders.putAll(config.getSecondaryHeaders());
-                    defaultValues.clear();
-                    defaultValues.putAll(config.getDefaultValues());
-                    setInfoInlvMap(primaryHeaders);
-                    Window.openSnack("Config " + config.getName() + " was loaded", borderPane, "blue");
-                    curConfig = config;
+                    setInfo(config);
                 }
             });
             menu.getItems().add(item);
@@ -610,6 +606,20 @@ public class ConfigWindowController implements Initializable, IController {
                 insertSecondaryHeader(key, secondaryHeaders.get(key));
             }
         });
+    }
+
+    public void setInfo(Config config) {
+        mappingList.clear();
+        primaryHeaders.clear();
+        primaryHeaders.putAll(config.getPrimaryHeaders());
+        secondaryHeaders.clear();
+        secondaryHeaders.putAll(config.getSecondaryHeaders());
+        defaultValues.clear();
+        defaultValues.putAll(config.getDefaultValues());
+        txtFileName.setText(config.getName());
+        setInfoInlvMap(primaryHeaders);
+        Window.openSnack("Config " + config.getName() + " was loaded\nChoose Input File", borderPane, "blue");
+        curConfig = config;
     }
 
 }

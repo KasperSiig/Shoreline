@@ -182,6 +182,18 @@ public class DataManager {
         conPool.checkIn(con);
         return object;
     }
+
+    public void updateConfig(Config config) throws DALException {
+        Connection con = conPool.checkOut();
+        cfgDAO.updateConfig(config, con);
+        conPool.checkIn(con);
+    }
+    
+    public void deleteConfig(Config config) throws DALException {
+        Connection con = conPool.checkOut();
+        cfgDAO.deleteConfig(config, con);
+        conPool.checkIn(con);
+    }
     
     
 }

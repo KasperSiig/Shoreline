@@ -11,6 +11,7 @@ import org.json.JSONObject;
  */
 public class Config {
 
+    private int id;
     private String name, extension; 
     private HashMap<String, Integer> titleIndexMap;
     private HashMap<String, String> primaryHeaders, secondaryHeaders, defaultValues;
@@ -92,6 +93,27 @@ public class Config {
     public void setTemplate(JSONObject template) {
         this.template = template;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setPrimaryHeaders(HashMap<String, String> primaryHeaders) {
+        this.primaryHeaders = primaryHeaders;
+    }
+
+    public void setSecondaryHeaders(HashMap<String, String> secondaryHeaders) {
+        this.secondaryHeaders = secondaryHeaders;
+    }
+
+    public void setDefaultValues(HashMap<String, String> defaultValues) {
+        this.defaultValues = defaultValues;
+    }
+    
     
     
     @Override

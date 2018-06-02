@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="borderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="shoreline.gui.controller.ConfigSettingWindowController">
+   <top>
+      <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
+         <children>
+            <JFXButton fx:id="btnBack" onAction="#handleBack" text="&lt;&lt;" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+         </children>
+      </AnchorPane>
+   </top>
+   <center>
+      <VBox fx:id="vBoxConfigs" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+         </BorderPane.margin>
+      </VBox>
+   </center>
+</BorderPane>

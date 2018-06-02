@@ -93,7 +93,7 @@ public class XLXSConvStratTest {
                 config = loopConfig;
             }
         }
-        config.setOutputHeaders(modelManager.getConfigModel().getTemplateList());
+        config.setTemplate(dataManager.getTemplate());
         ConvTask task = new ConvTask("TestOutput", inputFile, outputFile, config);
         InputReader reader = new XLSXReader();
         OutputWriter writer = new StringToFile();

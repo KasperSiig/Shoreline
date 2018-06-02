@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shoreline.gui.controller;
 
 import com.jfoenix.controls.JFXButton;
@@ -71,6 +66,8 @@ public class JSONTemplateWindowController implements Initializable, IController 
     private JFXButton btnStatic;
     @FXML
     private JFXButton btnSave;
+    @FXML
+    private JFXButton btnBack;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -167,6 +164,16 @@ public class JSONTemplateWindowController implements Initializable, IController 
     private void handleSave(ActionEvent event) {
         try {
             modelManager.getTemplateModel().save(jsonObject);
+            Window.openSnack("Template was saved", borderPane, "blue");
+        } catch (GUIException ex) {
+            Window.openExceptionWindow(ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleBack(ActionEvent event) {
+        try {
+            Window.openView(modelManager, modelManager.getBorderPane(), Window.View.SingleTask, "center");
         } catch (GUIException ex) {
             Window.openExceptionWindow(ex.getMessage());
         }

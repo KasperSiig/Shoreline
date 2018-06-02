@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.json.JSONObject;
 import shoreline.be.Config;
 import shoreline.bll.LogicManager;
 import shoreline.exceptions.BLLException;
+import shoreline.exceptions.DALException;
 import shoreline.exceptions.GUIException;
 
 /**
@@ -125,5 +128,21 @@ public class ConfigModel {
 
     public JSONObject getTemplateJson() {
         return templateJson;
+    }
+
+    public void updateConfig(Config config) throws GUIException {
+        try {
+            logic.getConfigLogic().updateConfig(config);
+        } catch (BLLException ex) {
+            throw new GUIException(ex);
+        }
+    }
+    
+    public void deleteConfig(Config config) throws GUIException {
+        try {
+            logic.getConfigLogic().deleteConfig(config);
+        } catch (BLLException ex) {
+            throw new GUIException(ex);
+        } 
     }
 }

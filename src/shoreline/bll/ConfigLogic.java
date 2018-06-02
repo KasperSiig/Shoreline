@@ -1,6 +1,8 @@
 package shoreline.bll;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import shoreline.be.Config;
 import shoreline.dal.DataManager;
 import shoreline.exceptions.BLLException;
@@ -46,4 +48,21 @@ public class ConfigLogic extends LogicClass {
             throw new BLLException(ex);
         }
     }
+
+    public void updateConfig(Config config) throws BLLException {
+        try {
+            dataManager.updateConfig(config);
+        } catch (DALException ex) {
+            throw new BLLException(ex);
+        }
+    }
+    
+    public void deleteConfig(Config config) throws BLLException {
+        try {
+            dataManager.deleteConfig(config);
+        } catch (DALException ex) {
+            throw new BLLException(ex);
+        }
+    }
+    
 }
