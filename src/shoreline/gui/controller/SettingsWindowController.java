@@ -5,7 +5,7 @@
  */
 package shoreline.gui.controller;
 
-import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.JFXButton;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -14,9 +14,7 @@ import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.ModelManager;
@@ -30,16 +28,13 @@ import shoreline.statics.Window;
 public class SettingsWindowController implements Initializable, IController {
 
     private ModelManager model;
-    private File JSONFile;
 
     @FXML
-    private BorderPane bPane;
+    private JFXButton jsonBtn;
     @FXML
-    private VBox SettingsVNox;
+    private BorderPane borderPane;
     @FXML
-    private TextField txtJSONPath;
-    @FXML
-    private JFXTextField txtIndentFactor;
+    private JFXButton logOutBtn;
 
     /**
      * Initializes the controller class.
@@ -55,18 +50,18 @@ public class SettingsWindowController implements Initializable, IController {
     }
 
     @FXML
-    private void handleJSONBtn(ActionEvent event) {
-        DirectoryChooser dirChooser = new DirectoryChooser();
-        File temp = dirChooser.showDialog(null);
-        if (temp != null) {
-            JSONFile = temp;
+    private void handleLogOut(ActionEvent event) {
+        try {
+            Window.openView(model, model.getBorderPane(), Window.View.Login, "center");
+        } catch (GUIException ex) {
+            Logger.getLogger(SettingsWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @FXML
-    private void handleLogOut(ActionEvent event) {
+    private void handleOpenJSONSetting(ActionEvent event) {
         try {
-            Window.openView(model, model.getBorderPane(), Window.View.Login, "center");
+            Window.openView(model, model.getBorderPane(), Window.View.JSONTemplate, "center");
         } catch (GUIException ex) {
             Logger.getLogger(SettingsWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }

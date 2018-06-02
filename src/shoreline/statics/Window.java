@@ -4,15 +4,11 @@ import com.jfoenix.controls.JFXSnackbar;
 import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 import shoreline.Main;
 import shoreline.exceptions.GUIException;
-import shoreline.gui.controller.ConfirmationWindowController;
 import shoreline.gui.controller.IController;
 import shoreline.gui.model.ModelManager;
 
@@ -38,8 +34,9 @@ public class Window {
         SingleTask("SingleTaskWindow.fxml"),
         Batch("BatchWindow.fxml"),
         BatchTask("BatchTaskWindow.fxml"),
-        defaultValue("DefaultValueWindow.fxml"),
-        setting("SettingsWindow.fxml");
+        DefaultValue("DefaultValueWindow.fxml"),
+        Setting("SettingsWindow.fxml"),
+        JSONTemplate("JSONTemplateWindow.fxml");
 
         String view;
 

@@ -16,6 +16,7 @@ public class LogicManager {
     private LogLogic logLogic;
     private ConfigLogic configLogic;
     private UserLogic userLogic;
+    private TemplateLogic templateLogic;
 
     private DataManager dataManager;
 
@@ -31,6 +32,7 @@ public class LogicManager {
         this.logLogic = new LogLogic(dataManager);
         this.taskLogic = new TaskLogic(dataManager);
         this.batchLogic = new BatchLogic(dataManager, taskLogic);
+        this.templateLogic = new TemplateLogic(dataManager);
         
     }
 
@@ -76,4 +78,10 @@ public class LogicManager {
         return userLogic;
     }
 
+    /**
+     * @return Reference to TemplateLogic
+     */
+    public TemplateLogic getTemplateLogic() {
+        return templateLogic;
+    }
 }

@@ -80,7 +80,7 @@ public class SingleTaskWindowController implements Initializable, IController {
         try {
             tabPane.getTabs().add(makeTab(model, Window.View.Batch, "Batch"));
             tabPane.getTabs().add(makeTab(model, Window.View.Config, "Config"));
-            tabPane.getTabs().add(makeTab(model, Window.View.setting, "Settings"));
+            tabPane.getTabs().add(makeTab(model, Window.View.Setting, "Settings"));
             tabPane.getTabs().add(makeTab(model, Window.View.logView, "Log"));
         } catch (GUIException ex) {
             Window.openExceptionWindow(ex.getMessage());

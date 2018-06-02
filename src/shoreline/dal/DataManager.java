@@ -8,9 +8,11 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 import javafx.scene.control.Alert;
+import org.json.JSONObject;
 import shoreline.be.Config;
 import shoreline.be.LogItem;
 import shoreline.be.User;
+import shoreline.dal.DAO.TemplateDAO;
 import shoreline.dal.ObjectPool.ConnectionPool;
 import shoreline.dal.TitleStrats.CSVTitleStrat;
 import shoreline.dal.TitleStrats.TitleImpl;
@@ -27,6 +29,7 @@ public class DataManager {
     private UserDAO userDAO;
     private LoggingDAO logDAO;
     private ConfigDAO cfgDAO;
+    private TemplateDAO templateDAO;
 
     /**
      * Constructor for DataManager
@@ -37,6 +40,7 @@ public class DataManager {
         this.userDAO = new UserDAO();
         this.logDAO = new LoggingDAO();
         this.cfgDAO = new ConfigDAO();
+        this.templateDAO = new TemplateDAO();
     }
 
     /**
@@ -165,4 +169,11 @@ public class DataManager {
         }
         return impl.getTitles(file);
     }
+    
+    public void saveTemplate(JSONObject jsonObject) throws DALException {
+        Connection con = conPool.checkOut();
+        templateDAO.save(jsonObject, con);
+        conPool.checkIn(con);
+    }
+    
 }

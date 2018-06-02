@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="borderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="shoreline.gui.controller.JSONTemplateWindowController">
+   <left>
+      <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Input JSON File" />
+            <HBox>
+               <children>
+                  <TextField fx:id="txtInputPath" editable="false">
+                     <cursor>
+                        <Cursor fx:constant="DEFAULT" />
+                     </cursor>
+                  </TextField>
+                  <JFXButton fx:id="btnInputPath" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" onAction="#handleInputFile" text="📁" />
+               </children>
+            </HBox>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+      </VBox>
+   </left>
+   <center>
+      <TextArea fx:id="txtAreaJson" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="25.0" />
+         </BorderPane.margin>
+      </TextArea>
+   </center>
+   <right>
+      <VBox fx:id="vBoxVariable" disable="true" spacing="20.0" BorderPane.alignment="CENTER_RIGHT">
+         <children>
+            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Set Static Values" />
+            <JFXComboBox fx:id="comboVariables" promptText="Choose Variable" />
+            <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+               <children>
+                  <JFXRadioButton fx:id="rbCustom" text=" ">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="variables" />
+                     </toggleGroup>
+                  </JFXRadioButton>
+                  <JFXTextField fx:id="txtCustom" labelFloat="true" promptText="Custom Text..." />
+               </children>
+            </HBox>
+            <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+               <children>
+                  <JFXRadioButton fx:id="rbPredefined" text=" " toggleGroup="$variables" />
+                  <JFXComboBox fx:id="comboPredefined" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Predefined Value" />
+               </children>
+            </HBox>
+            <JFXButton fx:id="btnStatic" maxWidth="1.7976931348623157E308" onAction="#handleSetStatic" text="Set Static" />
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="25.0" />
+         </BorderPane.margin>
+      </VBox>
+   </right>
+   <bottom>
+      <JFXButton fx:id="btnSave" disable="true" maxWidth="1.7976931348623157E308" onAction="#handleSave" text="Save Template" BorderPane.alignment="CENTER" />
+   </bottom>
+</BorderPane>

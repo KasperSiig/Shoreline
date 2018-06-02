@@ -230,7 +230,7 @@ public class ConfigWindowController implements Initializable, IController {
     private void handleDefaultValue(ActionEvent event) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource(Window.View.defaultValue.getView()));
+            fxmlLoader.setLocation(getClass().getResource(Window.View.DefaultValue.getView()));
             Parent root = fxmlLoader.load();
 
             DefaultVauleWindowController dvwc = fxmlLoader.getController();

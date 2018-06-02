@@ -18,6 +18,7 @@ public class ModelManager {
     private LogModel logModel;
     private UserModel userModel;
     private BatchModel batchModel;
+    private TemplateModel templateModel;
 
     private BorderPane borderPane;
 
@@ -37,6 +38,7 @@ public class ModelManager {
             logModel = new LogModel(logic);
             userModel = new UserModel(logic);
             batchModel = new BatchModel(logic);
+            templateModel = new TemplateModel(logic);
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
@@ -92,7 +94,11 @@ public class ModelManager {
     public BatchModel getBatchModel() {
         return batchModel;
     }
-    
-    
 
+    /**
+     * @return Instance of TemplateModel
+     */
+    public TemplateModel getTemplateModel() {
+        return templateModel;
+    }
 }
