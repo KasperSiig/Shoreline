@@ -36,8 +36,9 @@ public class Window {
         BatchTask("BatchTaskWindow.fxml"),
         DefaultValue("DefaultValueWindow.fxml"),
         Setting("SettingsWindow.fxml"),
-        JSONTemplate("JSONTemplateWindow.fxml"),
-        ConfigSetting("ConfigSettingWindow.fxml");
+        JSONTemplateSetting("JSONTemplateWindow.fxml"),
+        ConfigSetting("ConfigSettingWindow.fxml"),
+        UsersSetting("UsersSettingWindow.fxml");
 
         String view;
 

@@ -1,5 +1,8 @@
 package shoreline.bll;
 
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import shoreline.be.User;
 import shoreline.dal.DataManager;
 import shoreline.exceptions.BLLException;
@@ -71,4 +74,38 @@ public class UserLogic extends LogicClass {
             throw new BLLException(ex);
         }
     }
+    
+    public void updateUser(User user, String password) throws BLLException {
+        try {
+            dataManager.updateUser(user, password);
+        } catch (DALException ex) {
+            throw new BLLException(ex);
+        }
+    }
+    
+    public void updateUser(User user) throws BLLException {
+        try {
+            dataManager.updateUser(user);
+        } catch (DALException ex) {
+            throw new BLLException(ex);
+        }
+    }
+    
+    public void deleteUser(User user) throws BLLException {
+        try {
+            dataManager.deleteUser(user);
+        } catch (DALException ex) {
+            throw new BLLException(ex);
+        }
+    }
+    
+    public List<User> getAllUsers() throws BLLException {
+        try {
+            return dataManager.getAllUsers();
+        } catch (DALException ex) {
+            throw new BLLException(ex);
+        }
+    }
+    
+    
 }

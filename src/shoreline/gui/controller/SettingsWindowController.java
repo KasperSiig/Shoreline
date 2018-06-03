@@ -30,6 +30,8 @@ public class SettingsWindowController implements Initializable, IController {
     private JFXButton logOutBtn;
     @FXML
     private JFXButton bgnConfig;
+    @FXML
+    private JFXButton bgnUsers;
 
     /**
      * Initializes the controller class.
@@ -56,7 +58,7 @@ public class SettingsWindowController implements Initializable, IController {
     @FXML
     private void handleOpenJSONSetting(ActionEvent event) {
         try {
-            Window.openView(model, model.getBorderPane(), Window.View.JSONTemplate, "center");
+            Window.openView(model, model.getBorderPane(), Window.View.JSONTemplateSetting, "center");
         } catch (GUIException ex) {
             Logger.getLogger(SettingsWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -66,6 +68,15 @@ public class SettingsWindowController implements Initializable, IController {
     private void handleOpenConfigSetting(ActionEvent event) {
         try {
             Window.openView(model, model.getBorderPane(), Window.View.ConfigSetting, "center");
+        } catch (GUIException ex) {
+            Logger.getLogger(SettingsWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @FXML
+    private void handleOpenUsersSetting(ActionEvent event) {
+        try {
+            Window.openView(model, model.getBorderPane(), Window.View.UsersSetting, "center");
         } catch (GUIException ex) {
             Logger.getLogger(SettingsWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }

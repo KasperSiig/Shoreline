@@ -8,7 +8,7 @@ package shoreline.be;
 public class User {
     
     private String lastName, firstName, userName;
-    private int id;
+    private int id, userLevel;
 
     /**
      * Constructor for User
@@ -18,11 +18,12 @@ public class User {
      * @param userName Username
      * @param id Id of User
      */
-    public User(String lastName, String firstName, String userName, int id) {
+    public User(String lastName, String firstName, String userName, int id, int userLevel) {
         this.lastName = lastName;
         this.firstName = firstName;
         this.userName = userName;
         this.id = id;
+        this.userLevel = userLevel;
     }
 
     /**
@@ -60,4 +61,25 @@ public class User {
     public void setId(int id) {
         this.id = id;
     }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public int getUserLevel() {
+        return userLevel;
+    }
+
+    public void setUserLevel(int userLevel) {
+        this.userLevel = userLevel;
+    }
+    
 }

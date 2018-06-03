@@ -6,6 +6,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import shoreline.be.User;
 import shoreline.exceptions.DALException;
 
@@ -94,13 +98,67 @@ public class UserDAO {
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 user = new User(rs.getString("lastName"), rs.getString("firstName"),
-                        rs.getString("username"), rs.getInt("id"));
+                        rs.getString("username"), rs.getInt("id"), rs.getInt("userLevel"));
             }
 
         } catch (SQLException ex) {
             throw new DALException("Error loading user", ex);
         }
         return user;
+    }
+
+    public void updateUser(User user, String password, Connection con) {
+        String sql = "UPDATE UserTable SET username = ?, firstName = ?, lastName = ?, password = ? WHERE id = ?";
+        try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setString(1, user.getUserName());
+            statement.setString(2, user.getFirstName());
+            statement.setString(3, user.getLastName());
+            statement.setString(4, password);
+            statement.setInt(5, user.getId());
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void updateUser(User user, Connection con) {
+        String sql = "UPDATE UserTable SET username = ?, firstName = ?, lastName = ? WHERE id = ?";
+        try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setString(1, user.getUserName());
+            statement.setString(2, user.getFirstName());
+            statement.setString(3, user.getLastName());
+            statement.setInt(4, user.getId());
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void deleteUser(User user, Connection con) {
+        String sql = "DELETE FROM LogTable WHERE userId = ?; DELETE FROM UserTable WHERE id = ?";
+        try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setInt(1, user.getId());
+            statement.setInt(2, user.getId());
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public List<User> getAllUsers(Connection con) {
+        String sql = "SELECT * FROM UserTable";
+        List<User> users = new ArrayList();
+        try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                User user = new User(rs.getString("lastName"), rs.getString("firstName"),
+                        rs.getString("username"), rs.getInt("id"), rs.getInt("userLevel"));
+                users.add(user);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return users;
     }
 
 }

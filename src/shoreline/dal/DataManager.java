@@ -195,5 +195,30 @@ public class DataManager {
         conPool.checkIn(con);
     }
     
+    public void updateUser(User user, String password) throws DALException {
+        Connection con = conPool.checkOut();
+        userDAO.updateUser(user, password, con);
+        conPool.checkIn(con);
+    }
+    
+    public void updateUser(User user) throws DALException {
+        Connection con = conPool.checkOut();
+        userDAO.updateUser(user, con);
+        conPool.checkIn(con);
+    }
+    
+    public void deleteUser(User user) throws DALException {
+        Connection con = conPool.checkOut();
+        userDAO.deleteUser(user, con);
+        conPool.checkIn(con);
+    }
+    
+    public List<User> getAllUsers() throws DALException {
+        List<User> users;
+        Connection con = conPool.checkOut();
+        users = userDAO.getAllUsers(con);
+        conPool.checkIn(con);
+        return users;
+    }
     
 }

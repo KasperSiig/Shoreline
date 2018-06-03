@@ -3,6 +3,9 @@ package shoreline.gui.model;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import shoreline.be.User;
 import shoreline.bll.LogicManager;
 import shoreline.exceptions.BLLException;
@@ -115,4 +118,38 @@ public class UserModel {
             throw new GUIException("Error hashing password", ex);
         }
     }
+    
+    public void updateUser(User user, String password) throws GUIException {
+        try {
+            logic.getUserLogic().updateUser(user, hashString(password));
+        } catch (BLLException ex) {
+            throw new GUIException(ex);
+        }
+    }
+    
+    public void updateUser(User user) throws GUIException {
+        try {
+            logic.getUserLogic().updateUser(user);
+        } catch (BLLException ex) {
+            throw new GUIException(ex);
+        }
+    }
+    
+    public void deleteUser(User user) throws GUIException {
+        try {
+            logic.getUserLogic().deleteUser(user);
+        } catch (BLLException ex) {
+            throw new GUIException(ex);
+        }
+    }
+    
+    public List<User> getAllUsers() throws GUIException {
+        try {
+            return logic.getUserLogic().getAllUsers();
+        } catch (BLLException ex) {
+            throw new GUIException(ex);
+        }
+    }
+    
+    
 }
