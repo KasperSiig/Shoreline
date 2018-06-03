@@ -22,6 +22,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.json.JSONObject;
@@ -45,8 +46,6 @@ public class JSONTemplateWindowController implements Initializable, IController 
     @FXML
     private TextField txtInputPath;
     @FXML
-    private JFXButton btnInputPath;
-    @FXML
     private TextArea txtAreaJson;
     @FXML
     private JFXComboBox<String> comboVariables;
@@ -68,6 +67,8 @@ public class JSONTemplateWindowController implements Initializable, IController 
     private JFXButton btnSave;
     @FXML
     private JFXButton btnBack;
+    @FXML
+    private HBox hBoxTarget;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {

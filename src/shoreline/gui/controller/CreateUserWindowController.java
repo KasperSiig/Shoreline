@@ -47,7 +47,7 @@ public class CreateUserWindowController implements Initializable, IController {
     private void handleCreateUser(ActionEvent event) throws InterruptedException {
         if (checkEmptyFields()) {
             try {
-                User user = new User(txtLastname.getText(), txtFirstname.getText(), txtUsername.getText(), 0);
+                User user = new User(txtLastname.getText(), txtFirstname.getText(), txtUsername.getText(), 0, 0);
                 user = model.getUserModel().create(user, txtPassword.getText());
                 Window.openView(model, model.getBorderPane(), Window.View.Login, "center");
                 Window.openSnack("User " + txtUsername.getText() + " was created", model.getBorderPane(), "blue");

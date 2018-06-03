@@ -1,18 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXMasonryPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane fx:id="borderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="shoreline.gui.controller.SettingsWindowController">
    <center>
-      <JFXMasonryPane BorderPane.alignment="CENTER">
+      <FlowPane alignment="CENTER" columnHalignment="CENTER" hgap="10.0" prefHeight="200.0" prefWidth="200.0" rowValignment="TOP" vgap="10.0" BorderPane.alignment="CENTER">
          <children>
-            <JFXButton fx:id="logOutBtn" onAction="#handleLogOut" prefHeight="150.0" prefWidth="150.0" text="Log Out" textAlignment="CENTER" />
-            <JFXButton fx:id="jsonBtn" onAction="#handleOpenJSONSetting" prefHeight="150.0" prefWidth="150.0" text="JSON Template" textAlignment="CENTER" textOverrun="CLIP" wrapText="true" />
-            <JFXButton fx:id="bgnConfig" onAction="#handleOpenConfigSetting" prefHeight="150.0" prefWidth="150.0" text="Configs" textAlignment="CENTER" textOverrun="CLIP" wrapText="true" />
-            <JFXButton fx:id="bgnUsers" onAction="#handleOpenUsersSetting" prefHeight="150.0" prefWidth="150.0" text="Users" textAlignment="CENTER" textOverrun="CLIP" wrapText="true" />
+            <AnchorPane>
+               <children>
+                  <JFXButton fx:id="logOutBtn" alignment="BOTTOM_CENTER" onAction="#handleLogOut" prefHeight="150.0" prefWidth="150.0" styleClass="jfx-button-costum" text="Log Out" textAlignment="CENTER" />
+                  <VBox alignment="CENTER" layoutX="66.0" layoutY="14.0" maxHeight="150.0" maxWidth="150.0" minHeight="0.0" minWidth="0.0" mouseTransparent="true" prefHeight="150.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" mouseTransparent="true" styleClass="label-costum" text="🚪" textAlignment="CENTER">
+                           <font>
+                              <Font size="34.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <JFXButton fx:id="jsonBtn" alignment="BOTTOM_CENTER" onAction="#handleOpenJSONSetting" prefHeight="150.0" prefWidth="150.0" styleClass="jfx-button-costum" text="JSON Template" textAlignment="CENTER" textOverrun="CLIP" wrapText="true" />
+                  <VBox alignment="CENTER" layoutX="58.0" layoutY="14.0" maxHeight="150.0" maxWidth="150.0" minHeight="0.0" minWidth="0.0" mouseTransparent="true" prefHeight="150.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" mouseTransparent="true" styleClass="label-costum" text="📝" textAlignment="CENTER">
+                           <font>
+                              <Font size="34.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <JFXButton fx:id="bgnConfig" alignment="BOTTOM_CENTER" onAction="#handleOpenConfigSetting" prefHeight="150.0" prefWidth="150.0" styleClass="jfx-button-costum" text="Configs" textAlignment="CENTER" textOverrun="CLIP" wrapText="true" />
+                  <VBox alignment="CENTER" layoutX="61.0" layoutY="14.0" maxHeight="150.0" maxWidth="150.0" minHeight="0.0" minWidth="0.0" mouseTransparent="true" prefHeight="150.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" mouseTransparent="true" styleClass="label-costum" text="⚙" textAlignment="CENTER">
+                           <font>
+                              <Font size="34.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <JFXButton fx:id="bgnUsers" alignment="BOTTOM_CENTER" onAction="#handleOpenUsersSetting" prefHeight="150.0" prefWidth="150.0" styleClass="jfx-button-costum" text="Users" textAlignment="CENTER" textOverrun="CLIP" wrapText="true" />
+                  <VBox alignment="CENTER" layoutX="58.0" layoutY="14.0" maxHeight="150.0" maxWidth="150.0" minHeight="0.0" minWidth="0.0" mouseTransparent="true" prefHeight="150.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" mouseTransparent="true" styleClass="label-costum" text="👱" textAlignment="CENTER">
+                           <font>
+                              <Font size="34.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
          </children>
-      </JFXMasonryPane>
+      </FlowPane>
    </center>
 </BorderPane>

@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-
 <fx:root maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" type="javafx.scene.layout.BorderPane" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
@@ -22,12 +21,12 @@
             <Label fx:id="lblExt" text="Label" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
             <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" AnchorPane.rightAnchor="0.0">
                <children>
-                  <JFXButton onAction="#handleDelete" style="-fx-background-color: red;" text="X" textFill="WHITE">
+                  <JFXButton onAction="#handleDelete" style="-fx-background-color: red;" styleClass="jfx-button-costum" text="🗑" textFill="WHITE">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </JFXButton>
-                  <JFXButton onAction="#handleEdit" style="-fx-background-color: gray;" text="✍" textFill="WHITE">
+                  <JFXButton onAction="#handleEdit" style="-fx-background-color: lightgray;" styleClass="jfx-button-costum" text="✍">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -41,6 +40,9 @@
       </AnchorPane>
    </center>
    <bottom>
-      <Separator prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <Separator prefWidth="200.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="5.0" />
+         </BorderPane.margin></Separator>
    </bottom>
 </fx:root>
