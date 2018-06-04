@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -42,6 +43,7 @@
             </AnchorPane>
             <AnchorPane>
                <children>
+                  <Pane fx:id="paneWarning" prefHeight="10.0" style="-fx-background-color: red; -fx-background-radius: 4 4 0 0;" visible="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                   <JFXButton fx:id="bgnConfig" alignment="BOTTOM_CENTER" onAction="#handleOpenConfigSetting" prefHeight="150.0" prefWidth="150.0" styleClass="jfx-button-costum" text="Configs" textAlignment="CENTER" textOverrun="CLIP" wrapText="true" />
                   <VBox alignment="CENTER" layoutX="61.0" layoutY="14.0" maxHeight="150.0" maxWidth="150.0" minHeight="0.0" minWidth="0.0" mouseTransparent="true" prefHeight="150.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>

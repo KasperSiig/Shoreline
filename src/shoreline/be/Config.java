@@ -16,6 +16,7 @@ public class Config {
     private HashMap<String, Integer> titleIndexMap;
     private HashMap<String, String> primaryHeaders, secondaryHeaders, defaultValues;
     private JSONObject template;
+    private boolean valid;
 
     /**
      * Constructor for Config
@@ -33,6 +34,7 @@ public class Config {
         this.primaryHeaders = primaryHeaders;
         this.secondaryHeaders = secondaryHeaders;
         this.defaultValues = defaultValues;
+        this.valid = true;
     }
     
     /**
@@ -113,8 +115,14 @@ public class Config {
     public void setDefaultValues(HashMap<String, String> defaultValues) {
         this.defaultValues = defaultValues;
     }
-    
-    
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
     
     @Override
     public String toString() {

@@ -272,8 +272,8 @@ public class ConfigWindowController implements Initializable, IController {
             try {
                 inputFile = tempFile;
                 lblInfo.setVisible(false);
-                primaryHeaders.clear();
-                primaryHeaders.putAll(curConfig.getPrimaryHeaders());
+//                primaryHeaders.clear();
+//                primaryHeaders.putAll(curConfig.getPrimaryHeaders());
                 inputList.clear();
                 titleIndexMap = model.getConfigModel().getTitles(inputFile);
                 lvMapOverview.setDisable(false);
@@ -610,19 +610,50 @@ public class ConfigWindowController implements Initializable, IController {
     }
 
     public void setInfo(Config config) {
+        if (!config.isValid()) {
+            System.out.println(config.isValid());
+            System.out.println(config.getPrimaryHeaders());
+
+            List<String> headers = new ArrayList();
+            HashMap<String, String> tempPrimary = new HashMap(config.getPrimaryHeaders());
+            HashMap<String, String> tempDefault = new HashMap(config.getDefaultValues());
+            tempPrimary.forEach((key, value) -> {
+                List<String> templateHeaders = model.getConfigModel().getTemplateList();
+                if (!templateHeaders.contains(key)) {
+                    headers.add(key);
+                    config.getPrimaryHeaders().remove(key);
+                    config.getSecondaryHeaders().remove(key);
+                }
+            });
+            tempDefault.forEach((key, value) -> {
+                List<String> templateHeaders = model.getConfigModel().getTemplateList();
+                if (!templateHeaders.contains(key)) {
+                    headers.add(key);
+                    config.getDefaultValues().remove(key);
+                }
+            });
+            if (!headers.isEmpty()) {
+                StringBuilder header = new StringBuilder("Following headers are no longer valid in template: \n");
+                headers.forEach((string) -> {
+                    header.append(string);
+                    header.append("\n");
+                });
+                Window.openExceptionWindow(header.toString());
+            }
+        }
         mappingList.clear();
         primaryHeaders.clear();
         primaryHeaders.putAll(config.getPrimaryHeaders());
-        System.out.println(primaryHeaders);
-        System.out.println(config.getPrimaryHeaders());
         secondaryHeaders.clear();
         secondaryHeaders.putAll(config.getSecondaryHeaders());
         defaultValues.clear();
         defaultValues.putAll(config.getDefaultValues());
         txtFileName.setText(config.getName());
         setInfoInlvMap(primaryHeaders);
-        Window.openSnack("Config " + config.getName() + " was loaded\nChoose Input File", borderPane, "blue");
+        Window.openSnack("Config " + config.getName() + " was loaded", borderPane, "blue");
         curConfig = config;
+        generateConfigsInMenu(configMenu);
+        generateConfigsInMenu(configMenuRight);
     }
 
 }

@@ -98,6 +98,7 @@ public class LoginWindowController implements Initializable, IController {
                 ThreadPool tPool = ThreadPool.getInstance();
                 tPool.shutdownNow();
                 model.getLogModel().getTimer().cancel();
+                model.getConfigModel().stopTimer();
             });
         });
     }

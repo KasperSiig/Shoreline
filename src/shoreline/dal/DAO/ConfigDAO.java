@@ -60,7 +60,7 @@ public class ConfigDAO {
                 }
                 Config config = new Config(rs.getString("name"), rs.getString("extension"), primaryHeaders, secondaryHeaders, defaultValues);
                 config.setId(id);
-                System.out.println(config.getId());
+                config.setValid(rs.getBoolean("valid"));
                 configs.add(config);
             }
         } catch (SQLException ex) {
@@ -79,19 +79,19 @@ public class ConfigDAO {
      * @throws DALException
      */
     public void saveConfig(Config config, Connection con) throws DALException {
-        String sql = "INSERT INTO ConfigTable VALUES(?,?)";
+        String sql = "INSERT INTO ConfigTable VALUES(?,?,?)";
         try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             int id = 0;
             
             statement.setString(1, config.getName());
             statement.setString(2, config.getExtension());
+            statement.setBoolean(3, config.isValid());
             
             if (statement.executeUpdate() == 1) {
                 ResultSet rs = statement.getGeneratedKeys();
                 rs.next();
                 id = rs.getInt(1);
                 config.setId(id);
-                System.out.println(config.getId());
             }
 
             // Values used inside lambda expressions have to be final
@@ -109,6 +109,7 @@ public class ConfigDAO {
             });
             setRemainingDefaults(con, defaultValues, id);
         } catch (SQLException ex) {
+            System.err.println(ex);
             throw new DALException("SQL Error.", ex);
         }
     }

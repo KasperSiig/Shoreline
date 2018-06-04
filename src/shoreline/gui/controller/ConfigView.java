@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -31,6 +32,8 @@ public class ConfigView extends BorderPane {
     private Label lblName;
     @FXML
     private Label lblExt;
+    @FXML
+    private AnchorPane aPane;
 
     public ConfigView(Config config) {
         try {
@@ -59,6 +62,9 @@ public class ConfigView extends BorderPane {
         lblName.setText("Name: " + config.getName());
         lblExt.setText("Extension: " + config.getExtension().toUpperCase());
         this.curVBox = vbox;
+        if (!config.isValid()) {
+            aPane.setStyle("-fx-border-width: 0 0 0 6px; -fx-border-color: red; -fx-border-height: 10px; -fx-padding: 0 0 0 4px;");
+        }
     }
 
     @FXML

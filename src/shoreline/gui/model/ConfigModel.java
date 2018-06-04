@@ -9,7 +9,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import org.json.JSONObject;
 import shoreline.be.Config;
@@ -17,6 +19,7 @@ import shoreline.bll.LogicManager;
 import shoreline.exceptions.BLLException;
 import shoreline.exceptions.DALException;
 import shoreline.exceptions.GUIException;
+import shoreline.gui.controller.SettingsWindowController;
 
 /**
  *
@@ -29,6 +32,7 @@ public class ConfigModel {
     private ObservableList<Config> configList;
     private ObservableList<String> templateList;
     private JSONObject templateJson;
+    private Timer timer;
 
     public ConfigModel(LogicManager logic) throws GUIException {
         this.logic = logic;
@@ -36,6 +40,7 @@ public class ConfigModel {
         this.templateList = FXCollections.observableArrayList(getTemplateListFromDB());
         this.configList = FXCollections.observableArrayList(getAllConfigs());
         startTemplateTimer();
+        setTemplateListener();
     }
 
     /**
@@ -101,7 +106,7 @@ public class ConfigModel {
             throw new GUIException(ex);
         }
     }
-    
+
     private List<String> getTemplateListFromDB() throws GUIException {
         List<String> templateHeaders = new ArrayList();
         try {
@@ -113,7 +118,7 @@ public class ConfigModel {
         }
         return templateHeaders;
     }
- 
+
     private List<String> getStrings(Map<String, Object> JSONMap) {
         List<String> values = new ArrayList();
         JSONMap.forEach((key, value) -> {
@@ -140,27 +145,81 @@ public class ConfigModel {
             throw new GUIException(ex);
         }
     }
-    
+
     public void deleteConfig(Config config) throws GUIException {
         try {
             logic.getConfigLogic().deleteConfig(config);
         } catch (BLLException ex) {
             throw new GUIException(ex);
-        } 
+        }
     }
-    
+
     private void startTemplateTimer() {
-        Timer timer = new Timer();
+        timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 try {
                     templateJson = logic.getTemplateLogic().getTemplate();
+                    Platform.runLater(() -> {
+
+                        try {
+                            List<String> list = getTemplateListFromDB();
+                            if (!list.equals(templateList)) {
+                                templateList.clear();
+                                templateList.setAll(getTemplateListFromDB());
+                            }
+
+                        } catch (GUIException ex) {
+                            Logger.getLogger(ConfigModel.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    });
                 } catch (BLLException ex) {
                     Logger.getLogger(ConfigModel.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }, 0, 100);
     }
-    
+
+    public void stopTimer() {
+        timer.cancel();
+    }
+
+    private void setTemplateListener() {
+
+        templateList.addListener((ListChangeListener.Change<? extends String> c) -> {
+            while (c.next()) {
+                try {
+                    List<Config> configs = getAllConfigs();
+                    configs.forEach((config) -> {
+                        HashMap<String, String> primaryHeaders = config.getPrimaryHeaders();
+                        HashMap<String, String> defaultValues = config.getDefaultValues();
+                        primaryHeaders.forEach((key, value) -> {
+                            if (!templateList.contains(value)) {
+                                try {
+                                    config.setValid(false);
+                                    logic.getConfigLogic().updateConfig(config);
+                                } catch (BLLException ex) {
+                                    Logger.getLogger(ConfigModel.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        });
+                        defaultValues.forEach((key, value) -> {
+                            if (!templateList.contains(value)) {
+                                try {
+                                    config.setValid(false);
+                                    logic.getConfigLogic().updateConfig(config);
+                                } catch (BLLException ex) {
+                                    Logger.getLogger(ConfigModel.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        });
+                    });
+                } catch (GUIException ex) {
+                    Logger.getLogger(SettingsWindowController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+    }
+
 }
