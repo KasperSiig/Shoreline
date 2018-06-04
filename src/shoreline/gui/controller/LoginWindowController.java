@@ -4,6 +4,8 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -44,6 +46,8 @@ public class LoginWindowController implements Initializable, IController {
 
     @Override
     public void postInit(ModelManager model) {
+       
+
         this.model = model;
         onCloseRequest();
     }
@@ -97,5 +101,7 @@ public class LoginWindowController implements Initializable, IController {
             });
         });
     }
+
+    
 
 }

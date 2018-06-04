@@ -1,6 +1,5 @@
 package shoreline.dal;
 
-
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 import java.io.FileInputStream;
@@ -17,24 +16,22 @@ import shoreline.exceptions.DALException;
 public class DataBaseConnector {
 
     private SQLServerDataSource dataSource;
+    private String userDir = System.getProperty("user.dir");
+    private DataManager dataManager;
 
-    public DataBaseConnector() throws DALException {
-
-        try {
-            Properties properties = new Properties();
-            properties.load(new FileInputStream("config.properties"));
-            
-            dataSource = new SQLServerDataSource();
-            dataSource.setServerName(properties.getProperty("serverName"));
-            dataSource.setPortNumber(Integer.parseInt(properties.getProperty("portNumber")));
-            dataSource.setDatabaseName(properties.getProperty("databaseName"));
-            dataSource.setUser(properties.getProperty("user"));
-            dataSource.setPassword(properties.getProperty("password"));
-        } catch (FileNotFoundException ex) {
-            throw new DALException("Error getting properties", ex);
-        } catch (IOException ex) {
-            throw new DALException("Error getting properties", ex);
+    public DataBaseConnector(DataManager dataManager) throws DALException {
+        this.dataManager = dataManager;
+        int portNumber = 0;
+        String portNumberString = dataManager.getProperty("portNumber");
+        if (portNumberString.matches("[0-9]+")) {
+            portNumber = Integer.parseInt(portNumberString);
         }
+        dataSource = new SQLServerDataSource();
+        dataSource.setServerName(dataManager.getProperty("serverName"));
+        dataSource.setPortNumber(portNumber);
+        dataSource.setDatabaseName(dataManager.getProperty("databaseName"));
+        dataSource.setUser(dataManager.getProperty("user"));
+        dataSource.setPassword(dataManager.getProperty("password"));
 
     }
 

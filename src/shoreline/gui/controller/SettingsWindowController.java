@@ -32,6 +32,8 @@ public class SettingsWindowController implements Initializable, IController {
     private JFXButton bgnConfig;
     @FXML
     private JFXButton bgnUsers;
+    @FXML
+    private JFXButton btnDatabase;
 
     /**
      * Initializes the controller class.
@@ -77,6 +79,15 @@ public class SettingsWindowController implements Initializable, IController {
     private void handleOpenUsersSetting(ActionEvent event) {
         try {
             Window.openView(model, model.getBorderPane(), Window.View.UsersSetting, "center");
+        } catch (GUIException ex) {
+            Logger.getLogger(SettingsWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @FXML
+    private void handleOpenDatabaseSetting(ActionEvent event) {
+        try {
+            Window.openView(model, model.getBorderPane(), Window.View.DatabaseSetting, "center");
         } catch (GUIException ex) {
             Logger.getLogger(SettingsWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }

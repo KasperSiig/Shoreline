@@ -1,14 +1,11 @@
 package shoreline.gui.controller;
 
-import java.awt.Desktop;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.ModelManager;
@@ -29,6 +26,7 @@ public class RootWindowController implements Initializable, IController {
 
         try {
             model = new ModelManager();
+            checkConfig();
             model.setBorderPane(borderPane);
             Window.openView(model, borderPane, Window.View.Login, "center");
         } catch (GUIException ex) {
@@ -42,5 +40,11 @@ public class RootWindowController implements Initializable, IController {
         this.model = model;
         this.borderPane = model.getBorderPane();
 
+    }
+
+    private void checkConfig() throws GUIException {
+        if (model.getPropertiesModel().isConfigEmpty()) {
+            System.out.println("empty");
+        }
     }
 }

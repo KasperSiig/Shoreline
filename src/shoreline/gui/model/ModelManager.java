@@ -19,6 +19,7 @@ public class ModelManager {
     private UserModel userModel;
     private BatchModel batchModel;
     private TemplateModel templateModel;
+    private PropertiesModel propertiesModel;
 
     private BorderPane borderPane;
 
@@ -39,6 +40,7 @@ public class ModelManager {
             userModel = new UserModel(logic);
             batchModel = new BatchModel(logic);
             templateModel = new TemplateModel(logic);
+            propertiesModel = new PropertiesModel(logic);
         } catch (BLLException ex) {
             throw new GUIException(ex);
         }
@@ -100,5 +102,9 @@ public class ModelManager {
      */
     public TemplateModel getTemplateModel() {
         return templateModel;
+    }
+
+    public PropertiesModel getPropertiesModel() {
+        return propertiesModel;
     }
 }

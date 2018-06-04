@@ -68,6 +68,20 @@
                   </VBox>
                </children>
             </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <JFXButton fx:id="btnDatabase" alignment="BOTTOM_CENTER" onAction="#handleOpenDatabaseSetting" prefHeight="150.0" prefWidth="150.0" styleClass="jfx-button-costum" text="Database" textAlignment="CENTER" textOverrun="CLIP" wrapText="true" />
+                  <VBox alignment="CENTER" layoutX="58.0" layoutY="14.0" maxHeight="150.0" maxWidth="150.0" minHeight="0.0" minWidth="0.0" mouseTransparent="true" prefHeight="150.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" mouseTransparent="true" styleClass="label-costum" text="◳" textAlignment="CENTER">
+                           <font>
+                              <Font size="34.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
          </children>
       </FlowPane>
    </center>

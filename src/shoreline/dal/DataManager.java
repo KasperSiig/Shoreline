@@ -7,11 +7,13 @@ import java.io.File;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 import javafx.scene.control.Alert;
 import org.json.JSONObject;
 import shoreline.be.Config;
 import shoreline.be.LogItem;
 import shoreline.be.User;
+import shoreline.dal.DAO.PropertiesDAO;
 import shoreline.dal.DAO.TemplateDAO;
 import shoreline.dal.ObjectPool.ConnectionPool;
 import shoreline.dal.TitleStrats.CSVTitleStrat;
@@ -30,17 +32,20 @@ public class DataManager {
     private LoggingDAO logDAO;
     private ConfigDAO cfgDAO;
     private TemplateDAO templateDAO;
+    private PropertiesDAO propertiesDAO;
 
     /**
      * Constructor for DataManager
      * @throws DALException 
      */
     public DataManager() throws DALException {
-        this.conPool = new ConnectionPool();
+        this.propertiesDAO = new PropertiesDAO();
+        this.conPool = new ConnectionPool(this);
         this.userDAO = new UserDAO();
         this.logDAO = new LoggingDAO();
         this.cfgDAO = new ConfigDAO();
         this.templateDAO = new TemplateDAO();
+        
     }
 
     /**
@@ -220,5 +225,26 @@ public class DataManager {
         conPool.checkIn(con);
         return users;
     }
+    
+    public String getProperty(String key) {
+        return propertiesDAO.getProperty(key);
+    }
+    
+    public void setProperty(String key, String value) throws DALException {
+        propertiesDAO.setProperty(key, value);
+    }
+    
+    public Properties getPropertiesFromFile(String filePath) {
+        return propertiesDAO.getPropertiesFromFile(filePath);
+    }
+    
+    public void savePropertiesFile(String filePath, HashMap<String, String> properties, boolean overwrite) throws DALException {
+        propertiesDAO.savePropertiesFile(filePath, properties, overwrite);
+    }
+    
+    public boolean isConfigEmpty() throws DALException {
+        return propertiesDAO.isConfigEmpty();
+    }
+    
     
 }

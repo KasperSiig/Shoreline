@@ -38,7 +38,8 @@ public class Window {
         Setting("SettingsWindow.fxml"),
         JSONTemplateSetting("JSONTemplateWindow.fxml"),
         ConfigSetting("ConfigSettingWindow.fxml"),
-        UsersSetting("UsersSettingWindow.fxml");
+        UsersSetting("UsersSettingWindow.fxml"),
+        DatabaseSetting("DatabaseSettingWindow.fxml");
 
         String view;
 
