@@ -6,10 +6,12 @@
 package shoreline.gui.controller;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import java.io.File;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -53,6 +55,8 @@ public class DatabaseSettingWindowController implements Initializable, IControll
     private JFXTextField txtDatabaseName;
     @FXML
     private JFXTextField txtServerName;
+    @FXML
+    private JFXComboBox<String> cbExisting;
 
     /**
      * Initializes the controller class.
@@ -69,6 +73,7 @@ public class DatabaseSettingWindowController implements Initializable, IControll
         setFocusListener(vBox);
         txtUser.requestFocus();
         loadCredentials();
+        loadPropertiesInComboBox();
     }
 
     @FXML
@@ -82,7 +87,7 @@ public class DatabaseSettingWindowController implements Initializable, IControll
 
     private void setUserData(VBox vBox) {
         vBox.getChildren().forEach((node) -> {
-            if (node instanceof HBox && !node.equals(vBox.getChildren().get(0))) {
+            if (node instanceof HBox && !node.equals(vBox.getChildren().get(0)) && !node.equals(vBox.getChildren().get(vBox.getChildren().size() - 1))) {
                 HBox hBox = (HBox) node;
                 Label label = (Label) hBox.getChildren().get(0);
                 hBox.getChildren().get(1).setUserData(label);
@@ -92,7 +97,7 @@ public class DatabaseSettingWindowController implements Initializable, IControll
 
     private void setFocusListener(VBox vBox) {
         vBox.getChildren().forEach((parent) -> {
-            if (parent instanceof HBox && !parent.equals(vBox.getChildren().get(0))) {
+            if (parent instanceof HBox && !parent.equals(vBox.getChildren().get(0)) && !parent.equals(vBox.getChildren().get(vBox.getChildren().size() - 1))) {
                 HBox hBox = (HBox) parent;
                 Node node = hBox.getChildren().get(1);
                 node.focusedProperty().addListener((observable, oldValue, newValue) -> {
@@ -139,13 +144,17 @@ public class DatabaseSettingWindowController implements Initializable, IControll
         File tempFile = fileChooser.showOpenDialog(borderPane.getScene().getWindow());
 
         if (tempFile != null) {
-            Properties properties = model.getPropertiesModel().getPropertiesFromFile(tempFile.getAbsolutePath());
-            txtUser.setText(properties.getProperty("user"));
-            txtPassword.setText(properties.getProperty("password"));
-            txtPortNumber.setText(properties.getProperty("portNumber"));
-            txtDatabaseName.setText(properties.getProperty("databaseName"));
-            txtServerName.setText(properties.getProperty("serverName"));
+            importFromFile(tempFile);
         }
+    }
+
+    private void importFromFile(File file) {
+        Properties properties = model.getPropertiesModel().getPropertiesFromFile(file.getAbsolutePath());
+        txtUser.setText(properties.getProperty("user"));
+        txtPassword.setText(properties.getProperty("password"));
+        txtPortNumber.setText(properties.getProperty("portNumber"));
+        txtDatabaseName.setText(properties.getProperty("databaseName"));
+        txtServerName.setText(properties.getProperty("serverName"));
     }
 
     @FXML
@@ -170,4 +179,13 @@ public class DatabaseSettingWindowController implements Initializable, IControll
         }
     }
 
+    private void loadPropertiesInComboBox() {
+        HashMap<String, File> configs = model.getPropertiesModel().getAllPropertyFiles();
+        configs.forEach((key, value) -> {
+            cbExisting.getItems().add(key);
+        });
+        cbExisting.valueProperty().addListener((observable, oldValue, newValue) -> {
+            importFromFile(configs.get(newValue));
+        });
+    }
 }

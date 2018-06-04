@@ -15,13 +15,14 @@ import shoreline.exceptions.DALException;
  */
 public class DataBaseConnector {
 
+    private int portNumber;
     private SQLServerDataSource dataSource;
     private String userDir = System.getProperty("user.dir");
     private DataManager dataManager;
 
     public DataBaseConnector(DataManager dataManager) throws DALException {
         this.dataManager = dataManager;
-        int portNumber = 0;
+        portNumber = 0;
         String portNumberString = dataManager.getProperty("portNumber");
         if (portNumberString.matches("[0-9]+")) {
             portNumber = Integer.parseInt(portNumberString);

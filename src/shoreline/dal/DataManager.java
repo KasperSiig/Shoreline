@@ -241,9 +241,9 @@ public class DataManager {
     public void savePropertiesFile(String filePath, HashMap<String, String> properties, boolean overwrite) throws DALException {
         propertiesDAO.savePropertiesFile(filePath, properties, overwrite);
     }
-    
-    public boolean isConfigEmpty() throws DALException {
-        return propertiesDAO.isConfigEmpty();
+
+    public HashMap<String, File> getAllPropertyFiles() {
+        return propertiesDAO.getAllPropertyFiles();
     }
     
     

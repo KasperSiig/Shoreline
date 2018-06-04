@@ -7,9 +7,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
-import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import shoreline.exceptions.DALException;
@@ -26,11 +27,6 @@ public class PropertiesDAO {
 
     public PropertiesDAO() {
         configFile = new File(userDir + "\\configs\\config.properties");
-        try {
-            configFile.createNewFile();
-        } catch (IOException ex) {
-            Logger.getLogger(PropertiesDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
         try (BufferedReader br = new BufferedReader(new FileReader(configFile.getAbsolutePath()))) {
             properties = new Properties();
             properties.load(br);
@@ -96,13 +92,18 @@ public class PropertiesDAO {
         }
     }
     
-    public boolean isConfigEmpty() throws DALException {
-        return (getProperty("user").isEmpty()
-                || getProperty("password").isEmpty()
-                || getProperty("portNumber").isEmpty()
-                || getProperty("databaseName").isEmpty()
-                || getProperty("serverName").isEmpty());
+    public HashMap<String, File> getAllPropertyFiles() {
+        HashMap<String, File> configs = new HashMap();
+        File directory = new File(userDir + "\\configs\\");
+        for (File file : directory.listFiles()) {
+            if (file.getName().equals("config.properties")) {
+                configs.put("Current", file);
+            } else {
+                int index = file.getName().lastIndexOf(".properties");
+                configs.put(file.getName().substring(0, index), file);
+            }
+        }
+        return configs;
     }
     
-
 }

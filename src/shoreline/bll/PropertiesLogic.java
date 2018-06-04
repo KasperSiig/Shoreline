@@ -5,6 +5,7 @@
  */
 package shoreline.bll;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -47,12 +48,8 @@ public class PropertiesLogic extends LogicClass {
         }
     }
     
-    public boolean isConfigEmpty() throws BLLException {
-        try {
-            return dataManager.isConfigEmpty();
-        } catch (DALException ex) {
-            throw new BLLException(ex);
-        }
+    public HashMap<String, File> getAllPropertyFiles() {
+        return dataManager.getAllPropertyFiles();
     }
     
 }

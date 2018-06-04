@@ -26,7 +26,6 @@ public class RootWindowController implements Initializable, IController {
 
         try {
             model = new ModelManager();
-            checkConfig();
             model.setBorderPane(borderPane);
             Window.openView(model, borderPane, Window.View.Login, "center");
         } catch (GUIException ex) {
@@ -40,11 +39,5 @@ public class RootWindowController implements Initializable, IController {
         this.model = model;
         this.borderPane = model.getBorderPane();
 
-    }
-
-    private void checkConfig() throws GUIException {
-        if (model.getPropertiesModel().isConfigEmpty()) {
-            System.out.println("empty");
-        }
     }
 }

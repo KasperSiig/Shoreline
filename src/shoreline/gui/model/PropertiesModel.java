@@ -5,6 +5,7 @@
  */
 package shoreline.gui.model;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -48,12 +49,8 @@ public class PropertiesModel {
         }
     }
     
-    public boolean isConfigEmpty() throws GUIException {
-        try {
-            return logic.getPropertiesLogic().isConfigEmpty();
-        } catch (BLLException ex) {
-            throw new GUIException(ex);
-        }
+    public HashMap<String, File> getAllPropertyFiles() {
+        return logic.getPropertiesLogic().getAllPropertyFiles();
     }
     
 }
