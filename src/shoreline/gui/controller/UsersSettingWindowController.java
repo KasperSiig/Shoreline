@@ -55,13 +55,11 @@ public class UsersSettingWindowController implements Initializable, IController 
         } catch (GUIException ex) {
             Logger.getLogger(UsersSettingWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        for (int i = 0; i < 10; i++) {
-            for (User user : users) {
-                UserView userView = new UserView(user);
-                userView.postInit(model);
-                userView.setInfo(user, vBoxUsers);
-                vBoxUsers.getChildren().add(userView);
-            }
+        for (User user : users) {
+            UserView userView = new UserView(user);
+            userView.postInit(model);
+            userView.setInfo(user, vBoxUsers);
+            vBoxUsers.getChildren().add(userView);
         }
 
     }
@@ -69,7 +67,8 @@ public class UsersSettingWindowController implements Initializable, IController 
     @FXML
     private void handleBack(ActionEvent event) {
         try {
-            Window.openView(model, model.getBorderPane(), Window.View.SingleTask, "center");
+            SingleTaskWindowController stwc = (SingleTaskWindowController) Window.openView(model, model.getBorderPane(), Window.View.SingleTask, "center");
+            stwc.setTabSelected(3);
         } catch (GUIException ex) {
             Window.openExceptionWindow(ex.getMessage());
         }

@@ -64,7 +64,8 @@ public class ConfigSettingWindowController implements Initializable, IController
     @FXML
     private void handleBack(ActionEvent event) {
         try {
-            Window.openView(modelManager, modelManager.getBorderPane(), Window.View.SingleTask, "center");
+            SingleTaskWindowController stwc = (SingleTaskWindowController) Window.openView(modelManager, modelManager.getBorderPane(), Window.View.SingleTask, "center");
+            stwc.setTabSelected(3);
         } catch (GUIException ex) {
             Window.openExceptionWindow(ex.getMessage());
         }

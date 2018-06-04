@@ -6,9 +6,12 @@ import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import shoreline.be.Config;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.ModelManager;
@@ -23,12 +26,11 @@ public class ConfigView extends BorderPane {
     private ModelManager model;
     private Config config;
     private VBox curVBox;
-    
+
     @FXML
     private Label lblName;
     @FXML
     private Label lblExt;
-    
 
     public ConfigView(Config config) {
         try {
@@ -44,12 +46,12 @@ public class ConfigView extends BorderPane {
 
     public void postInit(ModelManager model) {
         this.model = model;
-        
+
     }
 
     /**
      * Sets the visual info in the BatchView
-     * 
+     *
      * @param config
      * @param vbox
      */
@@ -62,22 +64,47 @@ public class ConfigView extends BorderPane {
     @FXML
     private void handleDelete(ActionEvent event) {
         try {
-            model.getConfigModel().deleteConfig(config);
-            curVBox.getChildren().remove(this);
+            if (openConfirmWindow("Are you sure you want to delete this config?")) {
+                model.getConfigModel().deleteConfig(config);
+                curVBox.getChildren().remove(this);
+            }
         } catch (GUIException ex) {
             Logger.getLogger(ConfigView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     @FXML
     private void handleEdit(ActionEvent event) {
         try {
-            ConfigWindowController cwc = (ConfigWindowController) Window.openView(model, model.getBorderPane(), Window.View.Config, "center");
-            cwc.setInfo(config);
+            SingleTaskWindowController stwc = (SingleTaskWindowController) Window.openView(model, model.getBorderPane(), Window.View.SingleTask, "center");
+            stwc.setTabSelected(2, config);
         } catch (GUIException ex) {
             Logger.getLogger(ConfigView.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }
-    
+
+    private boolean openConfirmWindow(String message) {
+        boolean yes = false;
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource(Window.View.Confirm.getView()));
+            Parent root = fxmlLoader.load();
+
+            ConfirmationWindowController cwc = fxmlLoader.getController();
+            cwc.postInit(model);
+            cwc.setInfo(message);
+
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.setTitle("Confirmation");
+            stage.setScene(scene);
+            stage.setAlwaysOnTop(true);
+            stage.showAndWait();
+            yes = cwc.getConfirmation();
+        } catch (IOException ex) {
+            Window.openExceptionWindow("Couldn't open confirmation window.");
+        }
+        return yes;
+    }
+
 }

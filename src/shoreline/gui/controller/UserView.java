@@ -82,6 +82,7 @@ public class UserView extends BorderPane {
         if (openConfirmWindow("Are you sure you want to delete user: " + user.getUserName())) {
             try {
                 model.getUserModel().deleteUser(user);
+                curVBox.getChildren().remove(this);
             } catch (GUIException ex) {
                 Logger.getLogger(UserView.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -133,6 +134,9 @@ public class UserView extends BorderPane {
                             break;
                         case "Username: ":
                             user.setUserName(newInput);
+                            break;
+                        case "User Level: ":
+                            user.setUserLevel(Integer.parseInt(newInput));
                             break;
                         default:
                             throw new IllegalArgumentException();

@@ -8,7 +8,10 @@ import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.ModelManager;
 import shoreline.statics.Window;
@@ -34,6 +37,12 @@ public class SettingsWindowController implements Initializable, IController {
     private JFXButton bgnUsers;
     @FXML
     private JFXButton btnDatabase;
+    @FXML
+    private FlowPane flowPane;
+    @FXML
+    private AnchorPane apJSON;
+    @FXML
+    private AnchorPane apUsers;
 
     /**
      * Initializes the controller class.
@@ -46,6 +55,10 @@ public class SettingsWindowController implements Initializable, IController {
     @Override
     public void postInit(ModelManager model) {
         this.model = model;
+        if (model.getUserModel().getUser().getUserLevel() != 1) {
+            flowPane.getChildren().remove(apUsers);
+            flowPane.getChildren().remove(apJSON);
+        }
     }
 
     @FXML

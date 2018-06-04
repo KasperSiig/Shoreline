@@ -133,7 +133,6 @@ public class BatchWindowController implements Initializable, IController {
         txtFileName.clear();
         txtImportPath.clear();
         txtTargetPath.clear();
-        comboConfig.getItems().clear();
         comboConfig.setDisable(true);
         comboConfig.getSelectionModel().clearSelection();
 

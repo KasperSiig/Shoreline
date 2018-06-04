@@ -60,7 +60,7 @@
       </TextArea>
    </center>
    <right>
-      <VBox fx:id="vBoxVariable" disable="true" spacing="20.0" BorderPane.alignment="CENTER_RIGHT">
+      <VBox fx:id="vBoxVariable" spacing="20.0" BorderPane.alignment="CENTER_RIGHT">
          <children>
             <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Set Static Values" />
             <JFXComboBox fx:id="comboVariables" promptText="Choose Variable" />
@@ -88,9 +88,9 @@
       </VBox>
    </right>
    <bottom>
-      <JFXButton fx:id="btnSave" disable="true" maxWidth="1.7976931348623157E308" onAction="#handleSave" text="Save Template">
+      <JFXButton fx:id="btnSave" maxWidth="1.7976931348623157E308" onAction="#handleSave" text="Save Template">
          <BorderPane.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" />
+            <Insets bottom="20.0" left="10.0" right="10.0" />
          </BorderPane.margin></JFXButton>
    </bottom>
    <top>

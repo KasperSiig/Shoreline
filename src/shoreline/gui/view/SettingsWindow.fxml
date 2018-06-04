@@ -10,7 +10,7 @@
 
 <BorderPane fx:id="borderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="shoreline.gui.controller.SettingsWindowController">
    <center>
-      <FlowPane alignment="CENTER" columnHalignment="CENTER" hgap="10.0" prefHeight="200.0" prefWidth="200.0" rowValignment="TOP" vgap="10.0" BorderPane.alignment="CENTER">
+      <FlowPane fx:id="flowPane" alignment="CENTER" columnHalignment="CENTER" hgap="10.0" prefHeight="200.0" prefWidth="200.0" rowValignment="TOP" vgap="10.0" BorderPane.alignment="CENTER">
          <children>
             <AnchorPane>
                <children>
@@ -26,7 +26,7 @@
                   </VBox>
                </children>
             </AnchorPane>
-            <AnchorPane>
+            <AnchorPane fx:id="apJSON">
                <children>
                   <JFXButton fx:id="jsonBtn" alignment="BOTTOM_CENTER" onAction="#handleOpenJSONSetting" prefHeight="150.0" prefWidth="150.0" styleClass="jfx-button-costum" text="JSON Template" textAlignment="CENTER" textOverrun="CLIP" wrapText="true" />
                   <VBox alignment="CENTER" layoutX="58.0" layoutY="14.0" maxHeight="150.0" maxWidth="150.0" minHeight="0.0" minWidth="0.0" mouseTransparent="true" prefHeight="150.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -54,7 +54,7 @@
                   </VBox>
                </children>
             </AnchorPane>
-            <AnchorPane>
+            <AnchorPane fx:id="apUsers">
                <children>
                   <JFXButton fx:id="bgnUsers" alignment="BOTTOM_CENTER" onAction="#handleOpenUsersSetting" prefHeight="150.0" prefWidth="150.0" styleClass="jfx-button-costum" text="Users" textAlignment="CENTER" textOverrun="CLIP" wrapText="true" />
                   <VBox alignment="CENTER" layoutX="58.0" layoutY="14.0" maxHeight="150.0" maxWidth="150.0" minHeight="0.0" minWidth="0.0" mouseTransparent="true" prefHeight="150.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

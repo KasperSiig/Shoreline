@@ -143,7 +143,7 @@ public class BatchLogic extends LogicClass {
      */
     private void addFolderListener(Batch batch) {
         ThreadPool tp = ThreadPool.getInstance();
-        Callable callable = (Callable) () -> {
+        Callable<Boolean> callable = (Callable) () -> {
             try {
                 // Gets a new WatchService and registers the batch to it
                 WatchService watcher = FileSystems.getDefault().newWatchService();
@@ -179,9 +179,14 @@ public class BatchLogic extends LogicClass {
             } catch (IOException ex) {
                 throw new BLLException("Error adding folder listener", ex);
             }
-            return null;
+            return false;
         };
         // Listener is being added to ThreadPool, so it doesn't interfere with main Thread
-        tp.addCallableToPool(callable);
+        batch.setFuture(tp.addCallableToPool(callable));
+    }
+
+    public void deleteBatch(Batch batch) {
+        batch.getFuture().cancel(true);
+        batches.remove(batch);
     }
 }

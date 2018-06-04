@@ -81,7 +81,8 @@ public class DatabaseSettingWindowController implements Initializable, IControll
     @FXML
     private void handleBack(ActionEvent event) {
         try {
-            Window.openView(model, model.getBorderPane(), Window.View.SingleTask, "center");
+            SingleTaskWindowController stwc = (SingleTaskWindowController) Window.openView(model, model.getBorderPane(), Window.View.SingleTask, "center");
+            stwc.setTabSelected(3);
         } catch (GUIException ex) {
             Window.openExceptionWindow(ex.getMessage());
         }
@@ -89,30 +90,33 @@ public class DatabaseSettingWindowController implements Initializable, IControll
 
     private void setUserData(VBox vBox) {
         vBox.getChildren().forEach((node) -> {
-            if (node instanceof HBox && !node.equals(vBox.getChildren().get(0)) && !node.equals(vBox.getChildren().get(vBox.getChildren().size() - 1))) {
+            if (node instanceof HBox) {
                 HBox hBox = (HBox) node;
-                Label label = (Label) hBox.getChildren().get(0);
-                hBox.getChildren().get(1).setUserData(label);
+                if (hBox.getChildren().get(0) instanceof Label) {
+                    Label label = (Label) hBox.getChildren().get(0);
+                    hBox.getChildren().get(1).setUserData(label);
+                }
             }
         });
     }
 
     private void setFocusListener(VBox vBox) {
         vBox.getChildren().forEach((parent) -> {
-            if (parent instanceof HBox && !parent.equals(vBox.getChildren().get(0)) && !parent.equals(vBox.getChildren().get(vBox.getChildren().size() - 1))) {
+            if (parent instanceof HBox) {
                 HBox hBox = (HBox) parent;
-                Node node = hBox.getChildren().get(1);
-                node.focusedProperty().addListener((observable, oldValue, newValue) -> {
-                    Label lbl = (Label) node.getUserData();
-                    if (newValue) {
-                        lbl.setText(" " + lbl.getText());
-                        lbl.setStyle("-fx-border-color: #2e6da4;-fx-border-width: 0px 0px 0px 5px; -fx-opacity: 1.0;");
-                    } else {
-                        lbl.setText(lbl.getText().substring(1));
-                        lbl.setStyle("");
-                    }
-
-                });
+                if (hBox.getChildren().get(0) instanceof Label) {
+                    Node node = hBox.getChildren().get(1);
+                    node.focusedProperty().addListener((observable, oldValue, newValue) -> {
+                        Label lbl = (Label) node.getUserData();
+                        if (newValue) {
+                            lbl.setText(" " + lbl.getText());
+                            lbl.setStyle("-fx-border-color: #2e6da4;-fx-border-width: 0px 0px 0px 5px; -fx-opacity: 1.0;");
+                        } else {
+                            lbl.setText(lbl.getText().substring(1));
+                            lbl.setStyle("");
+                        }
+                    });
+                }
             }
         });
     }

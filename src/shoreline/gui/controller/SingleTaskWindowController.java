@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -279,4 +281,40 @@ public class SingleTaskWindowController implements Initializable, IController {
         return hasFailed;
     }
 
+    public void setTabSelected(int pos) {
+        tabPane.getSelectionModel().select(pos);
+    }
+    
+    public void setTabSelected(int pos, Config config) {
+        tabPane.getTabs().remove(pos);
+        try {
+            tabPane.getTabs().add(pos, makeTab(model, Window.View.Config, "Config", config));
+            tabPane.getSelectionModel().select(pos);
+        } catch (GUIException ex) {
+            Logger.getLogger(SingleTaskWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public Tab makeTab(ModelManager model, Window.View view, String name, Config config) throws GUIException {
+        Tab tab = null;
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource(view.getView()));
+            Node node = loader.load();
+
+            IController cont = loader.getController();
+            ConfigWindowController cwc = (ConfigWindowController) cont;
+            cont.postInit(model);
+            cwc.setInfo(config);
+
+            tab = new Tab(name);
+            tab.setContent(node);
+
+            return tab;
+        } catch (IOException ex) {
+            Window.openExceptionWindow(ex.getMessage());
+        }
+        return tab;
+    }
+    
 }

@@ -25,6 +25,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import org.json.JSONException;
 import org.json.JSONObject;
 import shoreline.exceptions.GUIException;
 import shoreline.gui.model.ModelManager;
@@ -36,7 +37,7 @@ import shoreline.statics.Window;
  * @author kaspe
  */
 public class JSONTemplateWindowController implements Initializable, IController {
-    
+
     private File inputFile;
     private JSONObject jsonObject;
     private ModelManager modelManager;
@@ -77,6 +78,9 @@ public class JSONTemplateWindowController implements Initializable, IController 
     @Override
     public void postInit(ModelManager model) {
         this.modelManager = model;
+        jsonObject = model.getConfigModel().getTemplateJson();
+        setTextArea(jsonObject);
+        validateTextArea();
     }
 
     @FXML
@@ -88,15 +92,16 @@ public class JSONTemplateWindowController implements Initializable, IController 
 
         if (tempFile != null) {
             inputFile = tempFile;
-            txtInputPath.setText(inputFile.getAbsolutePath());
+
             try {
-                setJSONObject(inputFile);
+                if (!setJSONObject(inputFile)) {
+                    return;
+                }
+                txtInputPath.setText(inputFile.getAbsolutePath());
                 setTextArea(jsonObject);
                 setPredefinedValues();
                 comboVariables.getItems().addAll(getStrings(jsonObject.toMap()));
-                vBoxVariable.setDisable(false);
                 rbCustom.setSelected(true);
-                btnSave.setDisable(false);
             } catch (GUIException ex) {
                 Window.openExceptionWindow(ex.getMessage());
             }
@@ -106,8 +111,8 @@ public class JSONTemplateWindowController implements Initializable, IController 
     private void setPredefinedValues() {
         comboPredefined.getItems().add("Current Time");
     }
-    
-    private void setJSONObject(File inputFile) throws GUIException {
+
+    private boolean setJSONObject(File inputFile) throws GUIException {
         try {
             Scanner scanner = new Scanner(inputFile);
             StringBuilder json = new StringBuilder();
@@ -117,8 +122,11 @@ public class JSONTemplateWindowController implements Initializable, IController 
             jsonObject = new JSONObject(json.toString());
         } catch (FileNotFoundException ex) {
             throw new GUIException("Error reading JSONObject");
+        } catch (JSONException ex) {
+            Window.openExceptionWindow(ex.getMessage());
+            return false;
         }
-
+        return true;
     }
 
     private void setTextArea(JSONObject jsonObject) {
@@ -174,12 +182,23 @@ public class JSONTemplateWindowController implements Initializable, IController 
     @FXML
     private void handleBack(ActionEvent event) {
         try {
-            Window.openView(modelManager, modelManager.getBorderPane(), Window.View.SingleTask, "center");
+            SingleTaskWindowController stwc = (SingleTaskWindowController) Window.openView(modelManager, modelManager.getBorderPane(), Window.View.SingleTask, "center");
+            stwc.setTabSelected(3);
         } catch (GUIException ex) {
             Window.openExceptionWindow(ex.getMessage());
         }
     }
 
-    
+    private void validateTextArea() {
+        txtAreaJson.textProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                JSONObject json = new JSONObject(newValue);
+            } catch (JSONException ex) {
+                Window.openExceptionWindow(ex.getMessage() + "\nTextAre has been reverted");
+                txtAreaJson.setText(oldValue);
+            }
+        });
+
+    }
 
 }

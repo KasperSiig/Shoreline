@@ -3,6 +3,7 @@ package shoreline.be;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -19,6 +20,7 @@ public class Batch {
     private Config config;
     private IntegerProperty filesPending, filesHandled, filesFailed;
     private List<ConvTask> pendingTasks;
+    private Future future;
 
     /**
      * Constructor for Batch
@@ -154,7 +156,14 @@ public class Batch {
         Platform.runLater(() -> {
             prop.setValue(prop.intValue() - 1);
         });
-        
+    }
+
+    public Future getFuture() {
+        return future;
+    }
+
+    public void setFuture(Future future) {
+        this.future = future;
     }
 
     @Override

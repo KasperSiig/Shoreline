@@ -35,6 +35,10 @@ public class BatchModel {
         }
         
     }
+
+    public void deleteBatch(Batch batch) {
+        logic.getBatchLogic().deleteBatch(batch);
+    }
     
     
 }

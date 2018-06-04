@@ -273,6 +273,7 @@ public class ConfigWindowController implements Initializable, IController {
                 inputFile = tempFile;
                 lblInfo.setVisible(false);
                 primaryHeaders.clear();
+                primaryHeaders.putAll(curConfig.getPrimaryHeaders());
                 inputList.clear();
                 titleIndexMap = model.getConfigModel().getTitles(inputFile);
                 lvMapOverview.setDisable(false);
@@ -612,6 +613,8 @@ public class ConfigWindowController implements Initializable, IController {
         mappingList.clear();
         primaryHeaders.clear();
         primaryHeaders.putAll(config.getPrimaryHeaders());
+        System.out.println(primaryHeaders);
+        System.out.println(config.getPrimaryHeaders());
         secondaryHeaders.clear();
         secondaryHeaders.putAll(config.getSecondaryHeaders());
         defaultValues.clear();

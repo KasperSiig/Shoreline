@@ -58,12 +58,12 @@ public class UserDAO {
     public User createUser(User user, String password, Connection con) throws DALException {
         String sql = "INSERT INTO UserTable VALUES(?,?,?,?,?)";
         try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
+            int userLevel = getAllUsers(con).isEmpty() ? 1 : 0;
             statement.setString(1, user.getUserName());
             statement.setString(2, user.getFirstName());
             statement.setString(3, user.getLastName());
             statement.setString(4, password);
-            statement.setInt(5, 0);
+            statement.setInt(5, userLevel);
 
             if (statement.executeUpdate() == 1) {
                 ResultSet rs = statement.getGeneratedKeys();
@@ -122,12 +122,13 @@ public class UserDAO {
     }
 
     public void updateUser(User user, Connection con) {
-        String sql = "UPDATE UserTable SET username = ?, firstName = ?, lastName = ? WHERE id = ?";
+        String sql = "UPDATE UserTable SET username = ?, firstName = ?, lastName = ?, userLevel = ? WHERE id = ?";
         try (PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, user.getUserName());
             statement.setString(2, user.getFirstName());
             statement.setString(3, user.getLastName());
-            statement.setInt(4, user.getId());
+            statement.setInt(4, user.getUserLevel());
+            statement.setInt(5, user.getId());
             statement.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
