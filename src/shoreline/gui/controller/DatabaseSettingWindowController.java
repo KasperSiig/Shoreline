@@ -37,6 +37,7 @@ import shoreline.statics.Window;
  */
 public class DatabaseSettingWindowController implements Initializable, IController {
 
+    private String userDir = System.getProperty("user.dir");
     private ModelManager model;
 
     @FXML
@@ -57,6 +58,7 @@ public class DatabaseSettingWindowController implements Initializable, IControll
     private JFXTextField txtServerName;
     @FXML
     private JFXComboBox<String> cbExisting;
+    private Label lblError;
 
     /**
      * Initializes the controller class.
@@ -125,17 +127,15 @@ public class DatabaseSettingWindowController implements Initializable, IControll
 
     @FXML
     private void saveDBCredentials(ActionEvent event) {
-        try {
-            model.getPropertiesModel().setProperty("user", txtUser.getText());
-            model.getPropertiesModel().setProperty("password", txtPassword.getText());
-            model.getPropertiesModel().setProperty("portNumber", txtPortNumber.getText());
-            model.getPropertiesModel().setProperty("databaseName", txtDatabaseName.getText());
-            model.getPropertiesModel().setProperty("serverName", txtServerName.getText());
-        } catch (GUIException ex) {
-            Logger.getLogger(DatabaseSettingWindowController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Properties properties = new Properties();
+        properties.put("user", txtUser.getText());
+        properties.put("password", txtPassword.getText());
+        properties.put("portNumber", txtPortNumber.getText());
+        properties.put("databaseName", txtDatabaseName.getText());
+        properties.put("serverName", txtServerName.getText());
+        savePropertiesInFile(userDir + "\\configs\\config.properties", properties, false);
     }
-
+    
     @FXML
     private void handleImport(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -165,17 +165,13 @@ public class DatabaseSettingWindowController implements Initializable, IControll
         File tempFile = fileChooser.showSaveDialog(borderPane.getScene().getWindow());
 
         if (tempFile != null) {
-            HashMap<String, String> properties = new HashMap();
+            Properties properties = new Properties();
             properties.put("user", txtUser.getText());
             properties.put("password", txtPassword.getText());
             properties.put("portNumber", txtPortNumber.getText());
             properties.put("databaseName", txtDatabaseName.getText());
             properties.put("serverName", txtServerName.getText());
-            try {
-                model.getPropertiesModel().savePropertiesFile(tempFile.getAbsolutePath(), properties, true);
-            } catch (GUIException ex) {
-                Logger.getLogger(DatabaseSettingWindowController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            savePropertiesInFile(tempFile.getAbsolutePath(), properties, false);
         }
     }
 
@@ -188,4 +184,30 @@ public class DatabaseSettingWindowController implements Initializable, IControll
             importFromFile(configs.get(newValue));
         });
     }
+    
+    private boolean validateConnection(Properties properties) {
+        boolean valid = false;
+        try {
+            valid = model.getPropertiesModel().validateConnection(properties);
+        } catch (GUIException ex) {
+            Logger.getLogger(DatabaseSettingWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return valid;
+    }
+    
+    private void savePropertiesInFile(String filePath, Properties properties, boolean overwrite) {
+        try {
+            if (validateConnection(properties)) {
+                model.getPropertiesModel().savePropertiesFile(filePath, properties, overwrite);
+                Window.openSnack("Configuration Was Saved", borderPane, "blue");
+            } else {
+                Window.openSnack("Connection is Not Valid", borderPane, "red");
+            }
+            
+        } catch (GUIException ex) {
+            Logger.getLogger(DatabaseSettingWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
 }

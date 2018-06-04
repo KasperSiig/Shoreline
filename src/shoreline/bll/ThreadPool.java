@@ -122,8 +122,8 @@ public class ThreadPool {
      * 
      * @param callable Callable to add to ThreadPool
      */
-    public void addCallableToPool(Callable callable) {
-        threadPool.submit(callable);
+    public Future addCallableToPool(Callable callable) {
+        return threadPool.submit(callable);
     }
     
 

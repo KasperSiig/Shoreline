@@ -41,7 +41,7 @@ public class PropertiesModel {
         return logic.getPropertiesLogic().getPropertiesFromFile(filePath);
     }
     
-    public void savePropertiesFile(String filePath, HashMap<String, String> properties, boolean overwrite) throws GUIException {
+    public void savePropertiesFile(String filePath, Properties properties, boolean overwrite) throws GUIException {
         try {
             logic.getPropertiesLogic().savePropertiesFile(filePath, properties, overwrite);
         } catch (BLLException ex) {
@@ -51,6 +51,14 @@ public class PropertiesModel {
     
     public HashMap<String, File> getAllPropertyFiles() {
         return logic.getPropertiesLogic().getAllPropertyFiles();
+    }
+    
+    public boolean validateConnection(Properties properties) throws GUIException {
+        try {
+            return logic.getPropertiesLogic().validateConnection(properties);
+        } catch (BLLException ex) {
+            throw new GUIException(ex);
+        }
     }
     
 }

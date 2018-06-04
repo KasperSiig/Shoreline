@@ -40,7 +40,7 @@ public class PropertiesLogic extends LogicClass {
         return dataManager.getPropertiesFromFile(filePath);
     }
     
-    public void savePropertiesFile(String filePath, HashMap<String, String> properties, boolean overwrite) throws BLLException {
+    public void savePropertiesFile(String filePath, Properties properties, boolean overwrite) throws BLLException {
         try {
             dataManager.savePropertiesFile(filePath, properties, overwrite);
         } catch (DALException ex) {
@@ -50,6 +50,14 @@ public class PropertiesLogic extends LogicClass {
     
     public HashMap<String, File> getAllPropertyFiles() {
         return dataManager.getAllPropertyFiles();
+    }
+    
+    public boolean validateConnection(Properties properties) throws BLLException {
+        try {
+            return dataManager.validateProperties(properties);
+        } catch (DALException ex) {
+            throw new BLLException(ex);
+        }
     }
     
 }

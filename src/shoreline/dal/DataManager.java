@@ -238,12 +238,16 @@ public class DataManager {
         return propertiesDAO.getPropertiesFromFile(filePath);
     }
     
-    public void savePropertiesFile(String filePath, HashMap<String, String> properties, boolean overwrite) throws DALException {
+    public void savePropertiesFile(String filePath, Properties properties, boolean overwrite) throws DALException {
         propertiesDAO.savePropertiesFile(filePath, properties, overwrite);
     }
 
     public HashMap<String, File> getAllPropertyFiles() {
         return propertiesDAO.getAllPropertyFiles();
+    }
+    
+    public boolean validateProperties(Properties properties) throws DALException {
+        return propertiesDAO.validateConnection(properties);
     }
     
     

@@ -60,7 +60,7 @@ public class SettingsWindowController implements Initializable, IController {
     @FXML
     private void handleOpenJSONSetting(ActionEvent event) {
         try {
-            Window.openView(model, model.getBorderPane(), Window.View.JSONTemplateSetting, "center");
+            Window.openView(model, borderPane, Window.View.JSONTemplateSetting, "center");
         } catch (GUIException ex) {
             Logger.getLogger(SettingsWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -69,7 +69,7 @@ public class SettingsWindowController implements Initializable, IController {
     @FXML
     private void handleOpenConfigSetting(ActionEvent event) {
         try {
-            Window.openView(model, model.getBorderPane(), Window.View.ConfigSetting, "center");
+            Window.openView(model, borderPane, Window.View.ConfigSetting, "center");
         } catch (GUIException ex) {
             Logger.getLogger(SettingsWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -78,7 +78,7 @@ public class SettingsWindowController implements Initializable, IController {
     @FXML
     private void handleOpenUsersSetting(ActionEvent event) {
         try {
-            Window.openView(model, model.getBorderPane(), Window.View.UsersSetting, "center");
+            Window.openView(model, borderPane, Window.View.UsersSetting, "center");
         } catch (GUIException ex) {
             Logger.getLogger(SettingsWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -87,7 +87,7 @@ public class SettingsWindowController implements Initializable, IController {
     @FXML
     private void handleOpenDatabaseSetting(ActionEvent event) {
         try {
-            Window.openView(model, model.getBorderPane(), Window.View.DatabaseSetting, "center");
+            Window.openView(model, borderPane, Window.View.DatabaseSetting, "center");
         } catch (GUIException ex) {
             Logger.getLogger(SettingsWindowController.class.getName()).log(Level.SEVERE, null, ex);
         }
