@@ -21,6 +21,13 @@ public class DataBaseConnector {
     private DataManager dataManager;
 
     public DataBaseConnector(DataManager dataManager) throws DALException {
+        setupConnection(dataManager);
+        dataManager.getDbSwitch().addListener((observable, oldValue, newValue) -> {
+            setupConnection(dataManager);
+        });
+    }
+
+    private void setupConnection(DataManager dataManager) throws NumberFormatException {
         this.dataManager = dataManager;
         portNumber = 0;
         String portNumberString = dataManager.getProperty("portNumber");
@@ -33,7 +40,6 @@ public class DataBaseConnector {
         dataSource.setDatabaseName(dataManager.getProperty("databaseName"));
         dataSource.setUser(dataManager.getProperty("user"));
         dataSource.setPassword(dataManager.getProperty("password"));
-
     }
 
     public Connection getConnection() throws DALException {

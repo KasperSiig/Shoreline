@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
@@ -33,6 +35,7 @@ public class ConfigModel {
 
         this.templateList = FXCollections.observableArrayList(getTemplateListFromDB());
         this.configList = FXCollections.observableArrayList(getAllConfigs());
+        startTemplateTimer();
     }
 
     /**
@@ -145,4 +148,19 @@ public class ConfigModel {
             throw new GUIException(ex);
         } 
     }
+    
+    private void startTemplateTimer() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    templateJson = logic.getTemplateLogic().getTemplate();
+                } catch (BLLException ex) {
+                    Logger.getLogger(ConfigModel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }, 0, 100);
+    }
+    
 }

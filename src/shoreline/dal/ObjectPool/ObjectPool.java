@@ -13,10 +13,10 @@ public abstract class ObjectPool<T> {
     private long expirationTime;
     
     // Contains all the unavailable Objects
-    private ConcurrentHashMap<T, Long> locked;
+    protected ConcurrentHashMap<T, Long> locked;
     
     // Contains all the available Objects
-    private ConcurrentHashMap<T, Long> unlocked;
+    protected ConcurrentHashMap<T, Long> unlocked;
     
     protected ObjectPool() {
         expirationTime = 30000; // 30 Seconds

@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.Alert;
 import org.json.JSONObject;
 import shoreline.be.Config;
@@ -26,6 +28,8 @@ import shoreline.exceptions.DALException;
  * @author Kenneth R. Pedersen, Mads H. Thyssen & Kasper Siig
  */
 public class DataManager {
+    
+    private BooleanProperty dbSwitch;
 
     private ConnectionPool conPool;
     private UserDAO userDAO;
@@ -39,6 +43,10 @@ public class DataManager {
      * @throws DALException 
      */
     public DataManager() throws DALException {
+        this.dbSwitch = new SimpleBooleanProperty(false);
+        dbSwitch.addListener((observable, oldValue, newValue) -> {
+            propertiesDAO = new PropertiesDAO();
+        });
         this.propertiesDAO = new PropertiesDAO();
         this.conPool = new ConnectionPool(this);
         this.userDAO = new UserDAO();
@@ -240,6 +248,7 @@ public class DataManager {
     
     public void savePropertiesFile(String filePath, Properties properties, boolean overwrite) throws DALException {
         propertiesDAO.savePropertiesFile(filePath, properties, overwrite);
+        dbSwitch.setValue(!dbSwitch.getValue());
     }
 
     public HashMap<String, File> getAllPropertyFiles() {
@@ -249,6 +258,13 @@ public class DataManager {
     public boolean validateProperties(Properties properties) throws DALException {
         return propertiesDAO.validateConnection(properties);
     }
-    
+
+    public BooleanProperty getDbSwitch() {
+        return dbSwitch;
+    }
+
+    public void setDbSwitch(BooleanProperty dbSwitch) {
+        this.dbSwitch = dbSwitch;
+    }
     
 }

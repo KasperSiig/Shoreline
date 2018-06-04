@@ -138,6 +138,11 @@ public class DatabaseSettingWindowController implements Initializable, IControll
         properties.put("databaseName", txtDatabaseName.getText());
         properties.put("serverName", txtServerName.getText());
         savePropertiesInFile(userDir + "\\configs\\config.properties", properties, false);
+        try {
+            Window.openView(model, model.getBorderPane(), Window.View.Login, "center");
+        } catch (GUIException ex) {
+            Logger.getLogger(DatabaseSettingWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     @FXML

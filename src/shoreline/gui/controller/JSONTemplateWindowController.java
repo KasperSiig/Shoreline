@@ -172,6 +172,7 @@ public class JSONTemplateWindowController implements Initializable, IController 
     @FXML
     private void handleSave(ActionEvent event) {
         try {
+            jsonObject = new JSONObject(txtAreaJson.getText());
             modelManager.getTemplateModel().save(jsonObject);
             Window.openSnack("Template was saved", borderPane, "blue");
         } catch (GUIException ex) {

@@ -2,6 +2,8 @@ package shoreline.dal.ObjectPool;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import shoreline.dal.DataBaseConnector;
 import shoreline.dal.DataManager;
 import shoreline.exceptions.DALException;
@@ -26,6 +28,7 @@ public class ConnectionPool extends ObjectPool<Connection> {
         super();
         this.dataManager = dataManager;
         this.dbConnect = new DataBaseConnector(dataManager);
+        expireConnections();
     }
 
     @Override
@@ -49,6 +52,32 @@ public class ConnectionPool extends ObjectPool<Connection> {
         } catch (SQLException ex) {
             throw new DALException("Could not close connection", ex);
         }
+    }
+
+    private void expireConnections() {
+        dataManager.getDbSwitch().addListener((observable, oldValue, newValue) -> {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ConnectionPool.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            locked.forEach((key, value) -> {
+                try {
+                    expire(key);
+                } catch (DALException ex) {
+                    Logger.getLogger(ConnectionPool.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
+
+            unlocked.forEach((key, value) -> {
+                try {
+                    expire(key);
+                } catch (DALException ex) {
+                    Logger.getLogger(ConnectionPool.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
+        });
+
     }
 
 }
