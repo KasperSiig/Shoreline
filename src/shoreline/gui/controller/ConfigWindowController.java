@@ -134,8 +134,8 @@ public class ConfigWindowController implements Initializable, IController {
         model.getConfigModel().getConfigList().addListener((ListChangeListener.Change<? extends Config> c) -> {
             c.next();
             if (c.wasUpdated() || c.wasAdded()) {
-                generateConfigsInMenu(configMenu);
-                generateConfigsInMenu(configMenuRight);
+//                generateConfigsInMenu(configMenu);
+//                generateConfigsInMenu(configMenuRight);
             }
         });
     }
@@ -280,7 +280,6 @@ public class ConfigWindowController implements Initializable, IController {
                 insertInputTitles();
                 if (curConfig != null) {
                     if (!checkConfig(curConfig)) {
-                        System.out.println(curConfig);
                         return;
                     }
                 }

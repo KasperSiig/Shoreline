@@ -115,6 +115,7 @@ public class SettingsWindowController implements Initializable, IController {
 
     private void checkConfigs() {
         try {
+            model.getConfigModel().checkConfigs();
             List<Config> configs = model.getConfigModel().getAllConfigs();
             configs.forEach((config) -> {
                 if (!config.isValid()) {

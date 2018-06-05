@@ -49,6 +49,7 @@ public class ConfigSettingWindowController implements Initializable, IController
     public void postInit(ModelManager model) {
         this.modelManager = model;
         try {
+            modelManager.getConfigModel().checkConfigs();
             List<Config> configs = modelManager.getConfigModel().getAllConfigs();
             configs.forEach((config) -> {
                 ConfigView configView = new ConfigView(config);
@@ -70,5 +71,4 @@ public class ConfigSettingWindowController implements Initializable, IController
             Window.openExceptionWindow(ex.getMessage());
         }
     }
-
 }

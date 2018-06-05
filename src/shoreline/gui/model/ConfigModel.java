@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -53,7 +54,13 @@ public class ConfigModel {
     /**
      * @return List of configurations
      */
-    public ObservableList<Config> getConfigList() {
+    public ObservableList<Config> getConfigList(){
+        configList.clear();
+        try {
+            configList.addAll(getAllConfigs());
+        } catch (GUIException ex) {
+            Logger.getLogger(ConfigModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return configList;
     }
 
@@ -178,7 +185,7 @@ public class ConfigModel {
                     Logger.getLogger(ConfigModel.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }, 0, 100);
+        }, 0, 500);
     }
 
     public void stopTimer() {
@@ -189,37 +196,40 @@ public class ConfigModel {
 
         templateList.addListener((ListChangeListener.Change<? extends String> c) -> {
             while (c.next()) {
-                try {
-                    List<Config> configs = getAllConfigs();
-                    configs.forEach((config) -> {
-                        HashMap<String, String> primaryHeaders = config.getPrimaryHeaders();
-                        HashMap<String, String> defaultValues = config.getDefaultValues();
-                        primaryHeaders.forEach((key, value) -> {
-                            if (!templateList.contains(value)) {
-                                try {
-                                    config.setValid(false);
-                                    logic.getConfigLogic().updateConfig(config);
-                                } catch (BLLException ex) {
-                                    Logger.getLogger(ConfigModel.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                            }
-                        });
-                        defaultValues.forEach((key, value) -> {
-                            if (!templateList.contains(value)) {
-                                try {
-                                    config.setValid(false);
-                                    logic.getConfigLogic().updateConfig(config);
-                                } catch (BLLException ex) {
-                                    Logger.getLogger(ConfigModel.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                            }
-                        });
-                    });
-                } catch (GUIException ex) {
-                    Logger.getLogger(SettingsWindowController.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                checkConfigs();
             }
         });
+    }
+
+    public void checkConfigs() {
+        try {
+            List<Config> configs = getAllConfigs();
+            
+            configs.forEach((config) -> {
+                AtomicBoolean valid = new AtomicBoolean(true);
+                HashMap<String, String> primaryHeaders = config.getPrimaryHeaders();
+                HashMap<String, String> defaultValues = config.getDefaultValues();
+                primaryHeaders.forEach((key, value) -> {
+                    if (!templateList.contains(key)) {
+                        valid.set(false);
+                    }
+                });
+                defaultValues.forEach((key, value) -> {
+                    if (!templateList.contains(key)) {
+                        valid.set(false);
+                    }
+                });
+                config.setValid(valid.get());
+                try {
+                    logic.getConfigLogic().updateConfig(config);
+                } catch (BLLException ex) {
+                    Logger.getLogger(ConfigModel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
+            
+        } catch (GUIException ex) {
+            Logger.getLogger(SettingsWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }
